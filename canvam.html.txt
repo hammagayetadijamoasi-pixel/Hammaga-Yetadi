@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canva Pro Bot</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7d2ae8;
+            --glass: rgba(255, 255, 255, 0.1);
+            --border: rgba(255, 255, 255, 0.2);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1e0538, #3b0d74);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        h1 { margin: 0 0 10px; font-size: 24px; }
+        p { font-size: 14px; opacity: 0.8; line-height: 1.5; }
+
+        /* Input */
+        input[type="email"] {
+            width: 90%;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            outline: none;
+            font-size: 16px;
+            text-align: center;
+        }
+        input::placeholder { color: rgba(255, 255, 255, 0.5); }
+
+        /* Button */
+        .btn-main {
+            background: linear-gradient(90deg, #00c4cc, #7d2ae8);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        .btn-main:active { transform: scale(0.95); }
+
+        /* Sections */
+        .section { display: none; padding-bottom: 80px; }
+        .section.active { display: block; }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border: 1px solid var(--border);
+        }
+
+        .nav-item {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+        .nav-item.active { color: #00c4cc; transform: translateY(-5px); }
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background: #00c4cc;
+            border-radius: 50%;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="home" class="section active">
+        <div style="text-align: center; margin-top: 30px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg" width="80" alt="Canva">
+        </div>
+
+        <div class="glass-card">
+            <h1>Canva Pro Olish</h1>
+            <p>Canva Pro jamoasiga qo'shilish uchun avval pochtangizni kiriting.</p>
+            <input type="email" id="emailInput" placeholder="Masalan: ali@gmail.com">
+            <button class="btn-main" onclick="sendData()">Yuborish</button>
+        </div>
+
+        <div class="glass-card" style="background: rgba(255,0,0,0.1); border-color: rgba(255,0,0,0.2);">
+            <p style="font-size: 12px; color: #ffadad;">⚠️ Eslatma: Agar kanallardan chiqib ketsangiz, litsenziyangiz avtomatik bekor qilinadi.</p>
+        </div>
+    </div>
+
+    <div id="learn" class="section">
+        <div class="glass-card">
+            <h1><i class="fas fa-book-open"></i> Bilimlar</h1>
+            <p>Canva bo'yicha eng so'nggi darslik va master-klasslar bizning kanalda.</p>
+            <br>
+            <a href="https://t.me/Olimova_Zuhra" style="text-decoration: none;">
+                <button class="btn-main"><i class="fab fa-telegram"></i> Kanalga o'tish</button>
+            </a>
+        </div>
+    </div>
+
+    <div id="admin" class="section">
+        <div class="glass-card">
+            <h1><i class="fas fa-user-shield"></i> Admin</h1>
+            <p>Hamkorlik va savollar uchun:</p>
+            <h3 style="color: #00c4cc;">Zuhra Olimova</h3>
+            <p>@yaxshidizayner</p>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home')">
+            <i class="fas fa-home"></i>
+        </div>
+        <div class="nav-item" onclick="switchTab('learn')">
+            <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div class="nav-item" onclick="switchTab('admin')">
+            <i class="fas fa-headset"></i>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Ilovani to'liq ekranga yoyish
+
+        function switchTab(tabId) {
+            // Hamma bo'limlarni yashirish
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+            // Tanlanganini ochish
+            document.getElementById(tabId).classList.add('active');
+            
+            // Iconni aktivlashtirish
+            const iconIndex = ['home', 'learn', 'admin'].indexOf(tabId);
+            document.querySelectorAll('.nav-item')[iconIndex].classList.add('active');
+        }
+
+        function sendData() {
+            const email = document.getElementById('emailInput').value;
+            if(!email.includes('@') || email.length < 5) {
+                tg.showPopup({title: 'Xato', message: "Iltimos, to'g'ri email kiriting!"});
+                return;
+            }
+            // Ma'lumotni Python botga yuborish
+            tg.sendData(email);
+        }
+    </script>
+</body>
+</html>
