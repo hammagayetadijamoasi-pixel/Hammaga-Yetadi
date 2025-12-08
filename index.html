@@ -15,7 +15,7 @@
             --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        /* 🔒 SUPER HIMOYA: Nusxa olish va belgilash bloklangan */
+        /* 🔒 SUPER HIMOYA: Barcha nusxa olish yo'llarini bloklash */
         * {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
@@ -29,13 +29,12 @@
 
         body {
             margin: 0; padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: #0f0c29; color: white;
             min-height: 100vh;
             display: flex; flex-direction: column; overflow: hidden;
         }
 
-        /* Orqa fon */
         .background-blobs {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
             background: radial-gradient(circle at 10% 20%, #302b63 0%, #0f0c29 90%);
@@ -52,7 +51,6 @@
             display: flex; flex-direction: column; justify-content: center;
         }
 
-        /* Header */
         .header { text-align: center; margin-bottom: 30px; }
         .logo-img {
             width: 100px; height: 100px;
@@ -60,17 +58,16 @@
             margin-bottom: 15px; pointer-events: none;
         }
 
-        /* Glass Card */
         .glass-card {
             background: var(--glass-bg); backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border); border-radius: 24px;
             padding: 25px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
             text-align: center; transition: 0.3s;
         }
+
         h2 { margin: 0 0 10px; font-size: 22px; }
         p { color: rgba(255, 255, 255, 0.7); font-size: 14px; margin-bottom: 20px; }
 
-        /* Inputs & Buttons */
         .input-group { position: relative; margin-bottom: 20px; }
         .input-icon {
             position: absolute; left: 15px; top: 50%;
@@ -82,36 +79,44 @@
             border-radius: 16px; color: white; font-size: 16px;
             user-select: text !important; -webkit-user-select: text !important;
         }
-        
+        input:focus { border-color: var(--accent); }
+
         .btn-primary {
             background: linear-gradient(135deg, var(--accent), var(--primary));
             color: white; border: none; padding: 16px; width: 100%;
-            border-radius: 16px; font-size: 16px; font-weight: 600; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(139, 61, 255, 0.4);
+            border-radius: 16px; font-size: 16px; font-weight: 600;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(139, 61, 255, 0.4);
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .btn-primary:active { transform: scale(0.96); }
-
-        /* Screens */
+        
+        /* Success Screen (Yashirin) */
         #success-screen { display: none; }
         .success-icon { font-size: 60px; color: #00ff88; margin-bottom: 20px; text-shadow: 0 0 20px #00ff88; }
+
     </style>
 </head>
 <body oncontextmenu="return false;" ondragstart="return false;">
 
-    <div class="background-blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div></div>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
 
     <div class="container">
+        
         <div id="form-screen" class="glass-card">
             <div class="header">
                 <img src="https://cdn-icons-png.flaticon.com/512/5968/5968746.png" class="logo-img" alt="Canva">
                 <h2>Litsenziyani Faollashtirish</h2>
                 <p>Canva Pro jamoasiga qo'shilish uchun pochtangizni kiriting.</p>
             </div>
+
             <div class="input-group">
                 <i class="fas fa-envelope input-icon"></i>
                 <input type="email" id="emailInput" placeholder="Emailingizni yozing...">
             </div>
+
             <button class="btn-primary" onclick="processData()">
                 <i class="fas fa-rocket"></i> Faollashtirish
             </button>
@@ -121,42 +126,42 @@
             <div class="header">
                 <i class="fas fa-check-circle success-icon"></i>
                 <h2>Muvaffaqiyatli!</h2>
-                <p>Quyidagi tugmani bosing, u sizni to'g'ridan-to'g'ri Canva ilovasiga olib o'tadi.</p>
+                <p>Sizning emailingiz qabul qilindi. Quyidagi tugmani bosib Canva Proga o'ting.</p>
             </div>
+
             <button class="btn-primary" onclick="openCanvaLink()">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg" width="24" style="filter: brightness(100);">
                 Canva Pro ga kirish
             </button>
         </div>
+
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // ⚠️ LINKINGIZNI TEKSHIRING
+        // ✅ SIZ BERGAN YANGI LINK JOYLANDI:
         const CANVA_LINK = "https://www.canva.com/brand/join?token=IoOb9KF83vkvjiQHS2V-9A&brandingVariant=edu&referrer=team-invite";
 
         function processData() {
             const email = document.getElementById('emailInput').value;
+            
             if(!email.includes('@') || email.length < 5) {
                 tg.showPopup({title: 'Xatolik', message: "Iltimos, to'g'ri email kiriting!"});
                 return;
             }
-            // Botga yuborish
+
+            // 1. Botga emailni yuborish (Bazaga saqlash uchun)
             tg.sendData(email);
 
-            // Ekranni almashtirish
+            // 2. Ekranni o'zgartirish (Email so'rash -> Link berish)
             document.getElementById('form-screen').style.display = 'none';
             document.getElementById('success-screen').style.display = 'block';
         }
 
         function openCanvaLink() {
-            // ✅ ENG MUHIM QISM:
-            // "try_instant_view: false" bu Telegramga aytadiki: 
-            // "O'zingni brauzeringni ishlatma, bu linkni telefonning tizimiga ber!"
-            // Agar telefonda Canva ilovasi bo'lsa, tizim "Open in Canva" deb so'raydi yoki o'zi ochadi.
-            
+            // Telegramning tashqi link ochish funksiyasi
             tg.openLink(CANVA_LINK, {try_instant_view: false});
         }
     </script>
