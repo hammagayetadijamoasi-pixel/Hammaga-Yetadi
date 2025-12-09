@@ -14,17 +14,17 @@
         body { margin: 0; background: var(--dark); color: white; font-family: 'Segoe UI', Roboto, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         .orb { position: fixed; border-radius: 50%; filter: blur(90px); z-index: -1; opacity: 0.3; }
         .orb-1 { width: 300px; height: 300px; background: var(--primary); top: -10%; left: -10%; animation: float 10s infinite alternate; }
-        .orb-2 { width: 250px; height: 250px; background: var(--secondary); bottom: -10%; right: -10%; animation: float 12s infinite alternate-reverse; }
+        .orb-2 { width: 200px; height: 200px; background: var(--secondary); bottom: -10%; right: -10%; animation: float 12s infinite alternate-reverse; }
         @keyframes float { from {transform: translate(0,0);} to {transform: translate(30px, 50px);} }
-        .main-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
+        .main-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 90px; }
         
-        /* REKLAMA */
-        .ad-banner { display: none; flex-direction: column; gap: 8px; background: linear-gradient(135deg, rgba(20,20,40,0.95), rgba(40,40,70,0.95)); border-left: 4px solid var(--secondary); border-radius: 16px; padding: 16px; margin-bottom: 25px; cursor: pointer; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.4); transition: 0.2s;}
+        .ad-banner { display: none; flex-direction: column; gap: 8px; background: linear-gradient(135deg, rgba(20,20,40,0.95), rgba(40,40,70,0.95)); border-left: 4px solid var(--secondary); border-radius: 16px; padding: 16px; margin-bottom: 25px; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.4); position: relative; }
         .ad-banner:active { transform: scale(0.98); }
         .ad-top { display: flex; justify-content: space-between; align-items: center; }
         .ad-badge { background: var(--secondary); color: #000; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; }
         .ad-title { font-size: 16px; font-weight: 700; color: white; margin-top: 5px; }
         .ad-text { font-size: 13px; color: var(--text-gray); line-height: 1.4; }
+        .ad-arrow { color: var(--secondary); font-size: 14px; }
         
         .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
         .brand { font-size: 22px; font-weight: 800; }
@@ -36,20 +36,18 @@
         h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
         p { font-size: 14px; color: var(--text-gray); line-height: 1.5; margin-bottom: 15px; }
         
-        /* BUTTONS */
         .btn { width: 100%; padding: 14px; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; color: white; cursor: pointer; background: linear-gradient(90deg, var(--primary), #536DFE); display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.1s;}
         .btn:active { transform: scale(0.96); }
         .btn.secondary { background: rgba(255,255,255,0.05); box-shadow: none; border: 1px solid var(--glass-border); justify-content: space-between; padding: 12px 16px; margin-bottom: 8px; }
         .btn.secondary span { display: flex; align-items: center; gap: 10px; }
         
-        /* CHAT */
         .chat-box { height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
         .msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; word-wrap: break-word; }
-        .msg.bot { align-self: flex-start; background: rgba(255,255,255,0.08); border-bottom-left-radius: 4px; }
+        .msg.bot { align-self: flex-start; background: rgba(255,255,255,0.08); border-bottom-left-radius: 4px; user-select: text !important; -webkit-user-select: text !important;}
         .msg.user { align-self: flex-end; background: var(--primary); border-bottom-right-radius: 4px; color: white;}
         .typing { font-style: italic; opacity: 0.6; font-size: 12px; margin-left: 10px; display: none; margin-bottom: 10px;}
         .chat-input-wrapper { display: flex; gap: 10px; }
-        .chat-input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 14px; border-radius: 14px; color: white; }
+        .chat-input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 14px; border-radius: 14px; color: white; user-select: text !important; }
         .chat-btn { width: 50px; height: 50px; border-radius: 14px; border: none; background: var(--secondary); color: #000; display: flex; align-items: center; justify-content: center; font-size: 18px; }
         
         .navbar { position: fixed; bottom: 20px; left: 20px; right: 20px; height: 65px; background: rgba(18, 18, 28, 0.95); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid var(--glass-border); display: flex; justify-content: space-around; align-items: center; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -57,7 +55,7 @@
         .nav-item span { font-size: 10px; font-weight: 600; }
         .nav-item.active { color: var(--secondary); transform: translateY(-3px); }
         
-        input[type="email"] { width: 100%; padding: 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white; margin-bottom: 12px; }
+        input[type="email"] { width: 100%; padding: 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white; margin-bottom: 12px; user-select: text !important;}
         .admin-profile { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
         .admin-img { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--secondary); margin-bottom: 10px; }
         .admin-name { font-size: 16px; font-weight: bold; }
@@ -74,22 +72,25 @@
     <div class="main-content">
         <div class="app-header">
             <div class="brand">Yaxshi <span style="color:var(--secondary)">AI</span></div>
-            <div class="user-badge"><div class="user-avatar" id="avatarLetter">U</div><div class="user-info"><strong id="userNameDisplay">User</strong></div></div>
+            <div class="user-badge">
+                <div class="user-avatar" id="avatarLetter">U</div>
+                <div class="user-info"><strong id="userNameDisplay">User</strong></div>
+            </div>
         </div>
 
         <div id="tab-home" class="section active">
             <div id="ad-container" class="ad-banner" onclick="openAdLink()">
-                <div class="ad-top"><div class="ad-badge">TAVSIYA</div><i class="fas fa-external-link-alt" style="color:var(--secondary)"></i></div>
+                <div class="ad-top"><div class="ad-badge">TAVSIYA</div><i class="fas fa-chevron-right ad-arrow"></i></div>
                 <div class="ad-title" id="ad-title"></div>
                 <div class="ad-text" id="ad-text"></div>
             </div>
 
             <div id="view-guest" style="display: none;">
-                <div class="card" style="border-left: 3px solid var(--red);">
+                <div class="card" style="border-color: var(--red);">
                     <h2 style="color: var(--red);"><i class="fas fa-lock"></i> Kirish Yopiq</h2>
-                    <p>Bot funksiyalaridan foydalanish uchun kanallarga a'zo bo'ling:</p>
+                    <p>Botdan foydalanish uchun quyidagi kanallarga a'zo bo'ling:</p>
                     <div id="channels-list"></div>
-                    <button class="btn" onclick="checkSub()" style="margin-top:20px; background: #2A2A3D;"><i class="fas fa-sync-alt"></i> A'zo bo'ldim / Tekshirish</button>
+                    <button class="btn" onclick="checkSub()" style="margin-top:20px; background: #2A2A3D;"><i class="fas fa-sync-alt"></i> Tekshirish</button>
                 </div>
             </div>
 
@@ -106,7 +107,7 @@
                 </div>
                 <div id="link-step" class="card" style="display:none; border-color: var(--secondary);">
                     <h2 style="color:var(--secondary)"><i class="fas fa-check-circle"></i> Tayyor!</h2>
-                    <p>Quyidagi tugma orqali kiring:</p>
+                    <p>Quyidagi tugma orqali ilovaga kiring:</p>
                     <button class="btn" onclick="openPro()"><i class="fas fa-rocket"></i> Pro Versiya ga Kirish</button>
                 </div>
             </div>
@@ -115,155 +116,5 @@
         <div id="tab-ai" class="section">
             <div class="card">
                 <h2><i class="fas fa-brain" style="color:var(--secondary)"></i> Yaxshi AI</h2>
-                <div class="chat-box" id="chatBox"><div class="msg bot">👋 Salom! Men Yaxshi AIman.<br>Canva va dizayn bo'yicha savolingiz bormi?</div></div>
-                <div class="typing" id="typingIndicator"><i class="fas fa-pen-nib"></i> Yozmoqda...</div>
-                <div class="chat-input-wrapper">
-                    <input type="text" class="chat-input" id="chatInput" placeholder="Savol yozing..." onkeypress="handleEnter(event)">
-                    <button class="chat-btn" onclick="sendMessage()"><i class="fas fa-arrow-up"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-admin" class="section">
-            <div class="card">
-                <div class="admin-profile">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="admin-img">
-                    <div class="admin-name">Yaxshi Bola</div>
-                    <div class="admin-user">@yaxshidizayner</div>
-                </div>
-                <p style="text-align:center">Savollar uchun:</p>
-                <button class="btn secondary" onclick="tg.openTelegramLink('https://t.me/yaxshidizayner')"><span><i class="fas fa-comment-dots"></i> Admin bilan yozishish</span><i class="fas fa-chevron-right"></i></button>
-                <div style="margin-top:20px; font-size:12px; color:var(--text-gray); text-align:left;">KANALLARIMIZ:</div>
-                <div id="static-channels-list" style="margin-top: 10px;"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="navbar">
-        <div class="nav-item active" onclick="goTab('home', this)"><i class="fas fa-home"></i> <span>Asosiy</span></div>
-        <div class="nav-item" onclick="goTab('ai', this)"><i class="fas fa-sparkles"></i> <span>AI Chat</span></div>
-        <div class="nav-item" onclick="goTab('admin', this)"><i class="fas fa-user-astronaut"></i> <span>Admin</span></div>
-    </div>
-
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-
-        const PRO_LINK = "https://www.canva.com/brand/join?token=IoOb9KF83vkvjiQHS2V-9A&brandingVariant=edu&referrer=team-invite";
-        const params = new URLSearchParams(window.location.search);
-        const s = params.get('s') || "00";
-        const e = params.get('e') || "0";
-        const uName = decodeURIComponent(params.get('n') || "User");
-        let CHANNELS = [];
-        try { CHANNELS = JSON.parse(decodeURIComponent(params.get('ch') || "[]")); } catch(e) {}
-        const adTitle = decodeURIComponent(params.get('at') || "");
-        const adText = decodeURIComponent(params.get('ax') || "");
-        const adLink = decodeURIComponent(params.get('al') || "");
-        let messageCount = 0;
-
-        window.onload = () => {
-            document.getElementById('userNameDisplay').innerText = uName;
-            document.getElementById('avatarLetter').innerText = uName.charAt(0).toUpperCase();
-            if(adTitle && adText) {
-                document.getElementById('ad-container').style.display = 'flex';
-                document.getElementById('ad-title').innerText = adTitle;
-                document.getElementById('ad-text').innerText = adText;
-            }
-            if(!s.includes('0')) {
-                document.getElementById('view-active').style.display = 'block';
-                if(e === "1") {
-                    document.getElementById('email-step').style.display = 'none';
-                    document.getElementById('link-step').style.display = 'block';
-                }
-            } else {
-                document.getElementById('view-guest').style.display = 'block';
-                renderChannels(s);
-            }
-            renderStaticChannels();
-        };
-
-        function renderChannels(code) {
-            const list = document.getElementById('channels-list');
-            list.innerHTML = "";
-            CHANNELS.forEach((ch, i) => {
-                const joined = code[i] === '1';
-                const color = joined ? 'var(--green)' : 'var(--red)';
-                const icon = joined ? 'fa-check-circle' : 'fa-times-circle';
-                list.innerHTML += `<button class="btn secondary" onclick="tg.openTelegramLink('${ch.url}')" style="justify-content:space-between; ${joined?'border-color:var(--green)':'border-color:var(--red)'}"><span><i class="fab fa-telegram"></i> ${ch.name}</span><i class="fas ${icon}" style="color:${color}; font-size:18px;"></i></button>`;
-            });
-        }
-
-        function renderStaticChannels() {
-            const list = document.getElementById('static-channels-list');
-            list.innerHTML = "";
-            CHANNELS.forEach(ch => {
-                list.innerHTML += `<button class="btn secondary" style="margin-top:5px" onclick="tg.openTelegramLink('${ch.url}')"><span><i class="fab fa-telegram"></i> ${ch.name}</span><i class="fas fa-chevron-right" style="opacity:0.5"></i></button>`;
-            });
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const txt = input.value.trim();
-            if(!txt) return;
-            addMsg(txt, 'user');
-            input.value = '';
-            messageCount++;
-            document.getElementById('typingIndicator').style.display = 'block';
-            const chatBox = document.getElementById('chatBox');
-            chatBox.scrollTop = chatBox.scrollHeight;
-            try {
-                let greetingRule = messageCount === 1 ? "Suhbat endi boshlandi. Qisqa va samimiy salom ber." : "Qayta salom berma. Srazu javobga o't.";
-                const systemPrompt = `Siz "Yaxshi AI" ismli professional dizayn maslahatchisisiz. 
-                QOIDALAR: 1. ${greetingRule} 
-                2. Agar so'zlar xato yozilgan bo'lsa ham tushunib javob ber. 
-                3. Faqat Canva, Dizayn va Ilova haqida gapir. 
-                4. Agar savol boshqa mavzuda bo'lsa yoki bilmasangiz: REDIRECT_TO_ADMIN deb yoz. 
-                5. Til: O'zbek tili. Savol: ` + txt;
-                
-                const url = 'https://text.pollinations.ai/' + encodeURIComponent(systemPrompt);
-                const res = await fetch(url);
-                const aiText = await res.text();
-                document.getElementById('typingIndicator').style.display = 'none';
-                
-                if (aiText.includes("REDIRECT_TO_ADMIN")) {
-                    const errorDiv = document.createElement('div');
-                    errorDiv.className = 'msg bot';
-                    errorDiv.innerHTML = `⚠️ Bu savolga javob berishga qiynalyapman. Keling, adminga murojaat qilamiz.<br><button class="btn secondary" style="margin-top:8px; font-size:12px; padding:8px;" onclick="tg.openTelegramLink('https://t.me/yaxshidizayner')"><i class="fas fa-user-shield"></i> Admin bilan bog'lanish</button>`;
-                    chatBox.appendChild(errorDiv);
-                } else {
-                    addMsg(aiText, 'bot');
-                }
-            } catch {
-                document.getElementById('typingIndicator').style.display = 'none';
-                addMsg("⚠️ Texnik nosozlik.", 'bot');
-            }
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        function addMsg(txt, type) {
-            const box = document.getElementById('chatBox');
-            const div = document.createElement('div');
-            div.className = `msg ${type}`;
-            div.innerHTML = marked.parse(txt);
-            box.appendChild(div);
-            box.scrollTop = box.scrollHeight;
-        }
-        function handleEnter(e) { if(e.key === 'Enter') sendMessage(); }
-
-        function checkSub() { tg.sendData("check"); }
-        function submitEmail() {
-            const val = document.getElementById('emailInput').value;
-            if(!val.includes('@') || val.length<5) return tg.showPopup({message:"Iltimos, to'g'ri email kiriting!"});
-            tg.sendData(val);
-        }
-        function openPro() { tg.openLink(PRO_LINK, {try_instant_view: false}); }
-        function openAdLink() { if(adLink && adLink.length > 4) { tg.openTelegramLink(adLink); } else { tg.showPopup({message: "Havola mavjud emas."}); } }
-        function goTab(t, el) {
-            document.querySelectorAll('.section').forEach(x => x.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
-            document.getElementById('tab-'+t).classList.add('active');
-            el.classList.add('active');
-        }
-    </script>
-</body>
-</html>
+                <div class="chat-box" id="chatBox"><div class="msg bot">👋 Salom! Men Yaxshi AI man. Savolingizni bering.</div></div>
+                <div class="typing" id="typingIndicator" style="display:none; margin-bottom:10px; font-size:12px; color:
