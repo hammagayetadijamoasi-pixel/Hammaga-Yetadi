@@ -32,9 +32,9 @@
         /* Header */
         .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
         .user-badge { display: flex; align-items: center; gap: 10px; background: var(--glass); padding: 5px 15px 5px 5px; border-radius: 30px; border: 1px solid var(--glass-border); }
-        .user-avatar { width: 35px; height: 35px; background: linear-gradient(45deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;}
+        .user-avatar { width: 35px; height: 35px; background: linear-gradient(45deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; text-transform: uppercase;}
         .user-info span { display: block; font-size: 10px; color: var(--text-gray); }
-        .user-info strong { font-size: 14px; }
+        .user-info strong { font-size: 14px; max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;}
 
         /* Cards */
         .card {
@@ -57,8 +57,9 @@
         }
         .btn:active { transform: scale(0.96); }
         .btn.secondary { background: rgba(255,255,255,0.1); box-shadow: none; border: 1px solid var(--glass-border); justify-content: flex-start;}
+        .btn.admin-help { background: #FF4B4B; margin-top: 10px; font-size: 14px; padding: 10px;}
 
-        /* AI CHAT STYLES */
+        /* AI CHAT */
         .chat-box { 
             height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; 
             margin-bottom: 15px; padding-right: 5px; scroll-behavior: smooth;
@@ -118,8 +119,8 @@
             <div class="user-badge">
                 <div class="user-avatar" id="avatarLetter">U</div>
                 <div class="user-info">
-                    <span>Status</span>
-                    <strong style="color:var(--secondary)">Premium</strong>
+                    <span>Salom,</span>
+                    <strong style="color:var(--secondary)" id="userNameDisplay">User</strong>
                 </div>
             </div>
         </div>
@@ -128,7 +129,7 @@
             <div id="view-guest" style="display: none;">
                 <div class="card" style="border-color: #ff4b4b;">
                     <h2 style="color: #ff4b4b;"><i class="fas fa-lock"></i> Kirish Yopiq</h2>
-                    <p>Sun'iy intellekt va Canva Pro imkoniyatlaridan foydalanish uchun kanallarga a'zo bo'ling:</p>
+                    <p>Bot funksiyalaridan (AI va Canva) foydalanish uchun kanallarga a'zo bo'ling:</p>
                     <div id="channels-list"></div>
                     <button class="btn" onclick="checkSub()" style="margin-top:15px; background: #333;">
                         <i class="fas fa-sync"></i> Tekshirish
@@ -139,7 +140,7 @@
             <div id="view-active" style="display: none;">
                 <div class="card" style="background: linear-gradient(135deg, rgba(124, 77, 255, 0.2), rgba(0, 229, 255, 0.2)); border: 1px solid rgba(255,255,255,0.2);">
                     <h2><i class="fas fa-crown" style="color:#FFD700"></i> Premium Panel</h2>
-                    <p>Sizda barcha imkoniyatlar ochiq. AI Chat va Canva Pro dan foydalaning.</p>
+                    <p>Sizda barcha imkoniyatlar ochiq. AI Chat va Canva Pro dan bepul foydalaning.</p>
                 </div>
 
                 <div id="email-step" class="card">
@@ -163,10 +164,10 @@
         <div id="tab-ai" class="section">
             <div class="card">
                 <h2><i class="fas fa-brain" style="color:var(--secondary)"></i> Canva AI Ekspert</h2>
-                <p>Men professional dizayn yordamchisiman. Istalgan savolingizni bering!</p>
+                <p>Dizayn va Canva bo'yicha har qanday savolingizni bering. Men professional darajada yordam beraman.</p>
                 
                 <div class="chat-box" id="chatBox">
-                    <div class="msg bot">👋 Assalomu alaykum! Men Canva va Dizayn bo'yicha professional yordamchingizman. <br><br>Masalan:<br>— "Instagram post o'lchami qanday?"<br>— "Canva'da gradient qanday qilinadi?"<br>— "YouTube uchun rasm g'oyasi ber"</div>
+                    <div class="msg bot">👋 Assalomu alaykum! Men sizning shaxsiy AI yordamchingizman. Nimada yordam bera olaman?</div>
                 </div>
                 
                 <div class="typing" id="typingIndicator">AI yozmoqda... <i class="fas fa-pen-nib"></i></div>
@@ -184,6 +185,9 @@
                 <h2>Yaxshi Bola</h2>
                 <p style="color:var(--secondary)">@yaxshidizayner</p>
                 <div style="text-align: left; margin-top: 20px;">
+                    <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; font-size:12px; margin-bottom:10px;">
+                        <i class="fas fa-users"></i> Jami foydalanuvchilar: <b style="color:var(--secondary)">Ko'p</b>
+                    </div>
                     <button class="btn secondary" onclick="tg.openTelegramLink('https://t.me/yaxshidizayner')">
                         <i class="fas fa-comment-dots"></i> Admin bilan yozishish
                     </button>
@@ -209,7 +213,6 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // ⚠️ LINKLAR
         const CANVA_LINK = "https://www.canva.com/brand/join?token=IoOb9KF83vkvjiQHS2V-9A&brandingVariant=edu&referrer=team-invite";
         
         const CHANNELS = [
@@ -221,10 +224,13 @@
         const params = new URLSearchParams(window.location.search);
         const s = params.get('s') || "00";
         const e = params.get('e') || "0";
-        const uName = params.get('n') || "User";
+        const uName = decodeURIComponent(params.get('n') || "User");
 
         window.onload = () => {
+            // Profil ma'lumotlarini to'ldirish
+            document.getElementById('userNameDisplay').innerText = uName;
             document.getElementById('avatarLetter').innerText = uName.charAt(0).toUpperCase();
+
             if(!s.includes('0')) {
                 document.getElementById('view-active').style.display = 'block';
                 if(e === "1") {
@@ -249,7 +255,7 @@
             });
         }
 
-        // --- AI CHAT LOGIC (POLLINATIONS AI - BEPUL & KALITSIZ) ---
+        // --- POLLINATIONS AI (Kalitsiz) ---
         async function sendMessage() {
             const input = document.getElementById('chatInput');
             const txt = input.value.trim();
@@ -258,20 +264,16 @@
             addMsg(txt, 'user');
             input.value = '';
             
-            // Loading ko'rsatish
             document.getElementById('typingIndicator').style.display = 'block';
             const chatBox = document.getElementById('chatBox');
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // Biz AIga kontekst beramiz
+                // Pollinations bepul API (Matnli AI)
                 const systemPrompt = "Sen professional grafik dizayner va Canva ekspertisan. Javobing qisqa, aniq va foydali bo'lsin. O'zbek tilida javob ber. Savol: ";
-                const finalPrompt = systemPrompt + txt;
+                const finalUrl = 'https://text.pollinations.ai/' + encodeURIComponent(systemPrompt + txt);
 
-                // Pollinations AI (Bepul API)
-                const url = 'https://text.pollinations.ai/' + encodeURIComponent(finalPrompt);
-
-                const response = await fetch(url);
+                const response = await fetch(finalUrl);
                 if (!response.ok) throw new Error("Tarmoq xatosi");
                 
                 const aiText = await response.text();
@@ -281,7 +283,15 @@
 
             } catch (error) {
                 document.getElementById('typingIndicator').style.display = 'none';
-                addMsg("⚠️ Uzr, internetda muammo borga o'xshaydi. Qayta urinib ko'ring.", 'bot');
+                // Xatolik bo'lsa Admin tugmasini chiqaramiz
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'msg bot';
+                errorDiv.innerHTML = `⚠️ Kechirasiz, men bu savolga javob bera olmadim yoki internetda xatolik bor.<br>
+                <button class="btn admin-help" onclick="tg.openTelegramLink('https://t.me/yaxshidizayner')">
+                    <i class="fas fa-user-shield"></i> Adminga yozish
+                </button>`;
+                chatBox.appendChild(errorDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
             }
         }
 
@@ -289,7 +299,6 @@
             const box = document.getElementById('chatBox');
             const div = document.createElement('div');
             div.className = `msg ${type}`;
-            // Markdownni HTML ga o'girish
             div.innerHTML = marked.parse(txt);
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
@@ -304,12 +313,7 @@
             if(!val.includes('@') || val.length<5) return tg.showPopup({message:"Email noto'g'ri!"});
             tg.sendData(val);
         }
-        
-        function openCanva() { 
-            // Ilovada ochishga urinish
-            tg.openLink(CANVA_LINK, {try_instant_view: false}); 
-        }
-        
+        function openCanva() { tg.openLink(CANVA_LINK, {try_instant_view: false}); }
         function goTab(t, el) {
             document.querySelectorAll('.section').forEach(x => x.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
