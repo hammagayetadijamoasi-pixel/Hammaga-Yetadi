@@ -174,7 +174,7 @@
                 <p>Kreativ dizayn maslahatchisi.</p>
                 
                 <div class="chat-box" id="chatBox">
-                    <div class="msg bot">Assalomu alaykum! Men Yaxshi AI man. Dizayn va Canva bo'yicha savolingiz bormi?</div>
+                    <div class="msg bot">👋 Salom! Men Yaxshi AIman.<br>Canva, dizayn yoki ilovani ishlatish bo'yicha savolingiz bormi? Bemalol so'rang! 😊</div>
                 </div>
                 
                 <div class="typing" id="typingIndicator" style="display:none; margin-bottom:10px; font-size:12px; color:var(--text-gray);">
@@ -195,7 +195,8 @@
                     <div class="admin-name">Yaxshi Bola</div>
                     <div class="admin-user">@yaxshidizayner</div>
                 </div>
-                <p>Savollar va takliflar uchun.</p>
+                <p>Savollar yoki takliflar uchun adminga murojaat qiling.</p>
+                
                 <button class="btn secondary" onclick="tg.openTelegramLink('https://t.me/yaxshidizayner')">
                     <span><i class="fas fa-comment-dots"></i> Admin bilan yozishish</span>
                     <i class="fas fa-chevron-right"></i>
@@ -287,7 +288,7 @@
             });
         }
 
-        // --- AI CHAT LOGIC (PROFESSIONAL & REDIRECT) ---
+        // --- AI CHAT LOGIC (SMART & FRIENDLY) ---
         async function sendMessage() {
             const input = document.getElementById('chatInput');
             const txt = input.value.trim();
@@ -301,18 +302,18 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // PROFESSIONAL PROMPT
+                // DO'STONA VA TUSHUNTIRUVCHI PROMPT
                 const systemPrompt = `
-                    Siz "Yaxshi AI" ismli professional grafik dizayn va Canva ekspertisiz.
+                    Siz "Yaxshi AI" ismli do'stona va aqlli yordamchisiz.
                     
-                    QAT'IY QOIDALAR:
-                    1. Ohang: Jiddiy, rasmiy va professional bo'ling.
-                    2. Javoblar: Qisqa, lo'nda va faqat faktlarga asoslangan bo'lsin.
-                    3. Mavzu: Faqat Dizayn, Canva, SMM, Ranglar va Tipografiya haqida gapiring.
-                    4. Agar savol dizaynga aloqasiz bo'lsa yoki javobni bilmasangiz, faqat shuni yozing: REDIRECT_TO_ADMIN
+                    QOIDALAR:
+                    1. Suhbat uslubi: Muloyim, samimiy va biroz hazilkash (emojilar bilan). Oddiy suhbatga ("Salom", "Qalaysiz") xushmuomala javob bering.
+                    2. Ilova haqida: Agar "Qanday pro olaman?", "Link qani?" deb so'rasa, "Asosiy bo'limga o'tib, kanallarga a'zo bo'ling va email yozing" deb tushuntiring.
+                    3. Ekspertiza: Canva va Dizayn bo'yicha har qanday savolga aniq va foydali javob bering.
+                    4. Chegara: Agar savolga umuman javobingiz bo'lmasa yoki juda murakkab bo'lsa, yolg'on gapirmang. "Uzr, bu biroz qiyin ekan, lekin Adminimiz aniq biladi!" deb ayting va oxirida aniq qilib "REDIRECT_TO_ADMIN" so'zini qo'shing.
                     5. Til: O'zbek tili.
                     
-                    Savol: 
+                    Foydalanuvchi savoli: 
                 `;
 
                 const url = 'https://text.pollinations.ai/' + encodeURIComponent(systemPrompt + txt);
@@ -325,9 +326,10 @@
 
                 // Javobni tekshirish
                 if (aiText.includes("REDIRECT_TO_ADMIN")) {
+                    const cleanText = aiText.replace("REDIRECT_TO_ADMIN", ""); // Kodni o'chiramiz
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'msg bot';
-                    errorDiv.innerHTML = `⚠️ Bu savol mening vakolatimdan tashqarida. Iltimos, administratorga murojaat qiling.<br>
+                    errorDiv.innerHTML = `${cleanText}<br>
                     <button class="btn secondary" style="margin-top:8px; font-size:12px; padding:8px;" onclick="tg.openTelegramLink('https://t.me/yaxshidizayner')">
                         <i class="fas fa-user-shield"></i> Adminga yozish
                     </button>`;
