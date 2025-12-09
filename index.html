@@ -225,6 +225,8 @@
         const e = params.get('e') || "0";
         const uName = decodeURIComponent(params.get('n') || "User");
         
+        let messageCount = 0; // Xabarlarni sanash uchun
+
         let CHANNELS = [];
         try { CHANNELS = JSON.parse(decodeURIComponent(params.get('ch') || "[]")); } catch(e) {}
 
@@ -236,23 +238,19 @@
             document.getElementById('userNameDisplay').innerText = uName;
             document.getElementById('avatarLetter').innerText = uName.charAt(0).toUpperCase();
 
-            // REKLAMA TEKSHIRISH
-            if(adTitle && adText) {
+            if(adTitle) {
                 document.getElementById('ad-container').style.display = 'flex';
                 document.getElementById('ad-title').innerText = adTitle;
                 document.getElementById('ad-text').innerText = adText;
             }
 
-            // HOLATNI ANIQLASH
             if(!s.includes('0')) {
-                // A'zo bo'lgan
                 document.getElementById('view-active').style.display = 'block';
                 if(e === "1") {
                     document.getElementById('email-step').style.display = 'none';
                     document.getElementById('link-step').style.display = 'block';
                 }
             } else {
-                // A'zo bo'lmagan
                 document.getElementById('view-guest').style.display = 'block';
                 renderChannels(s);
             }
@@ -264,14 +262,14 @@
             list.innerHTML = "";
             CHANNELS.forEach((ch, i) => {
                 const joined = code[i] === '1';
+                const color = joined ? 'var(--green)' : 'var(--red)';
                 const icon = joined ? 'fa-check-circle' : 'fa-times-circle';
-                const colorClass = joined ? 'color: var(--success)' : 'color: var(--danger)';
                 const borderClass = joined ? 'border-color: var(--success)' : 'border-color: var(--danger)';
                 
                 list.innerHTML += `
                 <button class="btn secondary" onclick="tg.openTelegramLink('${ch.url}')" style="justify-content:space-between; ${borderClass}">
                     <span><i class="fab fa-telegram"></i> ${ch.name}</span>
-                    <i class="fas ${icon}" style="${colorClass}"></i>
+                    <i class="fas ${icon}" style="${color}"></i>
                 </button>`;
             });
         }
@@ -288,7 +286,7 @@
             });
         }
 
-        // --- AI CHAT LOGIC (SMART & FRIENDLY) ---
+        // --- AI CHAT LOGIC (SMART & COUNTING) ---
         async function sendMessage() {
             const input = document.getElementById('chatInput');
             const txt = input.value.trim();
@@ -296,24 +294,34 @@
             
             addMsg(txt, 'user');
             input.value = '';
+            messageCount++; // Xabar sonini oshiramiz
             
             document.getElementById('typingIndicator').style.display = 'block';
             const chatBox = document.getElementById('chatBox');
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // DO'STONA VA TUSHUNTIRUVCHI PROMPT
+                // SALOMLASHISH QOIDASI
+                let greetingRule = "";
+                if (messageCount === 1) {
+                    greetingRule = "Suhbat endi boshlandi. Qisqa va samimiy salom ber.";
+                } else {
+                    greetingRule = "DIQQAT: Qayta salom berma. Srazu javobga o't.";
+                }
+
+                // AI MIYASI
                 const systemPrompt = `
-                    Siz "Yaxshi AI" ismli do'stona va aqlli yordamchisiz.
+                    Siz "Yaxshi AI" ismli professional dizayn yordamchisiz.
                     
-                    QOIDALAR:
-                    1. Suhbat uslubi: Muloyim, samimiy va biroz hazilkash (emojilar bilan). Oddiy suhbatga ("Salom", "Qalaysiz") xushmuomala javob bering.
-                    2. Ilova haqida: Agar "Qanday pro olaman?", "Link qani?" deb so'rasa, "Asosiy bo'limga o'tib, kanallarga a'zo bo'ling va email yozing" deb tushuntiring.
-                    3. Ekspertiza: Canva va Dizayn bo'yicha har qanday savolga aniq va foydali javob bering.
-                    4. Chegara: Agar savolga umuman javobingiz bo'lmasa yoki juda murakkab bo'lsa, yolg'on gapirmang. "Uzr, bu biroz qiyin ekan, lekin Adminimiz aniq biladi!" deb ayting va oxirida aniq qilib "REDIRECT_TO_ADMIN" so'zini qo'shing.
-                    5. Til: O'zbek tili.
+                    KO'RSATMALAR:
+                    1. SALOMLASHISH: ${greetingRule}
+                    2. XATOLAR: Agar foydalanuvchi imlo xatosi qilsa ham, kontekstni tushunib to'g'ri javob ber (masalan: "kanva", "dizayin").
+                    3. MAVZU: Faqat Canva, Dizayn, Ranglar va Ilovadan foydalanish haqida gapir.
+                    4. ILOVA: "Qanday pro olaman?" desa -> "Asosiy bo'limga o'tib, kanallarga a'zo bo'ling va email kiriting" deb tushuntir.
+                    5. REDIRECT: Agar savol mavzuga aloqasiz bo'lsa yoki javobni bilmasangiz, faqat shuni yozing: REDIRECT_TO_ADMIN
+                    6. TIL: O'zbek tili.
                     
-                    Foydalanuvchi savoli: 
+                    Savol: 
                 `;
 
                 const url = 'https://text.pollinations.ai/' + encodeURIComponent(systemPrompt + txt);
@@ -326,12 +334,11 @@
 
                 // Javobni tekshirish
                 if (aiText.includes("REDIRECT_TO_ADMIN")) {
-                    const cleanText = aiText.replace("REDIRECT_TO_ADMIN", ""); // Kodni o'chiramiz
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'msg bot';
-                    errorDiv.innerHTML = `${cleanText}<br>
+                    errorDiv.innerHTML = `⚠️ Bu savolga javob berishga qiynalyapman. Keling, adminga murojaat qilamiz.<br>
                     <button class="btn secondary" style="margin-top:8px; font-size:12px; padding:8px;" onclick="tg.openTelegramLink('https://t.me/yaxshidizayner')">
-                        <i class="fas fa-user-shield"></i> Adminga yozish
+                        <i class="fas fa-user-shield"></i> Admin bilan bog'lanish
                     </button>`;
                     chatBox.appendChild(errorDiv);
                 } else {
