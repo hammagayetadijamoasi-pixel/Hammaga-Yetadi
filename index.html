@@ -9,28 +9,17 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
-        :root { --primary: #7C4DFF; --secondary: #00E5FF; --dark: #090919; --glass: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.1); --text-gray: #aab2c8; --red: #ff4b4b; --green: #00ff88; }
+        :root { --primary: #7C4DFF; --secondary: #00E5FF; --dark: #090919; --glass: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.1); --text-gray: #aab2c8; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; }
         body { margin: 0; background: var(--dark); color: white; font-family: 'Segoe UI', Roboto, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         .orb { position: fixed; border-radius: 50%; filter: blur(90px); z-index: -1; opacity: 0.3; }
         .orb-1 { width: 300px; height: 300px; background: var(--primary); top: -10%; left: -10%; animation: float 10s infinite alternate; }
         .orb-2 { width: 250px; height: 250px; background: var(--secondary); bottom: -10%; right: -10%; animation: float 12s infinite alternate-reverse; }
+        @keyframes float { from {transform: translate(0,0);} to {transform: translate(30px, 50px);} }
         .main-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 90px; }
-        
-        .ad-banner { display: none; flex-direction: column; gap: 8px; background: linear-gradient(135deg, rgba(20,20,40,0.95), rgba(40,40,70,0.95)); border-left: 4px solid var(--secondary); border-radius: 12px; padding: 16px; margin-bottom: 25px; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
-        .ad-badge { background: var(--secondary); color: #000; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; display: inline-block; }
-        .ad-title { font-size: 16px; font-weight: 700; color: white; margin-top: 5px; }
-        .ad-text { font-size: 13px; color: var(--text-gray); }
-        
-        .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
-        .brand { font-size: 22px; font-weight: 800; }
-        .user-badge { display: flex; align-items: center; gap: 8px; background: var(--glass); padding: 4px 12px 4px 4px; border-radius: 30px; border: 1px solid var(--glass-border); }
-        .user-avatar { width: 30px; height: 30px; background: linear-gradient(45deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
         
         .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; margin-bottom: 15px; backdrop-filter: blur(15px); }
         h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
-        p { font-size: 14px; color: var(--text-gray); line-height: 1.5; margin-bottom: 15px; }
-        
         .btn { width: 100%; padding: 14px; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; color: white; cursor: pointer; background: linear-gradient(90deg, var(--primary), #536DFE); display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;}
         .btn:active { transform: scale(0.96); }
         .btn.secondary { background: rgba(255,255,255,0.05); box-shadow: none; border: 1px solid var(--glass-border); justify-content: space-between; padding: 12px 16px; }
@@ -48,7 +37,6 @@
         .nav-item span { font-size: 10px; font-weight: 600; }
         .nav-item.active { color: var(--secondary); transform: translateY(-3px); }
         
-        input[type="email"] { width: 100%; padding: 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white; margin-bottom: 12px; }
         .section { display: none; animation: fade 0.3s; }
         .section.active { display: block; }
         @keyframes fade { from {opacity: 0; transform: translateY(5px);} to {opacity: 1; transform: translateY(0);} }
@@ -59,6 +47,8 @@
         .cat-card:hover { border-color: var(--secondary); background: rgba(255,255,255,0.1); }
         .cat-icon { font-size: 24px; color: var(--secondary); margin-bottom: 8px; }
         .cat-name { font-size: 13px; font-weight: bold; }
+        
+        input[type="email"] { width: 100%; padding: 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white; margin-bottom: 12px; }
     </style>
 </head>
 <body>
@@ -80,11 +70,6 @@
             </div>
 
             <div id="main-content-area" style="display: none;">
-                <div id="ad-container" class="ad-banner" onclick="openAdLink()">
-                    <div class="ad-badge">TAVSIYA</div>
-                    <div class="ad-title" id="ad-title"></div>
-                    <div class="ad-text" id="ad-text"></div>
-                </div>
                 <div class="card">
                     <h2><i class="fas fa-crown" style="color:#FFD700"></i> Pro Panel</h2>
                     <p>Barcha imkoniyatlar siz uchun ochiq.</p>
@@ -96,7 +81,7 @@
         <div id="tab-ai" class="section">
             <div class="card">
                 <h2><i class="fas fa-brain" style="color:var(--secondary)"></i> Yaxshi AI</h2>
-                <div class="chat-box" id="chatBox"><div class="msg bot">👋 Salom! Nima yordam bera olaman?</div></div>
+                <div class="chat-box" id="chatBox"><div class="msg bot">👋 Salom!</div></div>
                 <div class="typing" id="typingIndicator" style="display:none; font-size:12px; margin-bottom:10px;">Yozmoqda...</div>
                 <div class="chat-input-wrapper">
                     <input type="text" class="chat-input" id="chatInput" placeholder="Savol yozing..." onkeypress="if(event.key==='Enter') sendMessage()">
@@ -111,21 +96,17 @@
                     <h2><i class="fas fa-book" style="color:var(--secondary)"></i> Bilimlar</h2>
                     <button id="backToCat" class="btn secondary" style="width: auto; padding: 5px 10px; display: none;" onclick="renderCategories()"><i class="fas fa-arrow-left"></i></button>
                 </div>
-                
                 <div id="categories-view" class="category-grid"></div>
                 <div id="resources-list" style="display: none;"></div>
             </div>
         </div>
-
+        
         <div id="tab-admin" class="section">
             <div class="card">
-                <div class="admin-profile">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="admin-img" style="width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 10px; display: block;">
-                    <div style="text-align:center; font-weight:bold;">Yaxshi Bola</div>
-                </div>
-                <button class="btn secondary" onclick="tg.openTelegramLink('https://t.me/yaxshidizayner')"><span><i class="fas fa-comment-dots"></i> Admin bilan yozishish</span></button>
-                <div style="margin-top:20px; font-size:12px; color:var(--text-gray);">KANALLARIMIZ:</div>
-                <div id="static-channels-list" style="margin-top: 10px;"></div>
+                 <h2>Admin</h2>
+                 <p>Savollar uchun:</p>
+                 <button class="btn secondary" onclick="tg.openTelegramLink('https://t.me/yaxshidizayner')">Admin bilan bog'lanish</button>
+                 <div id="static-channels-list" style="margin-top: 15px;"></div>
             </div>
         </div>
     </div>
@@ -146,9 +127,6 @@
         let CHANNELS = [], RESOURCES = [];
         try { CHANNELS = JSON.parse(decodeURIComponent(params.get('ch') || "[]")); } catch(e) {}
         try { RESOURCES = JSON.parse(decodeURIComponent(params.get('rs') || "[]")); } catch(e) {}
-        const adTitle = decodeURIComponent(params.get('at') || "");
-        const adText = decodeURIComponent(params.get('ax') || "");
-        const adLink = decodeURIComponent(params.get('al') || "");
 
         window.onload = () => {
             document.getElementById('avatarLetter').innerText = uName.charAt(0).toUpperCase();
@@ -158,13 +136,8 @@
                 document.getElementById('main-content-area').style.display = 'block';
                 document.getElementById('main-navbar').style.display = 'flex';
             }
-            if(adTitle) {
-                document.getElementById('ad-container').style.display = 'flex';
-                document.getElementById('ad-title').innerText = adTitle;
-                document.getElementById('ad-text').innerText = adText;
-            }
             renderStaticChannels();
-            renderCategories(); // Kategoriyalarni chizish
+            renderCategories();
         };
 
         function renderStaticChannels() {
@@ -172,7 +145,6 @@
             CHANNELS.forEach(ch => { list.innerHTML += `<button class="btn secondary" style="margin-top:5px" onclick="tg.openTelegramLink('${ch.url}')"><span><i class="fab fa-telegram"></i> ${ch.name}</span></button>`; });
         }
 
-        // --- KATEGORIYA MANTIQI ---
         function renderCategories() {
             const catView = document.getElementById('categories-view');
             const resView = document.getElementById('resources-list');
@@ -183,20 +155,15 @@
             backBtn.style.display = 'none';
             catView.innerHTML = "";
 
-            // Unikal kategoriyalarni yig'ish
-            const cats = [...new Set(RESOURCES.map(r => r.category || "Umumiy"))];
+            // Unique kategoriyalarni olamiz
+            const cats = [...new Set(RESOURCES.map(r => r.category))];
             
-            if(cats.length === 0) { catView.innerHTML = "<p>Ma'lumot yo'q.</p>"; return; }
+            if(cats.length === 0) { catView.innerHTML = "<p>Bo'limlar yo'q.</p>"; return; }
 
             cats.forEach(c => {
-                let icon = "📂";
-                if(c.toLowerCase().includes("shrift")) icon = "🔤";
-                if(c.toLowerCase().includes("rang")) icon = "🎨";
-                if(c.toLowerCase().includes("dars")) icon = "🎓";
-
                 catView.innerHTML += `
                 <div class="cat-card" onclick="openCategory('${c}')">
-                    <div class="cat-icon">${icon}</div>
+                    <div class="cat-icon">📂</div>
                     <div class="cat-name">${c}</div>
                 </div>`;
             });
@@ -212,13 +179,13 @@
             backBtn.style.display = 'block';
             resView.innerHTML = `<h3 style="margin:0 0 10px 0; font-size:14px; color:var(--secondary)">${catName}</h3>`;
 
-            const filtered = RESOURCES.filter(r => (r.category || "Umumiy") === catName);
+            const filtered = RESOURCES.filter(r => r.category === catName);
             filtered.forEach(r => {
                 resView.innerHTML += `<button class="btn secondary" onclick="tg.sendData('get_resource:'+'${r.id}');tg.close()"><span><i class="fas fa-file"></i> ${r.name}</span><i class="fas fa-download"></i></button>`;
             });
         }
 
-        // --- AI CHAT (Siz istagan mukammal versiya) ---
+        // AI Chat
         let msgCount = 0;
         async function sendMessage() {
             const input = document.getElementById('chatInput');
@@ -261,7 +228,6 @@
             tg.sendData(val);
         }
         function openPro() { if(PRO_LINK) tg.openLink(PRO_LINK); else tg.showPopup({message:"Link yo'q."}); }
-        function openAdLink() { if(adLink) tg.openTelegramLink(adLink); }
         function goTab(t, el) {
             document.querySelectorAll('.section').forEach(x => x.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
