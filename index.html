@@ -17,29 +17,24 @@
         .orb-2 { width: 250px; height: 250px; background: var(--secondary); bottom: -10%; right: -10%; animation: float 12s infinite alternate-reverse; }
         @keyframes float { from {transform: translate(0,0);} to {transform: translate(30px, 50px);} }
         .main-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 90px; }
-        
         .ad-banner { display: none; flex-direction: column; gap: 8px; background: linear-gradient(135deg, rgba(20,20,40,0.95), rgba(40,40,70,0.95)); border-left: 4px solid var(--secondary); border-radius: 12px; padding: 16px; margin-bottom: 25px; cursor: pointer; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
         .ad-banner:active { transform: scale(0.98); }
         .ad-top { display: flex; justify-content: space-between; align-items: center; }
         .ad-badge { background: var(--secondary); color: #000; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; }
         .ad-title { font-size: 16px; font-weight: 700; color: white; margin-top: 5px; }
         .ad-text { font-size: 13px; color: var(--text-gray); line-height: 1.4; }
-        
         .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
         .brand { font-size: 22px; font-weight: 800; }
         .user-badge { display: flex; align-items: center; gap: 8px; background: var(--glass); padding: 4px 12px 4px 4px; border-radius: 30px; border: 1px solid var(--glass-border); }
         .user-avatar { width: 30px; height: 30px; background: linear-gradient(45deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
         .user-info { font-size: 12px; font-weight: bold; }
-        
         .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; margin-bottom: 15px; backdrop-filter: blur(15px); }
         h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
         p { font-size: 14px; color: var(--text-gray); line-height: 1.5; margin-bottom: 15px; }
-        
         .btn { width: 100%; padding: 14px; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; color: white; cursor: pointer; background: linear-gradient(90deg, var(--primary), #536DFE); display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.1s;}
         .btn:active { transform: scale(0.96); }
         .btn.secondary { background: rgba(255,255,255,0.05); box-shadow: none; border: 1px solid var(--glass-border); justify-content: space-between; padding: 12px 16px; margin-bottom: 8px; }
         .btn.secondary span { display: flex; align-items: center; gap: 10px; }
-        
         .chat-box { height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
         .msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; word-wrap: break-word; }
         .msg.bot { align-self: flex-start; background: rgba(255,255,255,0.08); border-bottom-left-radius: 4px; user-select: text !important; -webkit-user-select: text !important;}
@@ -48,12 +43,10 @@
         .chat-input-wrapper { display: flex; gap: 10px; }
         .chat-input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 14px; border-radius: 14px; color: white; user-select: text !important; }
         .chat-btn { width: 50px; height: 50px; border-radius: 14px; border: none; background: var(--secondary); color: #000; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        
         .navbar { position: fixed; bottom: 20px; left: 20px; right: 20px; height: 65px; background: rgba(18, 18, 28, 0.95); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid var(--glass-border); display: flex; justify-content: space-around; align-items: center; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .nav-item { color: rgba(255,255,255,0.4); font-size: 22px; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-item span { font-size: 10px; font-weight: 600; }
         .nav-item.active { color: var(--secondary); transform: translateY(-3px); }
-        
         input[type="email"] { width: 100%; padding: 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white; margin-bottom: 12px; user-select: text !important;}
         .admin-profile { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
         .admin-img { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--secondary); margin-bottom: 10px; }
@@ -71,10 +64,7 @@
     <div class="main-content">
         <div class="app-header">
             <div class="brand">Yaxshi <span style="color:var(--secondary)">AI</span></div>
-            <div class="user-badge">
-                <div class="user-avatar" id="avatarLetter">U</div>
-                <div class="user-info"><strong id="userNameDisplay">User</strong></div>
-            </div>
+            <div class="user-badge"><div class="user-avatar" id="avatarLetter">U</div><div class="user-info"><strong id="userNameDisplay">User</strong></div></div>
         </div>
 
         <div id="tab-home" class="section active">
@@ -84,23 +74,14 @@
                 <div class="ad-text" id="ad-text"></div>
             </div>
 
-            <div id="view-guest" style="display: none;">
-                <div class="card" style="border-color: var(--red);">
-                    <h2 style="color: var(--red);"><i class="fas fa-lock"></i> Kirish Yopiq</h2>
-                    <p>Botdan foydalanish uchun quyidagi kanallarga a'zo bo'ling:</p>
-                    <div id="channels-list"></div>
-                    <button class="btn" onclick="checkSub()" style="margin-top:20px; background: #2A2A3D;"><i class="fas fa-sync-alt"></i> Tekshirish</button>
-                </div>
-            </div>
-
-            <div id="view-active" style="display: none;">
+            <div id="view-active">
                 <div class="card" style="background: linear-gradient(135deg, rgba(124, 77, 255, 0.15), rgba(0, 229, 255, 0.15)); border: 1px solid rgba(255,255,255,0.1);">
                     <h2><i class="fas fa-crown" style="color:#FFD700"></i> Pro Panel</h2>
                     <p>Sizda barcha imkoniyatlar ochiq.</p>
                 </div>
                 <div id="email-step" class="card">
                     <h2><i class="fas fa-envelope"></i> Faollashtirish</h2>
-                    <p>Pro uchun emailingizni tasdiqlang:</p>
+                    <p>Pro versiya uchun emailingizni tasdiqlang:</p>
                     <input type="email" id="emailInput" placeholder="name@example.com">
                     <button class="btn" onclick="submitEmail()"><i class="fas fa-paper-plane"></i> Linkni Olish</button>
                 </div>
@@ -116,9 +97,7 @@
             <div class="card">
                 <h2><i class="fas fa-brain" style="color:var(--secondary)"></i> Yaxshi AI</h2>
                 <div class="chat-box" id="chatBox"><div class="msg bot">👋 Salom! Men Yaxshi AI man. Savolingizni bering.</div></div>
-                <div class="typing" id="typingIndicator" style="display:none; margin-bottom:10px; font-size:12px; color:var(--text-gray);">
-                    <i class="fas fa-pen-nib"></i> Yozmoqda...
-                </div>
+                <div class="typing" id="typingIndicator" style="display:none; margin-bottom:10px; font-size:12px; color:var(--text-gray);"><i class="fas fa-pen-nib"></i> Yozmoqda...</div>
                 <div class="chat-input-wrapper">
                     <input type="text" class="chat-input" id="chatInput" placeholder="Savol yozing..." onkeypress="handleEnter(event)">
                     <button class="chat-btn" onclick="sendMessage()"><i class="fas fa-arrow-up"></i></button>
@@ -129,7 +108,7 @@
         <div id="tab-kb" class="section">
             <div class="card">
                 <h2><i class="fas fa-book" style="color:var(--secondary)"></i> Bilimlar Bazasi</h2>
-                <p>Foydali materiallar, darsliklar va resurslar:</p>
+                <p>Foydali materiallar va darsliklar:</p>
                 <div id="resources-list"></div>
             </div>
         </div>
@@ -143,8 +122,6 @@
                 </div>
                 <p style="text-align:center">Savollar uchun:</p>
                 <button class="btn secondary" onclick="tg.openTelegramLink('https://t.me/yaxshidizayner')"><span><i class="fas fa-comment-dots"></i> Admin bilan yozishish</span><i class="fas fa-chevron-right"></i></button>
-                <div style="margin-top:20px; font-size:12px; color:var(--text-gray); text-align:left;">KANALLARIMIZ:</div>
-                <div id="static-channels-list" style="margin-top: 10px;"></div>
             </div>
         </div>
     </div>
@@ -161,14 +138,11 @@
         tg.expand();
 
         const params = new URLSearchParams(window.location.search);
-        const s = params.get('s') || "00";
         const e = params.get('e') || "0";
         const uName = decodeURIComponent(params.get('n') || "User");
         let PRO_LINK = decodeURIComponent(params.get('cl') || ""); 
         
-        let CHANNELS = [];
         let RESOURCES = [];
-        try { CHANNELS = JSON.parse(decodeURIComponent(params.get('ch') || "[]")); } catch(e) {}
         try { RESOURCES = JSON.parse(decodeURIComponent(params.get('rs') || "[]")); } catch(e) {}
 
         const adTitle = decodeURIComponent(params.get('at') || "");
@@ -179,61 +153,30 @@
         window.onload = () => {
             document.getElementById('userNameDisplay').innerText = uName;
             document.getElementById('avatarLetter').innerText = uName.charAt(0).toUpperCase();
+
             if(adTitle) {
                 document.getElementById('ad-container').style.display = 'flex';
                 document.getElementById('ad-title').innerText = adTitle;
                 document.getElementById('ad-text').innerText = adText;
             }
-            if(!s.includes('0')) {
-                document.getElementById('view-active').style.display = 'block';
-                if(e === "1") {
-                    document.getElementById('email-step').style.display = 'none';
-                    document.getElementById('link-step').style.display = 'block';
-                }
-            } else {
-                document.getElementById('view-guest').style.display = 'block';
-                renderChannels(s);
+
+            if(e === "1") {
+                document.getElementById('email-step').style.display = 'none';
+                document.getElementById('link-step').style.display = 'block';
             }
-            renderStaticChannels();
             renderResources();
         };
 
-        function renderChannels(code) {
-            const list = document.getElementById('channels-list');
-            list.innerHTML = "";
-            CHANNELS.forEach((ch, i) => {
-                const joined = code[i] === '1';
-                const color = joined ? 'var(--green)' : 'var(--red)';
-                const icon = joined ? 'fa-check-circle' : 'fa-times-circle';
-                list.innerHTML += `<button class="btn secondary" onclick="tg.openTelegramLink('${ch.url}')" style="justify-content:space-between; ${joined?'border-color:var(--green)':'border-color:var(--red)'}"><span><i class="fab fa-telegram"></i> ${ch.name}</span><i class="fas ${icon}" style="color:${color}; font-size:18px;"></i></button>`;
-            });
-        }
-
-        function renderStaticChannels() {
-            const list = document.getElementById('static-channels-list');
-            list.innerHTML = "";
-            CHANNELS.forEach(ch => {
-                list.innerHTML += `<button class="btn secondary" style="margin-top:5px" onclick="tg.openTelegramLink('${ch.url}')"><span><i class="fab fa-telegram"></i> ${ch.name}</span><i class="fas fa-chevron-right" style="opacity:0.5"></i></button>`;
-            });
-        }
-
-        // BILIMLARNI CHIZISH
         function renderResources() {
             const list = document.getElementById('resources-list');
-            if(RESOURCES.length === 0) {
-                list.innerHTML = "<p>Hozircha ma'lumot yo'q.</p>";
-                return;
-            }
+            if(RESOURCES.length === 0) { list.innerHTML = "<p style='font-size:12px; opacity:0.5'>Ma'lumot yo'q.</p>"; return; }
             list.innerHTML = "";
             RESOURCES.forEach(r => {
                 list.innerHTML += `<button class="btn secondary" onclick="openResource('${r.id}')"><span><i class="fas fa-file-alt"></i> ${r.name}</span><i class="fas fa-download"></i></button>`;
             });
         }
 
-        function openResource(id) {
-            tg.sendData('get_resource:' + id);
-            tg.close();
-        }
+        function openResource(id) { tg.sendData('get_resource:' + id); tg.close(); }
 
         async function sendMessage() {
             const input = document.getElementById('chatInput');
@@ -257,7 +200,7 @@
                 if (aiText.includes("REDIRECT_TO_ADMIN")) {
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'msg bot';
-                    errorDiv.innerHTML = `⚠️ Bu savolga javob bera olmadim. Adminga yozing.<br><button class="btn secondary" style="margin-top:8px; font-size:12px; padding:8px;" onclick="tg.openTelegramLink('https://t.me/yaxshidizayner')"><i class="fas fa-user-shield"></i> Admin bilan bog'lanish</button>`;
+                    errorDiv.innerHTML = `⚠️ Bu savolga javob berishga qiynalyapman. Keling, adminga murojaat qilamiz.<br><button class="btn secondary" style="margin-top:8px; font-size:12px; padding:8px;" onclick="tg.openTelegramLink('https://t.me/yaxshidizayner')"><i class="fas fa-user-shield"></i> Admin bilan bog'lanish</button>`;
                     chatBox.appendChild(errorDiv);
                 } else {
                     addMsg(aiText, 'bot');
