@@ -7,7 +7,6 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
     <style>
         :root { --primary: #7C4DFF; --secondary: #00E5FF; --dark: #090919; --glass: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.1); --text-gray: #aab2c8; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; }
@@ -18,6 +17,11 @@
         @keyframes float { from {transform: translate(0,0);} to {transform: translate(30px, 50px);} }
         .main-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 90px; }
         
+        .ad-banner { display: none; flex-direction: column; gap: 8px; background: linear-gradient(135deg, rgba(20,20,40,0.95), rgba(40,40,70,0.95)); border-left: 4px solid var(--secondary); border-radius: 12px; padding: 16px; margin-bottom: 25px; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .ad-badge { background: var(--secondary); color: #000; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; display: inline-block; }
+        .ad-title { font-size: 16px; font-weight: 700; color: white; margin-top: 5px; }
+        .ad-text { font-size: 13px; color: var(--text-gray); }
+
         .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; margin-bottom: 15px; backdrop-filter: blur(15px); }
         h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
         .btn { width: 100%; padding: 14px; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; color: white; cursor: pointer; background: linear-gradient(90deg, var(--primary), #536DFE); display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;}
@@ -41,20 +45,17 @@
         .section.active { display: block; }
         @keyframes fade { from {opacity: 0; transform: translateY(5px);} to {opacity: 1; transform: translateY(0);} }
         
-        /* CATEGORY STYLE */
         .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .cat-card { background: rgba(255,255,255,0.08); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
         .cat-card:hover { border-color: var(--secondary); background: rgba(255,255,255,0.1); }
         .cat-icon { font-size: 24px; color: var(--secondary); margin-bottom: 8px; }
         .cat-name { font-size: 13px; font-weight: bold; }
-        
         input[type="email"] { width: 100%; padding: 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white; margin-bottom: 12px; }
     </style>
 </head>
 <body>
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
-
     <div class="main-content">
         <div class="app-header">
             <div class="brand">Yaxshi <span style="color:var(--secondary)">AI</span></div>
@@ -68,8 +69,12 @@
                 <input type="email" id="emailInput" placeholder="name@example.com">
                 <button class="btn" onclick="submitEmail()"><i class="fas fa-paper-plane"></i> Tasdiqlash</button>
             </div>
-
             <div id="main-content-area" style="display: none;">
+                <div id="ad-container" class="ad-banner" onclick="openAdLink()">
+                    <div class="ad-badge">TAVSIYA</div>
+                    <div class="ad-title" id="ad-title"></div>
+                    <div class="ad-text" id="ad-text"></div>
+                </div>
                 <div class="card">
                     <h2><i class="fas fa-crown" style="color:#FFD700"></i> Pro Panel</h2>
                     <p>Barcha imkoniyatlar siz uchun ochiq.</p>
@@ -110,7 +115,6 @@
             </div>
         </div>
     </div>
-
     <div class="navbar" id="main-navbar" style="display: none;">
         <div class="nav-item active" onclick="goTab('home', this)"><i class="fas fa-home"></i> <span>Asosiy</span></div>
         <div class="nav-item" onclick="goTab('ai', this)"><i class="fas fa-sparkles"></i> <span>AI Chat</span></div>
@@ -127,6 +131,11 @@
         let CHANNELS = [], RESOURCES = [];
         try { CHANNELS = JSON.parse(decodeURIComponent(params.get('ch') || "[]")); } catch(e) {}
         try { RESOURCES = JSON.parse(decodeURIComponent(params.get('rs') || "[]")); } catch(e) {}
+        
+        // Reklamani to'g'ri olish
+        const adTitle = decodeURIComponent(params.get('at') || "");
+        const adText = decodeURIComponent(params.get('ax') || "");
+        const adLink = decodeURIComponent(params.get('al') || "");
 
         window.onload = () => {
             document.getElementById('avatarLetter').innerText = uName.charAt(0).toUpperCase();
@@ -135,6 +144,12 @@
             } else {
                 document.getElementById('main-content-area').style.display = 'block';
                 document.getElementById('main-navbar').style.display = 'flex';
+            }
+            // Reklama tekshiruvi
+            if(adTitle && adTitle !== "null" && adTitle.length > 1) {
+                document.getElementById('ad-container').style.display = 'flex';
+                document.getElementById('ad-title').innerText = adTitle;
+                document.getElementById('ad-text').innerText = adText;
             }
             renderStaticChannels();
             renderCategories();
@@ -149,17 +164,12 @@
             const catView = document.getElementById('categories-view');
             const resView = document.getElementById('resources-list');
             const backBtn = document.getElementById('backToCat');
-            
             catView.style.display = 'grid';
             resView.style.display = 'none';
             backBtn.style.display = 'none';
             catView.innerHTML = "";
-
-            // Unique kategoriyalarni olamiz
             const cats = [...new Set(RESOURCES.map(r => r.category))];
-            
             if(cats.length === 0) { catView.innerHTML = "<p>Bo'limlar yo'q.</p>"; return; }
-
             cats.forEach(c => {
                 catView.innerHTML += `
                 <div class="cat-card" onclick="openCategory('${c}')">
@@ -173,19 +183,16 @@
             const catView = document.getElementById('categories-view');
             const resView = document.getElementById('resources-list');
             const backBtn = document.getElementById('backToCat');
-
             catView.style.display = 'none';
             resView.style.display = 'block';
             backBtn.style.display = 'block';
             resView.innerHTML = `<h3 style="margin:0 0 10px 0; font-size:14px; color:var(--secondary)">${catName}</h3>`;
-
             const filtered = RESOURCES.filter(r => r.category === catName);
             filtered.forEach(r => {
                 resView.innerHTML += `<button class="btn secondary" onclick="tg.sendData('get_resource:'+'${r.id}');tg.close()"><span><i class="fas fa-file"></i> ${r.name}</span><i class="fas fa-download"></i></button>`;
             });
         }
-
-        // AI Chat
+        
         let msgCount = 0;
         async function sendMessage() {
             const input = document.getElementById('chatInput');
@@ -197,7 +204,6 @@
             document.getElementById('typingIndicator').style.display = 'block';
             const box = document.getElementById('chatBox');
             box.scrollTop = box.scrollHeight;
-
             try {
                 let rule = msgCount === 1 ? "Salomlash." : "Salomlashma.";
                 const prompt = `Siz "Yaxshi AI"siz. 1. ${rule} 2. Professional bo'l. 3. O'zbek tili. Savol: ${txt}`;
@@ -228,6 +234,7 @@
             tg.sendData(val);
         }
         function openPro() { if(PRO_LINK) tg.openLink(PRO_LINK); else tg.showPopup({message:"Link yo'q."}); }
+        function openAdLink() { if(adLink && adLink.length > 5) tg.openTelegramLink(adLink); }
         function goTab(t, el) {
             document.querySelectorAll('.section').forEach(x => x.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
