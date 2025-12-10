@@ -14,17 +14,16 @@
         body { margin: 0; background: var(--dark); color: white; font-family: 'Segoe UI', Roboto, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         .orb { position: fixed; border-radius: 50%; filter: blur(90px); z-index: -1; opacity: 0.3; }
         .orb-1 { width: 300px; height: 300px; background: var(--primary); top: -10%; left: -10%; animation: float 10s infinite alternate; }
-        .orb-2 { width: 200px; height: 200px; background: var(--secondary); bottom: -10%; right: -10%; animation: float 12s infinite alternate-reverse; }
+        .orb-2 { width: 250px; height: 250px; background: var(--secondary); bottom: -10%; right: -10%; animation: float 12s infinite alternate-reverse; }
         @keyframes float { from {transform: translate(0,0);} to {transform: translate(30px, 50px);} }
         .main-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 90px; }
         
-        .ad-banner { display: none; flex-direction: column; gap: 8px; background: linear-gradient(135deg, rgba(20,20,40,0.95), rgba(40,40,70,0.95)); border-left: 4px solid var(--secondary); border-radius: 16px; padding: 16px; margin-bottom: 25px; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.4); position: relative; }
+        .ad-banner { display: none; flex-direction: column; gap: 8px; background: linear-gradient(135deg, rgba(20,20,40,0.95), rgba(40,40,70,0.95)); border-left: 4px solid var(--secondary); border-radius: 12px; padding: 16px; margin-bottom: 25px; cursor: pointer; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
         .ad-banner:active { transform: scale(0.98); }
         .ad-top { display: flex; justify-content: space-between; align-items: center; }
         .ad-badge { background: var(--secondary); color: #000; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; }
         .ad-title { font-size: 16px; font-weight: 700; color: white; margin-top: 5px; }
         .ad-text { font-size: 13px; color: var(--text-gray); line-height: 1.4; }
-        .ad-arrow { color: var(--secondary); font-size: 14px; }
         
         .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
         .brand { font-size: 22px; font-weight: 800; }
@@ -127,6 +126,14 @@
             </div>
         </div>
 
+        <div id="tab-kb" class="section">
+            <div class="card">
+                <h2><i class="fas fa-book" style="color:var(--secondary)"></i> Bilimlar Bazasi</h2>
+                <p>Foydali materiallar, darsliklar va resurslar:</p>
+                <div id="resources-list"></div>
+            </div>
+        </div>
+
         <div id="tab-admin" class="section">
             <div class="card">
                 <div class="admin-profile">
@@ -145,6 +152,7 @@
     <div class="navbar">
         <div class="nav-item active" onclick="goTab('home', this)"><i class="fas fa-home"></i> <span>Asosiy</span></div>
         <div class="nav-item" onclick="goTab('ai', this)"><i class="fas fa-sparkles"></i> <span>AI Chat</span></div>
+        <div class="nav-item" onclick="goTab('kb', this)"><i class="fas fa-book"></i> <span>Bilimlar</span></div>
         <div class="nav-item" onclick="goTab('admin', this)"><i class="fas fa-user-astronaut"></i> <span>Admin</span></div>
     </div>
 
@@ -156,11 +164,13 @@
         const s = params.get('s') || "00";
         const e = params.get('e') || "0";
         const uName = decodeURIComponent(params.get('n') || "User");
-        // LINKNI BOTDAN QABUL QILAMIZ
         let PRO_LINK = decodeURIComponent(params.get('cl') || ""); 
         
         let CHANNELS = [];
+        let RESOURCES = [];
         try { CHANNELS = JSON.parse(decodeURIComponent(params.get('ch') || "[]")); } catch(e) {}
+        try { RESOURCES = JSON.parse(decodeURIComponent(params.get('rs') || "[]")); } catch(e) {}
+
         const adTitle = decodeURIComponent(params.get('at') || "");
         const adText = decodeURIComponent(params.get('ax') || "");
         const adLink = decodeURIComponent(params.get('al') || "");
@@ -185,6 +195,7 @@
                 renderChannels(s);
             }
             renderStaticChannels();
+            renderResources();
         };
 
         function renderChannels(code) {
@@ -204,6 +215,24 @@
             CHANNELS.forEach(ch => {
                 list.innerHTML += `<button class="btn secondary" style="margin-top:5px" onclick="tg.openTelegramLink('${ch.url}')"><span><i class="fab fa-telegram"></i> ${ch.name}</span><i class="fas fa-chevron-right" style="opacity:0.5"></i></button>`;
             });
+        }
+
+        // BILIMLARNI CHIZISH
+        function renderResources() {
+            const list = document.getElementById('resources-list');
+            if(RESOURCES.length === 0) {
+                list.innerHTML = "<p>Hozircha ma'lumot yo'q.</p>";
+                return;
+            }
+            list.innerHTML = "";
+            RESOURCES.forEach(r => {
+                list.innerHTML += `<button class="btn secondary" onclick="openResource('${r.id}')"><span><i class="fas fa-file-alt"></i> ${r.name}</span><i class="fas fa-download"></i></button>`;
+            });
+        }
+
+        function openResource(id) {
+            tg.sendData('get_resource:' + id);
+            tg.close();
         }
 
         async function sendMessage() {
@@ -256,12 +285,10 @@
             if(!val.includes('@') || val.length<5) return tg.showPopup({message:"Iltimos, to'g'ri email kiriting!"});
             tg.sendData(val);
         }
-        
         function openPro() { 
             if(PRO_LINK && PRO_LINK.length > 5) tg.openLink(PRO_LINK, {try_instant_view: false});
             else tg.showPopup({message: "Link hali qo'yilmagan."});
         }
-        
         function openAdLink() { if(adLink && adLink.length > 4) { tg.openTelegramLink(adLink); } else { tg.showPopup({message: "Havola mavjud emas."}); } }
         function goTab(t, el) {
             document.querySelectorAll('.section').forEach(x => x.classList.remove('active'));
