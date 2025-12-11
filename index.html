@@ -8,35 +8,51 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
+        /* --- DIZAYN VA HIMOYA --- */
         :root { --primary: #7C4DFF; --secondary: #00E5FF; --dark: #090919; --glass: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.1); --text-gray: #aab2c8; }
-        /* Himoya: Nusxalashni taqiqlash */
+        
+        /* HIMOYA: Matnni belgilashni taqiqlash */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; -webkit-user-select: none; }
+        
+        /* Inputlarda yozishga ruxsat berish */
+        input, textarea { user-select: text; -webkit-user-select: text; }
+
         body { margin: 0; background: var(--dark); color: white; font-family: 'Segoe UI', Roboto, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* ORQA FON EFFEKTLARI */
         .orb { position: fixed; border-radius: 50%; filter: blur(90px); z-index: -1; opacity: 0.3; }
         .orb-1 { width: 300px; height: 300px; background: var(--primary); top: -10%; left: -10%; animation: float 10s infinite alternate; }
         .orb-2 { width: 250px; height: 250px; background: var(--secondary); bottom: -10%; right: -10%; animation: float 12s infinite alternate-reverse; }
         @keyframes float { from {transform: translate(0,0);} to {transform: translate(30px, 50px);} }
+        
         .main-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 90px; }
         .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; margin-bottom: 15px; backdrop-filter: blur(15px); }
         h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
+        
+        /* TUGMALAR */
         .btn { width: 100%; padding: 14px; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; color: white; cursor: pointer; background: linear-gradient(90deg, var(--primary), #536DFE); display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;}
         .btn:active { transform: scale(0.96); }
         .btn.secondary { background: rgba(255,255,255,0.05); box-shadow: none; border: 1px solid var(--glass-border); justify-content: space-between; padding: 12px 16px; }
+        
+        /* KATEGORIYA */
         .cat-card { background: rgba(255,255,255,0.08); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; border: 1px solid transparent; transition: 0.2s; display:inline-block; width: 48%; margin: 1%; vertical-align: top;}
         .cat-icon { font-size: 24px; color: var(--secondary); margin-bottom: 8px; }
         .cat-name { font-size: 13px; font-weight: bold; }
+        
+        /* MENU */
         .navbar { position: fixed; bottom: 20px; left: 20px; right: 20px; height: 65px; background: rgba(18, 18, 28, 0.95); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid var(--glass-border); display: flex; justify-content: space-around; align-items: center; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .nav-item { color: rgba(255,255,255,0.4); font-size: 22px; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-item span { font-size: 10px; font-weight: 600; }
         .nav-item.active { color: var(--secondary); transform: translateY(-3px); }
+        
         .section { display: none; animation: fade 0.3s; }
         .section.active { display: block; }
         @keyframes fade { from {opacity: 0; transform: translateY(5px);} to {opacity: 1; transform: translateY(0);} }
-        input { width: 100%; padding: 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white; margin-bottom: 12px; user-select: text; -webkit-user-select: text;} /* Inputda yozish uchun ruxsat */
+        input { width: 100%; padding: 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white; margin-bottom: 12px; }
         
-        /* Chat Style */
+        /* CHAT STIL */
         .chat-box { height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
-        .msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; word-wrap: break-word; user-select: text; -webkit-user-select: text; } /* Chatda nusxalash mumkin */
+        .msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; word-wrap: break-word; user-select: text; -webkit-user-select: text; } /* Chatda nusxalash mumkin bo'lsin (AI javobini) */
         .msg.bot { align-self: flex-start; background: rgba(255,255,255,0.08); border-bottom-left-radius: 4px; }
         .msg.user { align-self: flex-end; background: var(--primary); border-bottom-right-radius: 4px; color: white;}
         .chat-input-wrapper { display: flex; gap: 10px; }
@@ -47,7 +63,7 @@
 <body oncontextmenu="return false;"> <div class="orb orb-1"></div><div class="orb orb-2"></div>
     <div class="main-content">
         <div class="app-header">
-            <div class="brand">Yaxshi <span style="color:var(--secondary)">AI</span></div>
+            <div style="font-size: 22px; font-weight: 800;">Yaxshi <span style="color:var(--secondary)">AI</span></div>
             <div style="background:var(--glass); padding:4px 12px; border-radius:30px; font-weight:bold; font-size:14px;" id="avatarLetter">U</div>
         </div>
 
@@ -58,13 +74,17 @@
                 <input type="email" id="emailInput" placeholder="name@example.com">
                 <button class="btn" onclick="submitEmail()"><i class="fas fa-paper-plane"></i> Yuborish</button>
             </div>
+
             <div id="main-content-area" style="display: none;">
                 <div class="card">
                     <h2><i class="fas fa-crown" style="color:#FFD700"></i> Pro Panel</h2>
                     <p>Sizda to'liq imkoniyatlar mavjud.</p>
+                    
                     <button class="btn" onclick="openPro()"><i class="fas fa-external-link-alt"></i> Pro Linkni Olish</button>
+                    
                     <button class="btn secondary" onclick="checkDeadline()"><i class="fas fa-clock"></i> Muddatni Tekshirish</button>
                 </div>
+
                 <div id="ad-container" class="card" style="display:none; border-color:var(--secondary);">
                     <div style="background:var(--secondary); color:#000; font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px; display:inline-block;">TAVSIYA</div>
                     <h3 id="ad-title" style="margin:5px 0 0 0; font-size:16px;"></h3>
@@ -135,27 +155,32 @@
             tg.sendData(val);
         }
         
-        // YANGI PRO MANTIQI (YASHIRIN OCHISH)
+        // --- PRO LINK MANTIQI (HIMOYA) ---
         function openPro() { 
             if(PRO_LINK && PRO_LINK.length > 5) {
-                // 1. Linkni ochish
+                // 1. Linkni brauzerda ochamiz
                 tg.openLink(PRO_LINK);
-                // 2. Botga xabar berish (Muddatni aytishi uchun)
-                tg.sendData("claim_pro");
+                
+                // 2. Biroz kutib, botga xabar beramiz va ilovani yopamiz
+                // (Link nusxalanmasligi uchun shu zahoti yopilish xavfsizroq)
+                setTimeout(() => {
+                    tg.sendData("claim_pro");
+                }, 500);
             } else {
                 tg.showPopup({message: "Link hali qo'yilmagan."});
             }
         }
+
         function checkDeadline() { tg.sendData("check_deadline"); tg.close(); }
 
-        // KATEGORIYALAR
+        // --- KATEGORIYALAR ---
         function renderCategories() {
             const cv = document.getElementById('categories-view');
             document.getElementById('resources-list').style.display='none';
             document.getElementById('backToCat').style.display='none';
             cv.style.display='block'; cv.innerHTML="";
             const cats = [...new Set(RESOURCES.map(r => r.category))];
-            if(cats.length===0) { cv.innerHTML="<p>Bo'sh.</p>"; return; }
+            if(cats.length===0) { cv.innerHTML="<p>Bo'limlar mavjud emas.</p>"; return; }
             cats.forEach(c => {
                 cv.innerHTML += `<div class="cat-card" onclick="openCat('${c}')"><div class="cat-icon">📂</div><div class="cat-name">${c}</div></div>`;
             });
@@ -170,7 +195,7 @@
             });
         }
 
-        // AI CHAT
+        // --- AI CHAT ---
         let msgCount = 0;
         async function sendMessage() {
             const input = document.getElementById('chatInput');
@@ -188,7 +213,7 @@
                 addMsg(ans, 'bot');
             } catch {
                 document.getElementById('typingIndicator').style.display='none';
-                addMsg("Xatolik.", 'bot');
+                addMsg("Xatolik yuz berdi.", 'bot');
             }
             box.scrollTop = box.scrollHeight;
         }
