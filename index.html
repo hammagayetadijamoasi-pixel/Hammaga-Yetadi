@@ -9,8 +9,8 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         :root { --primary: #7C4DFF; --secondary: #00E5FF; --dark: #090919; --glass: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.1); --text-gray: #aab2c8; }
-        /* Himoya: Nusxalashni taqiqlash */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; -webkit-user-select: none; }
+        input, textarea { user-select: text; -webkit-user-select: text; }
         body { margin: 0; background: var(--dark); color: white; font-family: 'Segoe UI', Roboto, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         .orb { position: fixed; border-radius: 50%; filter: blur(90px); z-index: -1; opacity: 0.3; }
         .orb-1 { width: 300px; height: 300px; background: var(--primary); top: -10%; left: -10%; animation: float 10s infinite alternate; }
@@ -32,11 +32,9 @@
         .section { display: none; animation: fade 0.3s; }
         .section.active { display: block; }
         @keyframes fade { from {opacity: 0; transform: translateY(5px);} to {opacity: 1; transform: translateY(0);} }
-        input { width: 100%; padding: 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white; margin-bottom: 12px; user-select: text; -webkit-user-select: text;} /* Inputda yozish uchun ruxsat */
-        
-        /* Chat Style */
+        input { width: 100%; padding: 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white; margin-bottom: 12px; }
         .chat-box { height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
-        .msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; word-wrap: break-word; user-select: text; -webkit-user-select: text; } /* Chatda nusxalash mumkin */
+        .msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; word-wrap: break-word; user-select: text; -webkit-user-select: text; }
         .msg.bot { align-self: flex-start; background: rgba(255,255,255,0.08); border-bottom-left-radius: 4px; }
         .msg.user { align-self: flex-end; background: var(--primary); border-bottom-right-radius: 4px; color: white;}
         .chat-input-wrapper { display: flex; gap: 10px; }
@@ -44,7 +42,8 @@
         .chat-btn { width: 50px; height: 50px; border-radius: 14px; border: none; background: var(--secondary); color: #000; font-size: 18px; }
     </style>
 </head>
-<body oncontextmenu="return false;"> <div class="orb orb-1"></div><div class="orb orb-2"></div>
+<body oncontextmenu="return false;">
+    <div class="orb orb-1"></div><div class="orb orb-2"></div>
     <div class="main-content">
         <div class="app-header">
             <div class="brand">Yaxshi <span style="color:var(--secondary)">AI</span></div>
@@ -52,19 +51,21 @@
         </div>
 
         <div id="tab-home" class="section active">
-            <div id="email-step" class="card" style="display: none;">
-                <h2><i class="fas fa-lock"></i> Tasdiqlash</h2>
-                <p>Pro versiyani olish uchun emailingizni kiriting.</p>
-                <input type="email" id="emailInput" placeholder="name@example.com">
-                <button class="btn" onclick="submitEmail()"><i class="fas fa-paper-plane"></i> Yuborish</button>
-            </div>
-            <div id="main-content-area" style="display: none;">
+            <div id="main-content-area" style="display: block;">
                 <div class="card">
                     <h2><i class="fas fa-crown" style="color:#FFD700"></i> Pro Panel</h2>
                     <p>Sizda to'liq imkoniyatlar mavjud.</p>
+                    
+                    <div style="margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                        <div id="pro-status">
+                            <i class="fas fa-clock"></i> Tugash muddati: <b id="end-date-text">...</b><br>
+                            <span style="font-size:12px; color:gray" id="claim-date-text"></span>
+                        </div>
+                    </div>
+
                     <button class="btn" onclick="openPro()"><i class="fas fa-external-link-alt"></i> Pro Linkni Olish</button>
-                    <button class="btn secondary" onclick="checkDeadline()"><i class="fas fa-clock"></i> Muddatni Tekshirish</button>
                 </div>
+                
                 <div id="ad-container" class="card" style="display:none; border-color:var(--secondary);">
                     <div style="background:var(--secondary); color:#000; font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px; display:inline-block;">TAVSIYA</div>
                     <h3 id="ad-title" style="margin:5px 0 0 0; font-size:16px;"></h3>
@@ -97,7 +98,7 @@
         </div>
     </div>
 
-    <div class="navbar" id="main-navbar" style="display: none;">
+    <div class="navbar" id="main-navbar" style="display: flex;">
         <div class="nav-item active" onclick="goTab('home', this)"><i class="fas fa-home"></i> <span>Asosiy</span></div>
         <div class="nav-item" onclick="goTab('ai', this)"><i class="fas fa-sparkles"></i> <span>AI Chat</span></div>
         <div class="nav-item" onclick="goTab('kb', this)"><i class="fas fa-book"></i> <span>Bilimlar</span></div>
@@ -106,20 +107,26 @@
     <script>
         const tg = window.Telegram.WebApp; tg.expand();
         const params = new URLSearchParams(window.location.search);
-        const e = params.get('e') || "0";
         const uName = decodeURIComponent(params.get('n') || "User");
         let PRO_LINK = decodeURIComponent(params.get('cl') || ""); 
         let RESOURCES = [];
         try { RESOURCES = JSON.parse(decodeURIComponent(params.get('rs') || "[]")); } catch(e) {}
         const adTitle = decodeURIComponent(params.get('at') || "");
         
+        const endDateStr = decodeURIComponent(params.get('ed') || "Noma'lum");
+        const claimedStr = decodeURIComponent(params.get('pd') || "");
+
         window.onload = () => {
             document.getElementById('avatarLetter').innerText = uName.charAt(0).toUpperCase();
-            if (e === "0") { document.getElementById('email-step').style.display = 'block'; } 
-            else { 
-                document.getElementById('main-content-area').style.display = 'block'; 
-                document.getElementById('main-navbar').style.display = 'flex'; 
+            
+            // Muddatni ko'rsatish
+            document.getElementById('end-date-text').innerText = endDateStr;
+            if(claimedStr && claimedStr !== "None" && claimedStr.length > 5) {
+                document.getElementById('claim-date-text').innerText = `Olingan vaqt: ${claimedStr}`;
+            } else {
+                document.getElementById('claim-date-text').innerText = "Hali olinmagan";
             }
+
             if(adTitle && adTitle !== "null" && adTitle.length > 1) {
                 document.getElementById('ad-container').style.display = 'block';
                 document.getElementById('ad-title').innerText = adTitle;
@@ -129,26 +136,15 @@
             renderCategories();
         };
 
-        function submitEmail() {
-            const val = document.getElementById('emailInput').value;
-            if(!val.includes('@') || val.length<5) return tg.showPopup({message:"Xato email!"});
-            tg.sendData(val);
-        }
-        
-        // YANGI PRO MANTIQI (YASHIRIN OCHISH)
         function openPro() { 
             if(PRO_LINK && PRO_LINK.length > 5) {
-                // 1. Linkni ochish
                 tg.openLink(PRO_LINK);
-                // 2. Botga xabar berish (Muddatni aytishi uchun)
-                tg.sendData("claim_pro");
+                setTimeout(() => { tg.sendData("claim_pro"); }, 500);
             } else {
                 tg.showPopup({message: "Link hali qo'yilmagan."});
             }
         }
-        function checkDeadline() { tg.sendData("check_deadline"); tg.close(); }
 
-        // KATEGORIYALAR
         function renderCategories() {
             const cv = document.getElementById('categories-view');
             document.getElementById('resources-list').style.display='none';
@@ -170,7 +166,6 @@
             });
         }
 
-        // AI CHAT
         let msgCount = 0;
         async function sendMessage() {
             const input = document.getElementById('chatInput');
