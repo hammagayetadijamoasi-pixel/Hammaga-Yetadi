@@ -6,31 +6,26 @@
   <title>Hammaga Yetadi</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
+    /* ... [STYLE QISMI O'ZGARMADI, ESKI KODDAN OLING] ... */
     :root{ --primary:#7C4DFF; --secondary:#00E5FF; --bg:#070A12; --glass:rgba(255,255,255,0.06); --text:#ffffff; }
     * { box-sizing: border-box; }
     body{ margin:0; background:var(--bg); color:var(--text); font-family:sans-serif; height:100vh; display:flex; flex-direction:column; overflow:hidden; user-select:none; }
-    
     .main{ flex:1; overflow-y:auto; padding:16px; padding-bottom:90px; }
     .card{ background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:16px; margin-bottom:12px; }
     .btn{ width:100%; padding:14px; border:none; border-radius:12px; font-weight:bold; color:#000; background:linear-gradient(90deg, var(--primary), var(--secondary)); cursor:pointer; margin-top:10px; display:flex; justify-content:center; align-items:center; gap:8px;}
-    .btn:active{ opacity:0.9; transform:scale(0.98); }
     .btn.secondary{ background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.1); justify-content:space-between; }
-    
     .navbar{ position:fixed; bottom:16px; left:16px; right:16px; height:65px; background:rgba(18,18,28,0.95); border-radius:18px; border:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-around; align-items:center; z-index:100; }
     .nav-item{ font-size:20px; color:rgba(255,255,255,0.5); display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.3s; }
     .nav-item.active{ color:var(--secondary); transform:translateY(-2px); }
     .section{ display:none; } .section.active{ display:block; }
-    
     .cat-grid{ display:flex; flex-wrap:wrap; gap:10px; }
     .cat{ width:calc(50% - 5px); background:rgba(255,255,255,0.08); border-radius:12px; padding:12px; text-align:center; cursor:pointer; border:1px solid rgba(255,255,255,0.05); }
-    
-    /* AI CHAT FIX */
+    /* AI CHAT */
     .chat-container { display: flex; flex-direction: column; height: calc(100vh - 180px); }
     .chat-box{ flex: 1; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:10px; padding: 5px; }
     .msg{ padding:10px 14px; border-radius:12px; max-width:85%; font-size:14px; line-height: 1.4; }
     .msg.bot{ align-self:flex-start; background:rgba(255,255,255,0.1); }
     .msg.user{ align-self:flex-end; background:var(--primary); }
-    
     .chat-input-row { display: flex; gap: 8px; align-items: center; }
     .chat-input{ flex: 1; padding:12px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:#fff; }
     .send-btn { width: 45px; height: 45px; border-radius: 12px; border: none; background: var(--secondary); color: #000; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px;}
@@ -52,11 +47,18 @@
         <button class="btn secondary" onclick="tg.sendData('check_deadline'); tg.close()"><span>📅 Holat</span> <span>›</span></button>
       </div>
 
-      <div id="ad-card" class="card" style="display:none; border-color:var(--secondary);">
-        <div style="background:var(--secondary); color:#000; font-size:10px; padding:2px 6px; border-radius:4px; display:inline-block; font-weight:bold;">REKLAMA</div>
-        <h3 id="adTitle" style="margin:8px 0;"></h3>
-        <p id="adText" style="font-size:13px; color:#ccc; margin:0;"></p>
-        <button class="btn secondary" style="margin-top:10px;" id="adBtn"><span>Ochish</span> <span>↗</span></button>
+      <div id="ad-card-1" class="card" style="display:none; border-color:var(--secondary);">
+        <div style="background:var(--secondary); color:#000; font-size:10px; padding:2px 6px; border-radius:4px; display:inline-block; font-weight:bold;">REKLAMA #1</div>
+        <h3 id="adTitle1" style="margin:8px 0;"></h3>
+        <p id="adText1" style="font-size:13px; color:#ccc; margin:0;"></p>
+        <button class="btn secondary" style="margin-top:10px;" id="adBtn1"><span>Ochish</span> <span>↗</span></button>
+      </div>
+
+      <div id="ad-card-2" class="card" style="display:none; border-color:orange;">
+        <div style="background:orange; color:#000; font-size:10px; padding:2px 6px; border-radius:4px; display:inline-block; font-weight:bold;">REKLAMA #2</div>
+        <h3 id="adTitle2" style="margin:8px 0;"></h3>
+        <p id="adText2" style="font-size:13px; color:#ccc; margin:0;"></p>
+        <button class="btn secondary" style="margin-top:10px;" id="adBtn2"><span>Ochish</span> <span>↗</span></button>
       </div>
     </div>
 
@@ -99,15 +101,24 @@
     document.getElementById('endDate').innerText = params.get('ed') || "?";
     const cl = params.get('cl');
     document.getElementById('claimedAt').innerText = (cl && cl !== "None") ? cl : "Yoq";
-    
     const proLink = decodeURIComponent(params.get('pl') || "");
 
-    const adT = params.get('at');
-    if(adT && adT !== "None"){
-      document.getElementById('ad-card').style.display = 'block';
-      document.getElementById('adTitle').innerText = decodeURIComponent(adT);
-      document.getElementById('adText').innerText = decodeURIComponent(params.get('ax') || "");
-      document.getElementById('adBtn').onclick = () => tg.openLink(decodeURIComponent(params.get('al')));
+    // REKLAMA #1
+    const adT1 = params.get('at1');
+    if(adT1 && adT1 !== "None"){
+      document.getElementById('ad-card-1').style.display = 'block';
+      document.getElementById('adTitle1').innerText = decodeURIComponent(adT1);
+      document.getElementById('adText1').innerText = decodeURIComponent(params.get('ax1') || "");
+      document.getElementById('adBtn1').onclick = () => tg.openLink(decodeURIComponent(params.get('al1')));
+    }
+
+    // REKLAMA #2
+    const adT2 = params.get('at2');
+    if(adT2 && adT2 !== "None"){
+      document.getElementById('ad-card-2').style.display = 'block';
+      document.getElementById('adTitle2').innerText = decodeURIComponent(adT2);
+      document.getElementById('adText2').innerText = decodeURIComponent(params.get('ax2') || "");
+      document.getElementById('adBtn2').onclick = () => tg.openLink(decodeURIComponent(params.get('al2')));
     }
 
     function claim() {
@@ -115,7 +126,7 @@
             tg.openLink(proLink);
             tg.sendData('claim_pro');
         } else {
-            tg.showPopup({message: "Hozircha link mavjud emas."});
+            tg.showPopup({message: "Link mavjud emas."});
         }
     }
 
@@ -162,20 +173,15 @@
       if(!txt) return;
       document.getElementById('chatBox').innerHTML += `<div class="msg user">${txt}</div>`;
       inp.value = "";
-      
       const loading = document.createElement('div');
       loading.className = "msg bot"; loading.innerText = "...";
       document.getElementById('chatBox').appendChild(loading);
-
       try {
-        // AI ga "O'zbek tilida javob ber" deb buyruq qo'shib yuboramiz
         const prompt = "Sen foydali yordamchisan. Iltimos, O'zbek tilida javob ber. Savol: " + txt;
         const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai`);
         const ans = await res.text();
         loading.innerText = ans;
-      } catch(e) {
-        loading.innerText = "Xatolik yuz berdi.";
-      }
+      } catch(e) { loading.innerText = "Xatolik."; }
     }
   </script>
 </body>
