@@ -7,28 +7,26 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <style>
         :root { --primary: #7C4DFF; --secondary: #00E5FF; --dark: #090919; --glass: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.1); --text-gray: #aab2c8; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; -webkit-user-select: none; }
         input, textarea { user-select: text; -webkit-user-select: text; }
         body { margin: 0; background: var(--dark); color: white; font-family: 'Segoe UI', Roboto, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        .orb { position: fixed; border-radius: 50%; filter: blur(90px); z-index: -1; opacity: 0.3; will-change: transform; transform: translateZ(0); }
+        .orb { position: fixed; border-radius: 50%; filter: blur(90px); z-index: -1; opacity: 0.3; }
         .orb-1 { width: 300px; height: 300px; background: var(--primary); top: -10%; left: -10%; animation: float 10s infinite alternate; }
         .orb-2 { width: 250px; height: 250px; background: var(--secondary); bottom: -10%; right: -10%; animation: float 12s infinite alternate-reverse; }
         @keyframes float { from {transform: translate(0,0);} to {transform: translate(30px, 50px);} }
         .main-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 90px; }
         .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; margin-bottom: 15px; backdrop-filter: blur(15px); }
         h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; color: white; cursor: pointer; background: linear-gradient(90deg, var(--primary), #536DFE); display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; transition: transform 0.2s;}
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; color: white; cursor: pointer; background: linear-gradient(90deg, var(--primary), #536DFE); display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;}
         .btn:active { transform: scale(0.96); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn.secondary { background: rgba(255,255,255,0.05); box-shadow: none; border: 1px solid var(--glass-border); justify-content: space-between; padding: 12px 16px; }
         .cat-card { background: rgba(255,255,255,0.08); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; border: 1px solid transparent; transition: 0.2s; display:inline-block; width: 48%; margin: 1%; vertical-align: top;}
         .cat-icon { font-size: 24px; color: var(--secondary); margin-bottom: 8px; }
         .cat-name { font-size: 13px; font-weight: bold; }
         .navbar { position: fixed; bottom: 20px; left: 20px; right: 20px; height: 65px; background: rgba(18, 18, 28, 0.95); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid var(--glass-border); display: flex; justify-content: space-around; align-items: center; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .nav-item { color: rgba(255,255,255,0.4); font-size: 22px; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+        .nav-item { color: rgba(255,255,255,0.4); font-size: 22px; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-item span { font-size: 10px; font-weight: 600; }
         .nav-item.active { color: var(--secondary); transform: translateY(-3px); }
         .section { display: none; animation: fade 0.3s; }
@@ -41,12 +39,7 @@
         .msg.user { align-self: flex-end; background: var(--primary); border-bottom-right-radius: 4px; color: white;}
         .chat-input-wrapper { display: flex; gap: 10px; }
         .chat-input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 14px; border-radius: 14px; color: white; }
-        .chat-btn { width: 50px; height: 50px; border-radius: 14px; border: none; background: var(--secondary); color: #000; font-size: 18px; cursor: pointer; transition: transform 0.2s; }
-        .chat-btn:active { transform: scale(0.95); }
-        .chat-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .error-msg { background: rgba(255, 0, 0, 0.1); border: 1px solid rgba(255, 0, 0, 0.3); padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 13px; }
-        .loading { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .chat-btn { width: 50px; height: 50px; border-radius: 14px; border: none; background: var(--secondary); color: #000; font-size: 18px; }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -70,10 +63,10 @@
                         </div>
                     </div>
 
-                    <button class="btn" id="proBtn" onclick="openPro()"><i class="fas fa-external-link-alt"></i> Pro Linkni Olish</button>
+                    <button class="btn" onclick="openPro()"><i class="fas fa-external-link-alt"></i> Pro Linkni Olish</button>
                 </div>
                 
-                <div id="ad-container" class="card" style="display:none; border-color:var(--secondary); cursor:pointer;">
+                <div id="ad-container" class="card" style="display:none; border-color:var(--secondary);">
                     <div style="background:var(--secondary); color:#000; font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px; display:inline-block;">TAVSIYA</div>
                     <h3 id="ad-title" style="margin:5px 0 0 0; font-size:16px;"></h3>
                     <p id="ad-text" style="font-size:13px; color:var(--text-gray); margin:0;"></p>
@@ -84,12 +77,11 @@
         <div id="tab-ai" class="section">
             <div class="card">
                 <h2><i class="fas fa-brain" style="color:var(--secondary)"></i> Yaxshi AI</h2>
-                <div id="errorContainer"></div>
                 <div class="chat-box" id="chatBox"><div class="msg bot">👋 Salom! Nima savolingiz bor?</div></div>
-                <div id="typingIndicator" style="display:none; font-size:12px; margin-bottom:10px; font-style:italic; opacity:0.7;"><span class="loading"></span> Yozmoqda...</div>
+                <div id="typingIndicator" style="display:none; font-size:12px; margin-bottom:10px; font-style:italic; opacity:0.7;">Yozmoqda...</div>
                 <div class="chat-input-wrapper">
-                    <input type="text" class="chat-input" id="chatInput" placeholder="Savol..." maxlength="1000" onkeypress="if(event.key==='Enter') sendMessage()">
-                    <button class="chat-btn" id="sendBtn" onclick="sendMessage()"><i class="fas fa-arrow-up"></i></button>
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Savol..." onkeypress="if(event.key==='Enter') sendMessage()">
+                    <button class="chat-btn" onclick="sendMessage()"><i class="fas fa-arrow-up"></i></button>
                 </div>
             </div>
         </div>
@@ -113,44 +105,21 @@
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        
-        // Sanitize function
-        function sanitizeInput(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-        
+        const tg = window.Telegram.WebApp; tg.expand();
         const params = new URLSearchParams(window.location.search);
-        const uName = sanitizeInput(decodeURIComponent(params.get('n') || "User"));
-        let PRO_LINK = decodeURIComponent(params.get('cl') || "");
+        const uName = decodeURIComponent(params.get('n') || "User");
+        let PRO_LINK = decodeURIComponent(params.get('cl') || ""); 
         let RESOURCES = [];
+        try { RESOURCES = JSON.parse(decodeURIComponent(params.get('rs') || "[]")); } catch(e) {}
+        const adTitle = decodeURIComponent(params.get('at') || "");
         
-        try {
-            const resourcesParam = decodeURIComponent(params.get('rs') || "[]");
-            RESOURCES = JSON.parse(resourcesParam);
-        } catch(e) {
-            console.error("Resources parse error:", e);
-            showError("Ma'lumotlarni yuklashda xatolik");
-        }
-        
-        const adTitle = sanitizeInput(decodeURIComponent(params.get('at') || ""));
-        const endDateStr = sanitizeInput(decodeURIComponent(params.get('ed') || "Noma'lum"));
-        const claimedStr = sanitizeInput(decodeURIComponent(params.get('pd') || ""));
-
-        function showError(msg) {
-            const container = document.getElementById('errorContainer');
-            if (container) {
-                container.innerHTML = `<div class="error-msg"><i class="fas fa-exclamation-triangle"></i> ${msg}</div>`;
-                setTimeout(() => { container.innerHTML = ''; }, 5000);
-            }
-        }
+        const endDateStr = decodeURIComponent(params.get('ed') || "Noma'lum");
+        const claimedStr = decodeURIComponent(params.get('pd') || "");
 
         window.onload = () => {
             document.getElementById('avatarLetter').innerText = uName.charAt(0).toUpperCase();
             
+            // Muddatni ko'rsatish
             document.getElementById('end-date-text').innerText = endDateStr;
             if(claimedStr && claimedStr !== "None" && claimedStr.length > 5) {
                 document.getElementById('claim-date-text').innerText = `Olingan vaqt: ${claimedStr}`;
@@ -159,40 +128,20 @@
             }
 
             if(adTitle && adTitle !== "null" && adTitle.length > 1) {
-                const adContainer = document.getElementById('ad-container');
-                adContainer.style.display = 'block';
+                document.getElementById('ad-container').style.display = 'block';
                 document.getElementById('ad-title').innerText = adTitle;
-                document.getElementById('ad-text').innerText = sanitizeInput(decodeURIComponent(params.get('ax') || ""));
-                adContainer.onclick = () => {
-                    const adLink = decodeURIComponent(params.get('al') || "");
-                    if (adLink) tg.openTelegramLink(adLink);
-                };
+                document.getElementById('ad-text').innerText = decodeURIComponent(params.get('ax') || "");
+                document.getElementById('ad-container').onclick = () => tg.openTelegramLink(decodeURIComponent(params.get('al') || ""));
             }
             renderCategories();
         };
 
-        function openPro() {
-            if(!PRO_LINK || PRO_LINK.length < 5) {
-                tg.showPopup({message: "Link hali qo'yilmagan."});
-                return;
-            }
-            
-            const proBtn = document.getElementById('proBtn');
-            proBtn.disabled = true;
-            proBtn.innerHTML = '<span class="loading"></span> Ochilmoqda...';
-            
-            try {
+        function openPro() { 
+            if(PRO_LINK && PRO_LINK.length > 5) {
                 tg.openLink(PRO_LINK);
-                setTimeout(() => {
-                    tg.sendData("claim_pro");
-                    proBtn.disabled = false;
-                    proBtn.innerHTML = '<i class="fas fa-external-link-alt"></i> Pro Linkni Olish';
-                }, 500);
-            } catch(e) {
-                console.error("Error opening pro link:", e);
-                showError("Linkni ochishda xatolik");
-                proBtn.disabled = false;
-                proBtn.innerHTML = '<i class="fas fa-external-link-alt"></i> Pro Linkni Olish';
+                setTimeout(() => { tg.sendData("claim_pro"); }, 500);
+            } else {
+                tg.showPopup({message: "Link hali qo'yilmagan."});
             }
         }
 
@@ -200,127 +149,47 @@
             const cv = document.getElementById('categories-view');
             document.getElementById('resources-list').style.display='none';
             document.getElementById('backToCat').style.display='none';
-            cv.style.display='block';
-            cv.innerHTML="";
-            
+            cv.style.display='block'; cv.innerHTML="";
             const cats = [...new Set(RESOURCES.map(r => r.category))];
-            if(cats.length === 0) {
-                cv.innerHTML="<p style='text-align:center; opacity:0.5;'>📂 Hozircha bo'sh</p>";
-                return;
-            }
-            
+            if(cats.length===0) { cv.innerHTML="<p>Bo'sh.</p>"; return; }
             cats.forEach(c => {
-                const catName = sanitizeInput(c);
-                cv.innerHTML += `<div class="cat-card" onclick="openCat('${catName}')"><div class="cat-icon">📂</div><div class="cat-name">${catName}</div></div>`;
+                cv.innerHTML += `<div class="cat-card" onclick="openCat('${c}')"><div class="cat-icon">📂</div><div class="cat-name">${c}</div></div>`;
             });
         }
-        
         function openCat(c) {
             document.getElementById('categories-view').style.display='none';
             const rv = document.getElementById('resources-list');
-            rv.style.display='block';
-            document.getElementById('backToCat').style.display='block';
-            
-            const catName = sanitizeInput(c);
-            rv.innerHTML = `<h3>${catName}</h3>`;
-            
-            const filteredResources = RESOURCES.filter(r => r.category === c);
-            if (filteredResources.length === 0) {
-                rv.innerHTML += "<p style='text-align:center; opacity:0.5;'>Bo'sh</p>";
-                return;
-            }
-            
-            filteredResources.forEach(r => {
-                const resName = sanitizeInput(r.name);
-                rv.innerHTML += `<button class="btn secondary" onclick="tg.sendData('get_resource:${r.id}');tg.close()"><span>📄 ${resName}</span> <i class="fas fa-download"></i></button>`;
+            rv.style.display='block'; document.getElementById('backToCat').style.display='block';
+            rv.innerHTML = `<h3>${c}</h3>`;
+            RESOURCES.filter(r=>r.category===c).forEach(r=>{
+                rv.innerHTML += `<button class="btn secondary" onclick="tg.sendData('get_resource:'+'${r.id}');tg.close()"><span>📄 ${r.name}</span> <i class="fas fa-download"></i></button>`;
             });
         }
 
         let msgCount = 0;
-        let isProcessing = false;
-        
         async function sendMessage() {
-            if (isProcessing) return;
-            
             const input = document.getElementById('chatInput');
             const txt = input.value.trim();
-            
-            if(!txt) {
-                showError("Xabar bo'sh bo'lishi mumkin emas");
-                return;
-            }
-            
-            if(txt.length > 1000) {
-                showError("Xabar 1000 belgidan oshmasligi kerak");
-                return;
-            }
-            
-            if (!navigator.onLine) {
-                showError("❌ Internet yo'q");
-                return;
-            }
-            
-            isProcessing = true;
-            const sendBtn = document.getElementById('sendBtn');
-            sendBtn.disabled = true;
-            sendBtn.innerHTML = '<span class="loading"></span>';
-            
-            addMsg(txt, 'user');
-            input.value='';
-            msgCount++;
-            
+            if(!txt) return;
+            addMsg(txt, 'user'); input.value=''; msgCount++;
             document.getElementById('typingIndicator').style.display='block';
-            const box = document.getElementById('chatBox');
-            box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
-            
+            const box = document.getElementById('chatBox'); box.scrollTop = box.scrollHeight;
             try {
                 let rule = msgCount === 1 ? "Salomlash." : "Salomlashma.";
-                const query = encodeURIComponent(`Siz "Yaxshi AI"siz. 1. ${rule} 2. Professional bo'l. 3. O'zbek tili. Savol: ${txt}`);
-                const url = `https://text.pollinations.ai/${query}?model=openai`;
-                
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
-                
-                const res = await fetch(url, { signal: controller.signal });
-                clearTimeout(timeoutId);
-                
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
-                }
-                
+                const url = 'https://text.pollinations.ai/' + encodeURIComponent(`Siz "Yaxshi AI"siz. 1. ${rule} 2. Professional bo'l. 3. O'zbek tili. Savol: ${txt}`) + '?model=openai';
+                const res = await fetch(url);
                 const ans = await res.text();
                 document.getElementById('typingIndicator').style.display='none';
                 addMsg(ans, 'bot');
-            } catch(error) {
-                console.error("AI error:", error);
+            } catch {
                 document.getElementById('typingIndicator').style.display='none';
-                
-                if (error.name === 'AbortError') {
-                    addMsg("⏱️ Javob kutish vaqti tugadi. Qaytadan urinib ko'ring.", 'bot');
-                } else {
-                    addMsg("❌ Serverga ulanishda muammo. Qaytadan urinib ko'ring.", 'bot');
-                }
-                showError("AI javob berishda xatolik");
-            } finally {
-                isProcessing = false;
-                sendBtn.disabled = false;
-                sendBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
-                box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
+                addMsg("Xatolik.", 'bot');
             }
+            box.scrollTop = box.scrollHeight;
         }
-        
         function addMsg(txt, type) {
-            const div = document.createElement('div');
-            div.className = `msg ${type}`;
-            
-            // XSS protection with DOMPurify
-            if (typeof DOMPurify !== 'undefined') {
-                div.innerHTML = DOMPurify.sanitize(marked.parse(txt));
-            } else {
-                // Fallback if DOMPurify not loaded
-                div.textContent = txt;
-            }
-            
+            const div = document.createElement('div'); div.className = `msg ${type}`;
+            div.innerHTML = marked.parse(txt);
             document.getElementById('chatBox').appendChild(div);
         }
 
@@ -330,25 +199,6 @@
             document.getElementById('tab-'+t).classList.add('active');
             el.classList.add('active');
         }
-        
-        // Error handling for uncaught errors
-        window.addEventListener('error', function(e) {
-            console.error('Global error:', e.error);
-            showError("Kutilmagan xatolik yuz berdi");
-        });
-        
-        // Offline/Online detection
-        window.addEventListener('offline', function() {
-            showError("❌ Internet uzilib qoldi");
-        });
-        
-        window.addEventListener('online', function() {
-            const container = document.getElementById('errorContainer');
-            if (container) {
-                container.innerHTML = '<div style="background: rgba(0, 255, 0, 0.1); border: 1px solid rgba(0, 255, 0, 0.3); padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 13px;"><i class="fas fa-check-circle"></i> Internet qayta ulandi</div>';
-                setTimeout(() => { container.innerHTML = ''; }, 3000);
-            }
-        });
     </script>
 </body>
 </html>
