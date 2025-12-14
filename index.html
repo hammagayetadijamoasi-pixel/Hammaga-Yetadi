@@ -2,14 +2,15 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Hammaga Yetadi</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root{ --primary:#7C4DFF; --secondary:#00E5FF; --bg:#070A12; --glass:rgba(255,255,255,0.06); --text:#ffffff; }
+    * { box-sizing: border-box; }
     body{ margin:0; background:var(--bg); color:var(--text); font-family:sans-serif; height:100vh; display:flex; flex-direction:column; overflow:hidden; user-select:none; }
     
-    .main{ flex:1; overflow:auto; padding:16px; padding-bottom:90px; }
+    .main{ flex:1; overflow-y:auto; padding:16px; padding-bottom:90px; }
     .card{ background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:16px; margin-bottom:12px; }
     .btn{ width:100%; padding:14px; border:none; border-radius:12px; font-weight:bold; color:#000; background:linear-gradient(90deg, var(--primary), var(--secondary)); cursor:pointer; margin-top:10px; display:flex; justify-content:center; align-items:center; gap:8px;}
     .btn:active{ opacity:0.9; transform:scale(0.98); }
@@ -23,11 +24,16 @@
     .cat-grid{ display:flex; flex-wrap:wrap; gap:10px; }
     .cat{ width:calc(50% - 5px); background:rgba(255,255,255,0.08); border-radius:12px; padding:12px; text-align:center; cursor:pointer; border:1px solid rgba(255,255,255,0.05); }
     
-    .chat-box{ height:350px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:10px; }
-    .msg{ padding:10px 14px; border-radius:12px; max-width:85%; font-size:14px; }
+    /* AI CHAT FIX */
+    .chat-container { display: flex; flex-direction: column; height: calc(100vh - 180px); }
+    .chat-box{ flex: 1; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:10px; padding: 5px; }
+    .msg{ padding:10px 14px; border-radius:12px; max-width:85%; font-size:14px; line-height: 1.4; }
     .msg.bot{ align-self:flex-start; background:rgba(255,255,255,0.1); }
     .msg.user{ align-self:flex-end; background:var(--primary); }
-    .chat-input{ width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:#fff; }
+    
+    .chat-input-row { display: flex; gap: 8px; align-items: center; }
+    .chat-input{ flex: 1; padding:12px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:#fff; }
+    .send-btn { width: 45px; height: 45px; border-radius: 12px; border: none; background: var(--secondary); color: #000; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px;}
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -37,7 +43,7 @@
     <div id="tab-home" class="section active">
       <div class="card">
         <h2>👑 Pro Panel</h2>
-        <div style="font-size:13px; color:#aaa; margin-bottom:10px;">Tugmani bosishingiz bilan Pro link avtomatik ochiladi.</div>
+        <div style="font-size:13px; color:#aaa; margin-bottom:10px;">Link bot orqali maxfiy yuboriladi.</div>
         <div style="display:flex; gap:10px; margin-bottom:10px;">
           <div style="background:rgba(255,255,255,0.1); padding:5px 10px; border-radius:8px; font-size:12px;">⏳ <span id="endDate">...</span></div>
           <div style="background:rgba(255,255,255,0.1); padding:5px 10px; border-radius:8px; font-size:12px;">📥 <span id="claimedAt">...</span></div>
@@ -55,10 +61,15 @@
     </div>
 
     <div id="tab-ai" class="section">
-      <div class="card">
-        <h2>🧠 AI</h2>
-        <div class="chat-box" id="chatBox"><div class="msg bot">Savolingiz bormi?</div></div>
-        <input type="text" class="chat-input" id="chatInp" placeholder="Yozing..." onkeypress="if(event.key==='Enter') sendMsg()">
+      <div class="card" style="height: 100%;">
+        <h2>🧠 AI Yordamchi</h2>
+        <div class="chat-container">
+            <div class="chat-box" id="chatBox"><div class="msg bot">Assalomu alaykum! Savolingiz bormi?</div></div>
+            <div class="chat-input-row">
+                <input type="text" class="chat-input" id="chatInp" placeholder="Yozing..." onkeypress="if(event.key==='Enter') sendMsg()">
+                <button class="send-btn" onclick="sendMsg()">➤</button>
+            </div>
+        </div>
       </div>
     </div>
 
@@ -89,7 +100,6 @@
     const cl = params.get('cl');
     document.getElementById('claimedAt').innerText = (cl && cl !== "None") ? cl : "Yoq";
     
-    // Pro linkni yashirin o'qish
     const proLink = decodeURIComponent(params.get('pl') || "");
 
     const adT = params.get('at');
@@ -100,13 +110,12 @@
       document.getElementById('adBtn').onclick = () => tg.openLink(decodeURIComponent(params.get('al')));
     }
 
-    // MAIN LOGIC
     function claim() {
         if(proLink && proLink.length > 5) {
-            tg.openLink(proLink); // 1. Linkni ochadi
-            tg.sendData('claim_pro'); // 2. Botga xabar beradi
+            tg.openLink(proLink);
+            tg.sendData('claim_pro');
         } else {
-            alert("Link hali qo'yilmagan.");
+            tg.showPopup({message: "Hozircha link mavjud emas."});
         }
     }
 
@@ -154,12 +163,18 @@
       document.getElementById('chatBox').innerHTML += `<div class="msg user">${txt}</div>`;
       inp.value = "";
       
+      const loading = document.createElement('div');
+      loading.className = "msg bot"; loading.innerText = "...";
+      document.getElementById('chatBox').appendChild(loading);
+
       try {
-        const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(txt)}?model=openai`);
+        // AI ga "O'zbek tilida javob ber" deb buyruq qo'shib yuboramiz
+        const prompt = "Sen foydali yordamchisan. Iltimos, O'zbek tilida javob ber. Savol: " + txt;
+        const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai`);
         const ans = await res.text();
-        document.getElementById('chatBox').innerHTML += `<div class="msg bot">${ans}</div>`;
+        loading.innerText = ans;
       } catch(e) {
-        document.getElementById('chatBox').innerHTML += `<div class="msg bot">Xato.</div>`;
+        loading.innerText = "Xatolik yuz berdi.";
       }
     }
   </script>
