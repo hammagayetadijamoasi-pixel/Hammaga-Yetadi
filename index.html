@@ -2,532 +2,206 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-  <title>Hammaga Yetadi — Pro & Yordamchi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hammaga Yetadi</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    :root{
-      --primary:#7C4DFF;
-      --secondary:#00E5FF;
-      --bg:#070A12;
-      --glass: rgba(255,255,255,0.06);
-      --glass2: rgba(255,255,255,0.045);
-      --stroke: rgba(255,255,255,0.10);
-      --muted:#aab2c8;
-      --text:#ffffff;
-      --shadow: rgba(0,0,0,0.45);
-      --ok:#59FFA7;
-      --bad:#FF5C7A;
-    }
-
-    *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; outline:none; user-select:none; -webkit-user-select:none;}
-    input, textarea { user-select:text; -webkit-user-select:text; }
-
-    body{
-      margin:0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      height:100vh;
-      display:flex;
-      flex-direction:column;
-      overflow:hidden;
-    }
-
-    .orb{
-      position:fixed; border-radius:50%; filter:blur(90px); z-index:-1; opacity:.28;
-    }
-    .orb.one{width:340px;height:340px;background:var(--primary); top:-10%; left:-12%; animation:float 10s ease-in-out infinite alternate;}
-    .orb.two{width:300px;height:300px;background:var(--secondary); bottom:-12%; right:-12%; animation:float 12s ease-in-out infinite alternate-reverse;}
-    @keyframes float{from{transform:translate(0,0)}to{transform:translate(34px,46px)}}
-
-    .main{
-      flex:1;
-      overflow:auto;
-      padding:18px 16px 96px;
-    }
-
-    .header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:14px;
-    }
-    .brand{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-      min-width:0;
-    }
-    .brand b{
-      font-size:16px;
-      letter-spacing:.2px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      -webkit-background-clip:text; background-clip:text;
-      color:transparent;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-    .brand small{color:var(--muted); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-    .avatar{
-      padding:6px 12px;
-      border-radius:999px;
-      background: var(--glass);
-      border:1px solid var(--stroke);
-      backdrop-filter: blur(14px);
-      font-weight:900;
-    }
-
-    .card{
-      background: var(--glass2);
-      border:1px solid var(--stroke);
-      border-radius:18px;
-      padding:16px;
-      margin-bottom:12px;
-      box-shadow: 0 18px 44px var(--shadow);
-      backdrop-filter: blur(16px);
-    }
-    .card h2{
-      margin:0 0 8px;
-      font-size:15px;
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .muted{color:var(--muted); font-size:12.5px; line-height:1.4;}
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 10px; border-radius:14px;
-      background: rgba(255,255,255,.05);
-      border:1px solid var(--stroke);
-      font-size:12px;
-      color: var(--muted);
-    }
-
-    .btn{
-      width:100%;
-      padding:13px 14px;
-      border:none;
-      border-radius:14px;
-      font-size:14px;
-      font-weight:800;
-      color:#07111B;
-      cursor:pointer;
-      background: linear-gradient(90deg, var(--primary), #536DFE);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      margin-top:10px;
-    }
-    .btn:active{transform:scale(.98)}
-    .btn.secondary{
-      color:var(--text);
-      background: rgba(255,255,255,0.06);
-      border:1px solid var(--stroke);
-      justify-content:space-between;
-    }
-
-    .navbar{
-      position:fixed;
-      bottom:14px;
-      left:14px;
-      right:14px;
-      height:68px;
-      background: rgba(18,18,28,0.92);
-      backdrop-filter: blur(18px);
-      border-radius:20px;
-      border:1px solid var(--stroke);
-      display:flex;
-      justify-content:space-around;
-      align-items:center;
-      z-index:100;
-      box-shadow: 0 14px 34px rgba(0,0,0,0.55);
-    }
-    .nav-item{
-      color: rgba(255,255,255,0.45);
-      font-size:20px;
-      transition:.25s;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:4px;
-      cursor:pointer;
-      font-weight:800;
-    }
-    .nav-item span{font-size:10px; font-weight:800}
-    .nav-item.active{
-      color: var(--secondary);
-      transform: translateY(-3px);
-    }
-
-    .section{display:none; animation:fade .25s ease}
-    .section.active{display:block}
-    @keyframes fade{from{opacity:0; transform:translateY(6px)}to{opacity:1; transform:translateY(0)}}
-
-    /* Knowledge */
-    .cats{display:flex; flex-wrap:wrap; gap:10px}
-    .cat{
-      width: calc(50% - 5px);
-      border-radius:16px;
-      background: rgba(255,255,255,0.06);
-      border:1px solid rgba(255,255,255,0.08);
-      padding:14px;
-      cursor:pointer;
-      transition:.18s;
-    }
-    .cat:active{transform:scale(.98)}
-    .cat b{display:block; font-size:13px}
-    .cat small{color:var(--muted); font-size:11px}
-    .backBtn{
-      padding:8px 10px;
-      border-radius:12px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,0.06);
-      color:var(--text);
-      cursor:pointer;
-      font-weight:900;
-    }
-
-    /* Chat */
-    .chat-box{
-      height: 360px;
-      overflow:auto;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      margin-top:10px;
-      padding-right:4px;
-    }
-    .msg{
-      max-width:85%;
-      padding:10px 12px;
-      border-radius:14px;
-      font-size:13.5px;
-      line-height:1.45;
-      word-wrap:break-word;
-      user-select:text; -webkit-user-select:text;
-      border:1px solid transparent;
-      white-space: pre-wrap;
-    }
-    .msg.bot{
-      align-self:flex-start;
-      background: rgba(255,255,255,0.08);
-      border-bottom-left-radius: 6px;
-      border-color: rgba(255,255,255,0.10);
-    }
-    .msg.user{
-      align-self:flex-end;
-      background: rgba(124,77,255,0.35);
-      border-bottom-right-radius: 6px;
-      border-color: rgba(124,77,255,0.25);
-    }
-    .typing{display:none; font-size:12px; opacity:.75; font-style:italic; margin-top:8px;}
-    .chat-input-row{display:flex; gap:10px; margin-top:12px;}
-    .chat-input{
-      flex:1;
-      border-radius:14px;
-      border:1px solid var(--stroke);
-      background: rgba(0,0,0,0.22);
-      color:var(--text);
-      padding:12px 12px;
-    }
-    .sendBtn{
-      width:52px;height:46px;
-      border-radius:14px;
-      border:none;
-      background: var(--secondary);
-      color:#06101B;
-      font-weight:900;
-      cursor:pointer;
-    }
-
-    /* best-effort anti-copy */
-    body { -webkit-user-select:none; user-select:none; }
+    :root{ --primary:#7C4DFF; --secondary:#00E5FF; --bg:#070A12; --glass:rgba(255,255,255,0.06); --text:#ffffff; }
+    body{ margin:0; background:var(--bg); color:var(--text); font-family:sans-serif; height:100vh; display:flex; flex-direction:column; overflow:hidden; user-select:none; }
+    .orb{ position:fixed; border-radius:50%; filter:blur(90px); z-index:-1; opacity:.3; }
+    .orb.one{ width:300px; height:300px; background:var(--primary); top:-10%; left:-10%; animation:float 10s infinite alternate; }
+    .orb.two{ width:250px; height:250px; background:var(--secondary); bottom:-10%; right:-10%; animation:float 12s infinite alternate-reverse; }
+    @keyframes float{ from{transform:translate(0,0)} to{transform:translate(30px,40px)} }
+    
+    .main{ flex:1; overflow:auto; padding:16px; padding-bottom:90px; }
+    .header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; }
+    .avatar{ background:var(--glass); padding:5px 12px; border-radius:20px; font-weight:bold; border:1px solid rgba(255,255,255,0.1); }
+    
+    .card{ background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:16px; margin-bottom:12px; backdrop-filter:blur(10px); }
+    .btn{ width:100%; padding:14px; border:none; border-radius:12px; font-weight:bold; color:#000; background:linear-gradient(90deg, var(--primary), var(--secondary)); cursor:pointer; margin-top:10px; display:flex; justify-content:center; align-items:center; gap:8px;}
+    .btn:active{ opacity:0.9; transform:scale(0.98); }
+    .btn.secondary{ background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.1); justify-content:space-between; }
+    
+    .navbar{ position:fixed; bottom:16px; left:16px; right:16px; height:65px; background:rgba(18,18,28,0.95); border-radius:18px; border:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-around; align-items:center; z-index:100; }
+    .nav-item{ font-size:20px; color:rgba(255,255,255,0.5); display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.3s; }
+    .nav-item span{ font-size:10px; font-weight:bold; }
+    .nav-item.active{ color:var(--secondary); transform:translateY(-2px); }
+    
+    .section{ display:none; animation:fade 0.3s; }
+    .section.active{ display:block; }
+    @keyframes fade{ from{opacity:0; transform:translateY(5px)} to{opacity:1; transform:translateY(0)} }
+    
+    .cat-grid{ display:flex; flex-wrap:wrap; gap:10px; }
+    .cat{ width:calc(50% - 5px); background:rgba(255,255,255,0.08); border-radius:12px; padding:12px; text-align:center; cursor:pointer; border:1px solid rgba(255,255,255,0.05); }
+    
+    .chat-box{ height:350px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:10px; }
+    .msg{ padding:10px 14px; border-radius:12px; max-width:85%; font-size:14px; line-height:1.4; }
+    .msg.bot{ align-self:flex-start; background:rgba(255,255,255,0.1); }
+    .msg.user{ align-self:flex-end; background:var(--primary); color:#fff; }
+    .chat-input{ width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:#fff; }
   </style>
 </head>
 <body oncontextmenu="return false;">
-  <div class="orb one"></div>
-  <div class="orb two"></div>
+  <div class="orb one"></div><div class="orb two"></div>
 
   <div class="main">
     <div class="header">
-      <div class="brand">
-        <b>Hammaga Yetadi</b>
-        <small id="subline">Ulanmoqda…</small>
-      </div>
-      <div class="avatar" id="avatarLetter">U</div>
+      <div><b>Hammaga Yetadi</b><br><small style="color:gray" id="subline">Yuklanmoqda...</small></div>
+      <div class="avatar" id="avatar">U</div>
     </div>
 
-    <!-- HOME -->
-    <section id="tab-home" class="section active">
+    <div id="tab-home" class="section active">
       <div class="card">
         <h2>👑 Pro Panel</h2>
-        <div class="muted">Pro link ko‘rinmaydi. Tugma orqali token bilan ochiladi.</div>
-
-        <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
-          <div class="pill">⏳ Tugash: <b id="end-date-text">…</b></div>
-          <div class="pill">🕒 Olingan: <b id="claim-date-text">…</b></div>
+        <div style="font-size:13px; color:#aaa; margin-bottom:10px;">Pro link maxfiy saqlanadi. Tugmani bossangiz bot yuboradi.</div>
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+          <div style="background:rgba(255,255,255,0.1); padding:5px 10px; border-radius:8px; font-size:12px;">⏳ <span id="endDate">...</span></div>
+          <div style="background:rgba(255,255,255,0.1); padding:5px 10px; border-radius:8px; font-size:12px;">📥 <span id="claimedAt">...</span></div>
         </div>
-
-        <button class="btn" id="btnPro">🚀 Pro linkni ochish</button>
-        <button class="btn secondary" id="btnCheckDeadline"><span>📅 Holatni tekshirish</span><span>›</span></button>
+        <button class="btn" onclick="tg.sendData('claim_pro'); tg.close()">🚀 Pro Linkni Olish</button>
+        <button class="btn secondary" onclick="tg.sendData('check_deadline')"><span>📅 Holatni Tekshirish</span> <span>›</span></button>
       </div>
 
-      <!-- Tavsiya reklama (Pro pastida) -->
-      <div id="ad-container" class="card" style="display:none; border-color: rgba(0,229,255,0.35);">
-        <div class="pill" style="color:#06101B; background: rgba(0,229,255,0.9); border: none;">TAVSIYA</div>
-        <h3 id="ad-title" style="margin:10px 0 6px 0; font-size:16px;">—</h3>
-        <div id="ad-text" class="muted">—</div>
-        <button class="btn secondary" id="btnAd"><span>Ko‘rish</span><span>↗</span></button>
+      <div id="ad-card" class="card" style="display:none; border-color:var(--secondary);">
+        <div style="background:var(--secondary); color:#000; font-size:10px; padding:2px 6px; border-radius:4px; display:inline-block; font-weight:bold;">REKLAMA</div>
+        <h3 id="adTitle" style="margin:8px 0;"></h3>
+        <p id="adText" style="font-size:13px; color:#ccc; margin:0;"></p>
+        <button class="btn secondary" style="margin-top:10px;" id="adBtn"><span>Ochish</span> <span>↗</span></button>
       </div>
-    </section>
+    </div>
 
-    <!-- AI -->
-    <section id="tab-ai" class="section">
+    <div id="tab-ai" class="section">
       <div class="card">
-        <h2>🧠 Yordamchi</h2>
-        <div class="muted">Bepul: serverdagi yordamchi (API key kerak emas).</div>
-
-        <div class="chat-box" id="chatBox">
-          <div class="msg bot">Salom! Nima savolingiz bor?</div>
-        </div>
-        <div class="typing" id="typingIndicator">Yozmoqda...</div>
-
-        <div class="chat-input-row">
-          <input class="chat-input" id="chatInput" placeholder="Savol..." />
-          <button class="sendBtn" id="btnSend">↑</button>
-        </div>
+        <h2>🧠 AI Yordamchi</h2>
+        <div class="chat-box" id="chatBox"><div class="msg bot">Assalomu alaykum! Savolingiz bormi?</div></div>
+        <input type="text" class="chat-input" id="chatInp" placeholder="Yozing..." onkeypress="if(event.key==='Enter') sendMsg()">
       </div>
-    </section>
+    </div>
 
-    <!-- KNOWLEDGE -->
-    <section id="tab-kb" class="section">
+    <div id="tab-kb" class="section">
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <h2>📚 Bilimlar</h2>
-          <button class="backBtn" id="backToCat" style="display:none;">←</button>
+          <div id="backBtn" style="display:none; background:rgba(255,255,255,0.1); padding:5px 10px; border-radius:8px; cursor:pointer;" onclick="renderCats()">← Orqaga</div>
         </div>
-
-        <div id="categories-view" class="cats"></div>
-        <div id="resources-list" style="display:none;"></div>
+        <div id="cat-view" class="cat-grid"></div>
+        <div id="res-view" style="display:none;"></div>
       </div>
-    </section>
+    </div>
   </div>
 
-  <div class="navbar" id="main-navbar">
-    <div class="nav-item active" data-tab="home">🏠 <span>Asosiy</span></div>
-    <div class="nav-item" data-tab="ai">✨ <span>Chat</span></div>
-    <div class="nav-item" data-tab="kb">📘 <span>Bilimlar</span></div>
+  <div class="navbar">
+    <div class="nav-item active" onclick="go('home', this)">🏠 <span>Asosiy</span></div>
+    <div class="nav-item" onclick="go('ai', this)">✨ <span>Chat</span></div>
+    <div class="nav-item" onclick="go('kb', this)">📘 <span>Bilimlar</span></div>
   </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    // ==========================
-    // SET THIS (PythonAnywhere)
-    // ==========================
-    const API_BASE = "https://YOUR_USERNAME.pythonanywhere.com"; // <-- o'zgartiring
+    const params = new URLSearchParams(window.location.search);
+    
+    // User
+    const uName = params.get('n') || "User";
+    document.getElementById('avatar').innerText = uName.charAt(0).toUpperCase();
+    document.getElementById('subline').innerText = "ID: " + (params.get('id') || "...");
 
-    // anti-copy (best-effort)
-    document.addEventListener("contextmenu", e => e.preventDefault());
-    document.addEventListener("keydown", (e)=>{
-      const t = (e.target && e.target.tagName) || "";
-      const allow = (t === "INPUT" || t === "TEXTAREA");
-      const k = (e.key || "").toLowerCase();
-      if(!allow && (e.ctrlKey || e.metaKey) && ["c","x","s","u","p"].includes(k)) e.preventDefault();
-      if(!allow && k === "printscreen") e.preventDefault();
-    });
+    // Pro
+    document.getElementById('endDate').innerText = "Tugash: " + (params.get('ed') || "Noma'lum");
+    const cl = params.get('cl');
+    document.getElementById('claimedAt').innerText = (cl && cl !== "None") ? "Olingan: " + cl : "Hali olinmagan";
 
-    const avatarLetter = document.getElementById("avatarLetter");
-    const subline = document.getElementById("subline");
-    const endDateText = document.getElementById("end-date-text");
-    const claimDateText = document.getElementById("claim-date-text");
+    // Ad
+    const adT = params.get('at');
+    if(adT && adT !== "None" && adT !== "null"){
+      document.getElementById('ad-card').style.display = 'block';
+      document.getElementById('adTitle').innerText = decodeURIComponent(adT);
+      document.getElementById('adText').innerText = decodeURIComponent(params.get('ax') || "");
+      document.getElementById('adBtn').onclick = () => tg.openLink(decodeURIComponent(params.get('al')));
+    }
 
-    const adContainer = document.getElementById("ad-container");
-    const adTitle = document.getElementById("ad-title");
-    const adText = document.getElementById("ad-text");
-
-    const categoriesView = document.getElementById("categories-view");
-    const resourcesList = document.getElementById("resources-list");
-    const backToCat = document.getElementById("backToCat");
-
+    // Categories
     let CATEGORIES = [];
+    try {
+      const raw = params.get('cats');
+      if(raw) CATEGORIES = JSON.parse(decodeURIComponent(raw));
+    } catch(e) { console.error(e); }
 
-    async function apiFetch(path, opts={}){
-      const headers = Object.assign({}, opts.headers || {}, {
-        "Content-Type":"application/json",
-        "X-TG-INITDATA": tg.initData
-      });
-      const r = await fetch(API_BASE + path, Object.assign({}, opts, {headers}));
-      if(!r.ok) throw new Error("API " + r.status);
-      return await r.json();
-    }
-
-    async function bootstrap(){
-      const u = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
-      const name = (u && u.first_name) ? u.first_name : "User";
-      avatarLetter.textContent = name.charAt(0).toUpperCase();
-
-      try{
-        const data = await apiFetch("/api/bootstrap");
-        subline.textContent = "Ulangan: " + data.user.id;
-
-        endDateText.textContent = data.pro.end_date || "Belgilanmagan";
-        claimDateText.textContent = data.pro.claimed_at ? data.pro.claimed_at : "Hali olinmagan";
-
-        // Ad
-        if(data.ad && data.ad.enabled){
-          adContainer.style.display = "block";
-          adTitle.textContent = data.ad.title || "Tavsiya";
-          adText.textContent = data.ad.text || "";
-        }else{
-          adContainer.style.display = "none";
-        }
-
-        // Categories
-        CATEGORIES = data.categories || [];
-        renderCategories();
-
-      }catch(e){
-        console.error(e);
-        subline.textContent = "Ulanmadi (API)";
-        endDateText.textContent = "—";
-        claimDateText.textContent = "—";
-        adContainer.style.display = "none";
-        categoriesView.innerHTML = `<div class="muted">API ulanmagan. API_BASE ni tekshiring.</div>`;
-      }
-    }
-
-    async function openRedirect(type){
-      const data = await apiFetch("/api/redir-token", {method:"POST", body: JSON.stringify({type})});
-      const url = API_BASE + "/go/" + encodeURIComponent(data.token);
-      tg.openLink(url);
-    }
-
-    async function openPro(){
-      try{
-        await openRedirect("pro");
-        setTimeout(()=> tg.sendData("claim_pro"), 500);
-      }catch(e){
-        tg.showPopup({message:"Pro hozircha mavjud emas yoki tugagan."});
-      }
-    }
-
-    async function openAd(){
-      try{
-        await openRedirect("ad");
-      }catch(e){
-        tg.showPopup({message:"Tavsiya hozircha mavjud emas."});
-      }
-    }
-
-    function renderCategories(){
-      resourcesList.style.display = "none";
-      backToCat.style.display = "none";
-      categoriesView.style.display = "flex";
-      categoriesView.innerHTML = "";
-
-      if(!CATEGORIES.length){
-        categoriesView.innerHTML = `<div class="muted">Kategoriya yo‘q.</div>`;
+    function renderCats(){
+      document.getElementById('res-view').style.display = 'none';
+      document.getElementById('backBtn').style.display = 'none';
+      const div = document.getElementById('cat-view');
+      div.style.display = 'flex';
+      div.innerHTML = "";
+      
+      if(CATEGORIES.length === 0) {
+        div.innerHTML = "<div style='color:gray; width:100%; text-align:center;'>Bo'limlar yo'q</div>";
         return;
       }
 
-      CATEGORIES.forEach(c=>{
-        const el = document.createElement("div");
-        el.className = "cat";
-        el.innerHTML = `<b>📂 ${escapeHtml(c.name)}</b><small>bo‘limni ochish</small>`;
-        el.onclick = ()=> openCat(c.id, c.name);
-        categoriesView.appendChild(el);
+      CATEGORIES.forEach(c => {
+        div.innerHTML += `
+          <div class="cat" onclick="loadRes('${c.id}', '${c.name}')">
+            <div style="font-size:24px; margin-bottom:5px;">📂</div>
+            <div style="font-size:12px; font-weight:bold;">${c.name}</div>
+          </div>`;
       });
     }
 
-    async function openCat(catId, catName){
-      categoriesView.style.display = "none";
-      resourcesList.style.display = "block";
-      backToCat.style.display = "inline-block";
+    function loadRes(cid, cname){
+      document.getElementById('cat-view').style.display = 'none';
+      const div = document.getElementById('res-view');
+      div.style.display = 'block';
+      document.getElementById('backBtn').style.display = 'block';
+      
+      const cat = CATEGORIES.find(c => c.id == cid);
+      const items = cat.items || [];
 
-      resourcesList.innerHTML = `<div style="margin-bottom:10px;"><b>${escapeHtml(catName)}</b></div>
-                                 <div class="muted">Yuklanmoqda…</div>`;
+      div.innerHTML = `<h3 style="margin-top:0">${cname}</h3>`;
+      if(items.length === 0) div.innerHTML += "<p style='color:gray'>Fayllar yo'q</p>";
 
-      try{
-        const data = await apiFetch("/api/resources?cat_id=" + encodeURIComponent(catId));
-        const items = data.resources || [];
-        let html = `<div style="margin-bottom:10px;"><b>${escapeHtml(catName)}</b></div>`;
-        if(!items.length){
-          html += `<div class="muted">Bo‘sh.</div>`;
-          resourcesList.innerHTML = html;
-          return;
-        }
-        items.forEach(r=>{
-          html += `<button class="btn secondary" style="margin-top:10px;"
-                    onclick="tg.sendData('get_resource:${r.id}'); tg.close();">
-                    <span>📄 ${escapeHtml(r.name)}</span><span>⬇</span></button>`;
-        });
-        resourcesList.innerHTML = html;
-      }catch(e){
-        resourcesList.innerHTML = `<div class="muted">Xatolik. Keyinroq urinib ko‘ring.</div>`;
-      }
+      items.forEach(r => {
+        div.innerHTML += `
+          <button class="btn secondary" style="margin-bottom:8px" onclick="tg.sendData('get_resource:${r.id}'); tg.close()">
+            <span>📄 ${r.name}</span> <span>⬇️</span>
+          </button>`;
+      });
     }
 
-    function escapeHtml(s){
-      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    renderCats();
+
+    function go(tab, el){
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('tab-'+tab).classList.add('active');
+      el.classList.add('active');
     }
 
-    // AI chat -> backend assistant
-    let msgCount = 0;
-    const chatBox = document.getElementById("chatBox");
-    const chatInput = document.getElementById("chatInput");
-    const typing = document.getElementById("typingIndicator");
-
-    function addMsg(txt, who){
-      const div = document.createElement("div");
-      div.className = "msg " + who;
-      div.textContent = txt;
-      chatBox.appendChild(div);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    async function sendMessage(){
-      const txt = (chatInput.value || "").trim();
+    async function sendMsg(){
+      const inp = document.getElementById('chatInp');
+      const txt = inp.value.trim();
       if(!txt) return;
-      chatInput.value = "";
-      msgCount++;
-      addMsg(txt, "user");
-      typing.style.display = "block";
-      try{
-        const data = await apiFetch("/api/assistant", {method:"POST", body: JSON.stringify({message: txt})});
-        addMsg(data.ok ? data.answer : "Xatolik.", "bot");
-      }catch(e){
-        addMsg("Xatolik. API ulanmagan bo‘lishi mumkin.", "bot");
-      }finally{
-        typing.style.display = "none";
+      
+      const box = document.getElementById('chatBox');
+      box.innerHTML += `<div class="msg user">${txt}</div>`;
+      inp.value = "";
+      box.scrollTop = box.scrollHeight;
+
+      const loading = document.createElement('div');
+      loading.className = "msg bot"; loading.innerText = "...";
+      box.appendChild(loading);
+
+      try {
+        const url = `https://text.pollinations.ai/${encodeURIComponent(txt)}?model=openai`;
+        const res = await fetch(url);
+        const ans = await res.text();
+        loading.innerText = ans;
+      } catch(e) {
+        loading.innerText = "Xatolik yuz berdi.";
       }
+      box.scrollTop = box.scrollHeight;
     }
-
-    // Nav
-    function goTab(tab, el){
-      document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));
-      document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));
-      document.getElementById("tab-" + tab).classList.add("active");
-      el.classList.add("active");
-    }
-    document.querySelectorAll(".nav-item").forEach(el=>{
-      el.addEventListener("click", ()=>goTab(el.dataset.tab, el));
-    });
-
-    // Bind buttons
-    document.getElementById("btnPro").onclick = openPro;
-    document.getElementById("btnAd").onclick = openAd;
-    document.getElementById("btnCheckDeadline").onclick = ()=> tg.sendData("check_deadline");
-
-    backToCat.onclick = renderCategories;
-    document.getElementById("btnSend").onclick = sendMessage;
-    chatInput.addEventListener("keypress", (e)=>{ if(e.key==="Enter") sendMessage(); });
-
-    // Init
-    bootstrap();
   </script>
 </body>
 </html>
