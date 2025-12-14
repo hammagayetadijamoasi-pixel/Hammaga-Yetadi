@@ -2,64 +2,48 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
   <title>Hammaga Yetadi</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root{ --primary:#7C4DFF; --secondary:#00E5FF; --bg:#070A12; --glass:rgba(255,255,255,0.06); --text:#ffffff; }
     body{ margin:0; background:var(--bg); color:var(--text); font-family:sans-serif; height:100vh; display:flex; flex-direction:column; overflow:hidden; user-select:none; }
-    .orb{ position:fixed; border-radius:50%; filter:blur(90px); z-index:-1; opacity:.3; }
-    .orb.one{ width:300px; height:300px; background:var(--primary); top:-10%; left:-10%; animation:float 10s infinite alternate; }
-    .orb.two{ width:250px; height:250px; background:var(--secondary); bottom:-10%; right:-10%; animation:float 12s infinite alternate-reverse; }
-    @keyframes float{ from{transform:translate(0,0)} to{transform:translate(30px,40px)} }
     
     .main{ flex:1; overflow:auto; padding:16px; padding-bottom:90px; }
-    .header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; }
-    .avatar{ background:var(--glass); padding:5px 12px; border-radius:20px; font-weight:bold; border:1px solid rgba(255,255,255,0.1); }
-    
-    .card{ background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:16px; margin-bottom:12px; backdrop-filter:blur(10px); }
+    .card{ background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:16px; margin-bottom:12px; }
     .btn{ width:100%; padding:14px; border:none; border-radius:12px; font-weight:bold; color:#000; background:linear-gradient(90deg, var(--primary), var(--secondary)); cursor:pointer; margin-top:10px; display:flex; justify-content:center; align-items:center; gap:8px;}
     .btn:active{ opacity:0.9; transform:scale(0.98); }
     .btn.secondary{ background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.1); justify-content:space-between; }
     
     .navbar{ position:fixed; bottom:16px; left:16px; right:16px; height:65px; background:rgba(18,18,28,0.95); border-radius:18px; border:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-around; align-items:center; z-index:100; }
     .nav-item{ font-size:20px; color:rgba(255,255,255,0.5); display:flex; flex-direction:column; align-items:center; gap:4px; transition:0.3s; }
-    .nav-item span{ font-size:10px; font-weight:bold; }
     .nav-item.active{ color:var(--secondary); transform:translateY(-2px); }
-    
-    .section{ display:none; animation:fade 0.3s; }
-    .section.active{ display:block; }
-    @keyframes fade{ from{opacity:0; transform:translateY(5px)} to{opacity:1; transform:translateY(0)} }
+    .section{ display:none; } .section.active{ display:block; }
     
     .cat-grid{ display:flex; flex-wrap:wrap; gap:10px; }
     .cat{ width:calc(50% - 5px); background:rgba(255,255,255,0.08); border-radius:12px; padding:12px; text-align:center; cursor:pointer; border:1px solid rgba(255,255,255,0.05); }
     
     .chat-box{ height:350px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; margin-bottom:10px; }
-    .msg{ padding:10px 14px; border-radius:12px; max-width:85%; font-size:14px; line-height:1.4; }
+    .msg{ padding:10px 14px; border-radius:12px; max-width:85%; font-size:14px; }
     .msg.bot{ align-self:flex-start; background:rgba(255,255,255,0.1); }
-    .msg.user{ align-self:flex-end; background:var(--primary); color:#fff; }
+    .msg.user{ align-self:flex-end; background:var(--primary); }
     .chat-input{ width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:#fff; }
   </style>
 </head>
 <body oncontextmenu="return false;">
-  <div class="orb one"></div><div class="orb two"></div>
-
   <div class="main">
-    <div class="header">
-      <div><b>Hammaga Yetadi</b><br><small style="color:gray" id="subline">Yuklanmoqda...</small></div>
-      <div class="avatar" id="avatar">U</div>
-    </div>
+    <div style="margin-bottom:15px;"><b>Hammaga Yetadi</b><br><small style="color:gray" id="subline">...</small></div>
 
     <div id="tab-home" class="section active">
       <div class="card">
         <h2>👑 Pro Panel</h2>
-        <div style="font-size:13px; color:#aaa; margin-bottom:10px;">Pro link maxfiy saqlanadi. Tugmani bossangiz bot yuboradi.</div>
+        <div style="font-size:13px; color:#aaa; margin-bottom:10px;">Tugmani bosishingiz bilan Pro link avtomatik ochiladi.</div>
         <div style="display:flex; gap:10px; margin-bottom:10px;">
           <div style="background:rgba(255,255,255,0.1); padding:5px 10px; border-radius:8px; font-size:12px;">⏳ <span id="endDate">...</span></div>
           <div style="background:rgba(255,255,255,0.1); padding:5px 10px; border-radius:8px; font-size:12px;">📥 <span id="claimedAt">...</span></div>
         </div>
-        <button class="btn" onclick="tg.sendData('claim_pro'); tg.close()">🚀 Pro Linkni Olish</button>
-        <button class="btn secondary" onclick="tg.sendData('check_deadline')"><span>📅 Holatni Tekshirish</span> <span>›</span></button>
+        <button class="btn" onclick="claim()">🚀 Pro Olish</button>
+        <button class="btn secondary" onclick="tg.sendData('check_deadline'); tg.close()"><span>📅 Holat</span> <span>›</span></button>
       </div>
 
       <div id="ad-card" class="card" style="display:none; border-color:var(--secondary);">
@@ -72,17 +56,17 @@
 
     <div id="tab-ai" class="section">
       <div class="card">
-        <h2>🧠 AI Yordamchi</h2>
-        <div class="chat-box" id="chatBox"><div class="msg bot">Assalomu alaykum! Savolingiz bormi?</div></div>
+        <h2>🧠 AI</h2>
+        <div class="chat-box" id="chatBox"><div class="msg bot">Savolingiz bormi?</div></div>
         <input type="text" class="chat-input" id="chatInp" placeholder="Yozing..." onkeypress="if(event.key==='Enter') sendMsg()">
       </div>
     </div>
 
     <div id="tab-kb" class="section">
       <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
           <h2>📚 Bilimlar</h2>
-          <div id="backBtn" style="display:none; background:rgba(255,255,255,0.1); padding:5px 10px; border-radius:8px; cursor:pointer;" onclick="renderCats()">← Orqaga</div>
+          <div id="backBtn" style="display:none; cursor:pointer;" onclick="renderCats()">←</div>
         </div>
         <div id="cat-view" class="cat-grid"></div>
         <div id="res-view" style="display:none;"></div>
@@ -91,61 +75,52 @@
   </div>
 
   <div class="navbar">
-    <div class="nav-item active" onclick="go('home', this)">🏠 <span>Asosiy</span></div>
-    <div class="nav-item" onclick="go('ai', this)">✨ <span>Chat</span></div>
-    <div class="nav-item" onclick="go('kb', this)">📘 <span>Bilimlar</span></div>
+    <div class="nav-item active" onclick="go('home', this)">🏠</div>
+    <div class="nav-item" onclick="go('ai', this)">✨</div>
+    <div class="nav-item" onclick="go('kb', this)">📘</div>
   </div>
 
   <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
+    const tg = window.Telegram.WebApp; tg.expand();
     const params = new URLSearchParams(window.location.search);
     
-    // User
-    const uName = params.get('n') || "User";
-    document.getElementById('avatar').innerText = uName.charAt(0).toUpperCase();
     document.getElementById('subline').innerText = "ID: " + (params.get('id') || "...");
-
-    // Pro
-    document.getElementById('endDate').innerText = "Tugash: " + (params.get('ed') || "Noma'lum");
+    document.getElementById('endDate').innerText = params.get('ed') || "?";
     const cl = params.get('cl');
-    document.getElementById('claimedAt').innerText = (cl && cl !== "None") ? "Olingan: " + cl : "Hali olinmagan";
+    document.getElementById('claimedAt').innerText = (cl && cl !== "None") ? cl : "Yoq";
+    
+    // Pro linkni yashirin o'qish
+    const proLink = decodeURIComponent(params.get('pl') || "");
 
-    // Ad
     const adT = params.get('at');
-    if(adT && adT !== "None" && adT !== "null"){
+    if(adT && adT !== "None"){
       document.getElementById('ad-card').style.display = 'block';
       document.getElementById('adTitle').innerText = decodeURIComponent(adT);
       document.getElementById('adText').innerText = decodeURIComponent(params.get('ax') || "");
       document.getElementById('adBtn').onclick = () => tg.openLink(decodeURIComponent(params.get('al')));
     }
 
-    // Categories
+    // MAIN LOGIC
+    function claim() {
+        if(proLink && proLink.length > 5) {
+            tg.openLink(proLink); // 1. Linkni ochadi
+            tg.sendData('claim_pro'); // 2. Botga xabar beradi
+        } else {
+            alert("Link hali qo'yilmagan.");
+        }
+    }
+
     let CATEGORIES = [];
-    try {
-      const raw = params.get('cats');
-      if(raw) CATEGORIES = JSON.parse(decodeURIComponent(raw));
-    } catch(e) { console.error(e); }
+    try { CATEGORIES = JSON.parse(decodeURIComponent(params.get('cats'))); } catch(e) {}
 
     function renderCats(){
       document.getElementById('res-view').style.display = 'none';
       document.getElementById('backBtn').style.display = 'none';
       const div = document.getElementById('cat-view');
-      div.style.display = 'flex';
-      div.innerHTML = "";
-      
-      if(CATEGORIES.length === 0) {
-        div.innerHTML = "<div style='color:gray; width:100%; text-align:center;'>Bo'limlar yo'q</div>";
-        return;
-      }
-
+      div.style.display = 'flex'; div.innerHTML = "";
+      if(CATEGORIES.length===0) div.innerHTML = "<p style='color:gray'>Bo'sh</p>";
       CATEGORIES.forEach(c => {
-        div.innerHTML += `
-          <div class="cat" onclick="loadRes('${c.id}', '${c.name}')">
-            <div style="font-size:24px; margin-bottom:5px;">📂</div>
-            <div style="font-size:12px; font-weight:bold;">${c.name}</div>
-          </div>`;
+        div.innerHTML += `<div class="cat" onclick="loadRes('${c.id}', '${c.name}')">📂 ${c.name}</div>`;
       });
     }
 
@@ -156,19 +131,13 @@
       document.getElementById('backBtn').style.display = 'block';
       
       const cat = CATEGORIES.find(c => c.id == cid);
-      const items = cat.items || [];
+      div.innerHTML = `<h3>${cname}</h3>`;
+      if(cat.items.length === 0) div.innerHTML += "<p style='color:gray'>Fayllar yo'q</p>";
 
-      div.innerHTML = `<h3 style="margin-top:0">${cname}</h3>`;
-      if(items.length === 0) div.innerHTML += "<p style='color:gray'>Fayllar yo'q</p>";
-
-      items.forEach(r => {
-        div.innerHTML += `
-          <button class="btn secondary" style="margin-bottom:8px" onclick="tg.sendData('get_resource:${r.id}'); tg.close()">
-            <span>📄 ${r.name}</span> <span>⬇️</span>
-          </button>`;
+      cat.items.forEach(r => {
+        div.innerHTML += `<button class="btn secondary" style="margin-bottom:8px" onclick="tg.sendData('get_resource:${r.id}'); tg.close()">📄 ${r.name}</button>`;
       });
     }
-
     renderCats();
 
     function go(tab, el){
@@ -182,25 +151,16 @@
       const inp = document.getElementById('chatInp');
       const txt = inp.value.trim();
       if(!txt) return;
-      
-      const box = document.getElementById('chatBox');
-      box.innerHTML += `<div class="msg user">${txt}</div>`;
+      document.getElementById('chatBox').innerHTML += `<div class="msg user">${txt}</div>`;
       inp.value = "";
-      box.scrollTop = box.scrollHeight;
-
-      const loading = document.createElement('div');
-      loading.className = "msg bot"; loading.innerText = "...";
-      box.appendChild(loading);
-
+      
       try {
-        const url = `https://text.pollinations.ai/${encodeURIComponent(txt)}?model=openai`;
-        const res = await fetch(url);
+        const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(txt)}?model=openai`);
         const ans = await res.text();
-        loading.innerText = ans;
+        document.getElementById('chatBox').innerHTML += `<div class="msg bot">${ans}</div>`;
       } catch(e) {
-        loading.innerText = "Xatolik yuz berdi.";
+        document.getElementById('chatBox').innerHTML += `<div class="msg bot">Xato.</div>`;
       }
-      box.scrollTop = box.scrollHeight;
     }
   </script>
 </body>
