@@ -1,204 +1,533 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Yaxshi AI & Pro</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <style>
-        :root { --primary: #7C4DFF; --secondary: #00E5FF; --dark: #090919; --glass: rgba(255, 255, 255, 0.05); --glass-border: rgba(255, 255, 255, 0.1); --text-gray: #aab2c8; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; -webkit-user-select: none; }
-        input, textarea { user-select: text; -webkit-user-select: text; }
-        body { margin: 0; background: var(--dark); color: white; font-family: 'Segoe UI', Roboto, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        .orb { position: fixed; border-radius: 50%; filter: blur(90px); z-index: -1; opacity: 0.3; }
-        .orb-1 { width: 300px; height: 300px; background: var(--primary); top: -10%; left: -10%; animation: float 10s infinite alternate; }
-        .orb-2 { width: 250px; height: 250px; background: var(--secondary); bottom: -10%; right: -10%; animation: float 12s infinite alternate-reverse; }
-        @keyframes float { from {transform: translate(0,0);} to {transform: translate(30px, 50px);} }
-        .main-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 90px; }
-        .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; margin-bottom: 15px; backdrop-filter: blur(15px); }
-        h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 14px; font-size: 15px; font-weight: 600; color: white; cursor: pointer; background: linear-gradient(90deg, var(--primary), #536DFE); display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;}
-        .btn:active { transform: scale(0.96); }
-        .btn.secondary { background: rgba(255,255,255,0.05); box-shadow: none; border: 1px solid var(--glass-border); justify-content: space-between; padding: 12px 16px; }
-        .cat-card { background: rgba(255,255,255,0.08); border-radius: 15px; padding: 15px; text-align: center; cursor: pointer; border: 1px solid transparent; transition: 0.2s; display:inline-block; width: 48%; margin: 1%; vertical-align: top;}
-        .cat-icon { font-size: 24px; color: var(--secondary); margin-bottom: 8px; }
-        .cat-name { font-size: 13px; font-weight: bold; }
-        .navbar { position: fixed; bottom: 20px; left: 20px; right: 20px; height: 65px; background: rgba(18, 18, 28, 0.95); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid var(--glass-border); display: flex; justify-content: space-around; align-items: center; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .nav-item { color: rgba(255,255,255,0.4); font-size: 22px; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .nav-item span { font-size: 10px; font-weight: 600; }
-        .nav-item.active { color: var(--secondary); transform: translateY(-3px); }
-        .section { display: none; animation: fade 0.3s; }
-        .section.active { display: block; }
-        @keyframes fade { from {opacity: 0; transform: translateY(5px);} to {opacity: 1; transform: translateY(0);} }
-        input { width: 100%; padding: 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 12px; color: white; margin-bottom: 12px; }
-        .chat-box { height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
-        .msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; word-wrap: break-word; user-select: text; -webkit-user-select: text; }
-        .msg.bot { align-self: flex-start; background: rgba(255,255,255,0.08); border-bottom-left-radius: 4px; }
-        .msg.user { align-self: flex-end; background: var(--primary); border-bottom-right-radius: 4px; color: white;}
-        .chat-input-wrapper { display: flex; gap: 10px; }
-        .chat-input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 14px; border-radius: 14px; color: white; }
-        .chat-btn { width: 50px; height: 50px; border-radius: 14px; border: none; background: var(--secondary); color: #000; font-size: 18px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+  <title>Hammaga Yetadi — Pro & Yordamchi</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root{
+      --primary:#7C4DFF;
+      --secondary:#00E5FF;
+      --bg:#070A12;
+      --glass: rgba(255,255,255,0.06);
+      --glass2: rgba(255,255,255,0.045);
+      --stroke: rgba(255,255,255,0.10);
+      --muted:#aab2c8;
+      --text:#ffffff;
+      --shadow: rgba(0,0,0,0.45);
+      --ok:#59FFA7;
+      --bad:#FF5C7A;
+    }
+
+    *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; outline:none; user-select:none; -webkit-user-select:none;}
+    input, textarea { user-select:text; -webkit-user-select:text; }
+
+    body{
+      margin:0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+    }
+
+    .orb{
+      position:fixed; border-radius:50%; filter:blur(90px); z-index:-1; opacity:.28;
+    }
+    .orb.one{width:340px;height:340px;background:var(--primary); top:-10%; left:-12%; animation:float 10s ease-in-out infinite alternate;}
+    .orb.two{width:300px;height:300px;background:var(--secondary); bottom:-12%; right:-12%; animation:float 12s ease-in-out infinite alternate-reverse;}
+    @keyframes float{from{transform:translate(0,0)}to{transform:translate(34px,46px)}}
+
+    .main{
+      flex:1;
+      overflow:auto;
+      padding:18px 16px 96px;
+    }
+
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
+    }
+    .brand b{
+      font-size:16px;
+      letter-spacing:.2px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip:text; background-clip:text;
+      color:transparent;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .brand small{color:var(--muted); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .avatar{
+      padding:6px 12px;
+      border-radius:999px;
+      background: var(--glass);
+      border:1px solid var(--stroke);
+      backdrop-filter: blur(14px);
+      font-weight:900;
+    }
+
+    .card{
+      background: var(--glass2);
+      border:1px solid var(--stroke);
+      border-radius:18px;
+      padding:16px;
+      margin-bottom:12px;
+      box-shadow: 0 18px 44px var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+    .card h2{
+      margin:0 0 8px;
+      font-size:15px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .muted{color:var(--muted); font-size:12.5px; line-height:1.4;}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:14px;
+      background: rgba(255,255,255,.05);
+      border:1px solid var(--stroke);
+      font-size:12px;
+      color: var(--muted);
+    }
+
+    .btn{
+      width:100%;
+      padding:13px 14px;
+      border:none;
+      border-radius:14px;
+      font-size:14px;
+      font-weight:800;
+      color:#07111B;
+      cursor:pointer;
+      background: linear-gradient(90deg, var(--primary), #536DFE);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      margin-top:10px;
+    }
+    .btn:active{transform:scale(.98)}
+    .btn.secondary{
+      color:var(--text);
+      background: rgba(255,255,255,0.06);
+      border:1px solid var(--stroke);
+      justify-content:space-between;
+    }
+
+    .navbar{
+      position:fixed;
+      bottom:14px;
+      left:14px;
+      right:14px;
+      height:68px;
+      background: rgba(18,18,28,0.92);
+      backdrop-filter: blur(18px);
+      border-radius:20px;
+      border:1px solid var(--stroke);
+      display:flex;
+      justify-content:space-around;
+      align-items:center;
+      z-index:100;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.55);
+    }
+    .nav-item{
+      color: rgba(255,255,255,0.45);
+      font-size:20px;
+      transition:.25s;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:4px;
+      cursor:pointer;
+      font-weight:800;
+    }
+    .nav-item span{font-size:10px; font-weight:800}
+    .nav-item.active{
+      color: var(--secondary);
+      transform: translateY(-3px);
+    }
+
+    .section{display:none; animation:fade .25s ease}
+    .section.active{display:block}
+    @keyframes fade{from{opacity:0; transform:translateY(6px)}to{opacity:1; transform:translateY(0)}}
+
+    /* Knowledge */
+    .cats{display:flex; flex-wrap:wrap; gap:10px}
+    .cat{
+      width: calc(50% - 5px);
+      border-radius:16px;
+      background: rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.08);
+      padding:14px;
+      cursor:pointer;
+      transition:.18s;
+    }
+    .cat:active{transform:scale(.98)}
+    .cat b{display:block; font-size:13px}
+    .cat small{color:var(--muted); font-size:11px}
+    .backBtn{
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,0.06);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:900;
+    }
+
+    /* Chat */
+    .chat-box{
+      height: 360px;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:10px;
+      padding-right:4px;
+    }
+    .msg{
+      max-width:85%;
+      padding:10px 12px;
+      border-radius:14px;
+      font-size:13.5px;
+      line-height:1.45;
+      word-wrap:break-word;
+      user-select:text; -webkit-user-select:text;
+      border:1px solid transparent;
+      white-space: pre-wrap;
+    }
+    .msg.bot{
+      align-self:flex-start;
+      background: rgba(255,255,255,0.08);
+      border-bottom-left-radius: 6px;
+      border-color: rgba(255,255,255,0.10);
+    }
+    .msg.user{
+      align-self:flex-end;
+      background: rgba(124,77,255,0.35);
+      border-bottom-right-radius: 6px;
+      border-color: rgba(124,77,255,0.25);
+    }
+    .typing{display:none; font-size:12px; opacity:.75; font-style:italic; margin-top:8px;}
+    .chat-input-row{display:flex; gap:10px; margin-top:12px;}
+    .chat-input{
+      flex:1;
+      border-radius:14px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,0.22);
+      color:var(--text);
+      padding:12px 12px;
+    }
+    .sendBtn{
+      width:52px;height:46px;
+      border-radius:14px;
+      border:none;
+      background: var(--secondary);
+      color:#06101B;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    /* best-effort anti-copy */
+    body { -webkit-user-select:none; user-select:none; }
+  </style>
 </head>
 <body oncontextmenu="return false;">
-    <div class="orb orb-1"></div><div class="orb orb-2"></div>
-    <div class="main-content">
-        <div class="app-header">
-            <div class="brand">Yaxshi <span style="color:var(--secondary)">AI</span></div>
-            <div style="background:var(--glass); padding:4px 12px; border-radius:30px; font-weight:bold; font-size:14px;" id="avatarLetter">U</div>
-        </div>
+  <div class="orb one"></div>
+  <div class="orb two"></div>
 
-        <div id="tab-home" class="section active">
-            <div id="main-content-area" style="display: block;">
-                <div class="card">
-                    <h2><i class="fas fa-crown" style="color:#FFD700"></i> Pro Panel</h2>
-                    <p>Sizda to'liq imkoniyatlar mavjud.</p>
-                    
-                    <div style="margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 10px;">
-                        <div id="pro-status">
-                            <i class="fas fa-clock"></i> Tugash muddati: <b id="end-date-text">...</b><br>
-                            <span style="font-size:12px; color:gray" id="claim-date-text"></span>
-                        </div>
-                    </div>
-
-                    <button class="btn" onclick="openPro()"><i class="fas fa-external-link-alt"></i> Pro Linkni Olish</button>
-                </div>
-                
-                <div id="ad-container" class="card" style="display:none; border-color:var(--secondary);">
-                    <div style="background:var(--secondary); color:#000; font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px; display:inline-block;">TAVSIYA</div>
-                    <h3 id="ad-title" style="margin:5px 0 0 0; font-size:16px;"></h3>
-                    <p id="ad-text" style="font-size:13px; color:var(--text-gray); margin:0;"></p>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-ai" class="section">
-            <div class="card">
-                <h2><i class="fas fa-brain" style="color:var(--secondary)"></i> Yaxshi AI</h2>
-                <div class="chat-box" id="chatBox"><div class="msg bot">👋 Salom! Nima savolingiz bor?</div></div>
-                <div id="typingIndicator" style="display:none; font-size:12px; margin-bottom:10px; font-style:italic; opacity:0.7;">Yozmoqda...</div>
-                <div class="chat-input-wrapper">
-                    <input type="text" class="chat-input" id="chatInput" placeholder="Savol..." onkeypress="if(event.key==='Enter') sendMessage()">
-                    <button class="chat-btn" onclick="sendMessage()"><i class="fas fa-arrow-up"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-kb" class="section">
-            <div class="card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <h2><i class="fas fa-book" style="color:var(--secondary)"></i> Bilimlar</h2>
-                    <button id="backToCat" class="btn secondary" style="width:auto; padding:5px 10px; display:none;" onclick="renderCategories()"><i class="fas fa-arrow-left"></i></button>
-                </div>
-                <div id="categories-view"></div>
-                <div id="resources-list" style="display:none;"></div>
-            </div>
-        </div>
+  <div class="main">
+    <div class="header">
+      <div class="brand">
+        <b>Hammaga Yetadi</b>
+        <small id="subline">Ulanmoqda…</small>
+      </div>
+      <div class="avatar" id="avatarLetter">U</div>
     </div>
 
-    <div class="navbar" id="main-navbar" style="display: flex;">
-        <div class="nav-item active" onclick="goTab('home', this)"><i class="fas fa-home"></i> <span>Asosiy</span></div>
-        <div class="nav-item" onclick="goTab('ai', this)"><i class="fas fa-sparkles"></i> <span>AI Chat</span></div>
-        <div class="nav-item" onclick="goTab('kb', this)"><i class="fas fa-book"></i> <span>Bilimlar</span></div>
-    </div>
+    <!-- HOME -->
+    <section id="tab-home" class="section active">
+      <div class="card">
+        <h2>👑 Pro Panel</h2>
+        <div class="muted">Pro link ko‘rinmaydi. Tugma orqali token bilan ochiladi.</div>
 
-    <script>
-        const tg = window.Telegram.WebApp; tg.expand();
-        const params = new URLSearchParams(window.location.search);
-        const uName = decodeURIComponent(params.get('n') || "User");
-        let PRO_LINK = decodeURIComponent(params.get('cl') || ""); 
-        let RESOURCES = [];
-        try { RESOURCES = JSON.parse(decodeURIComponent(params.get('rs') || "[]")); } catch(e) {}
-        const adTitle = decodeURIComponent(params.get('at') || "");
-        
-        const endDateStr = decodeURIComponent(params.get('ed') || "Noma'lum");
-        const claimedStr = decodeURIComponent(params.get('pd') || "");
+        <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+          <div class="pill">⏳ Tugash: <b id="end-date-text">…</b></div>
+          <div class="pill">🕒 Olingan: <b id="claim-date-text">…</b></div>
+        </div>
 
-        window.onload = () => {
-            document.getElementById('avatarLetter').innerText = uName.charAt(0).toUpperCase();
-            
-            // Muddatni ko'rsatish
-            document.getElementById('end-date-text').innerText = endDateStr;
-            if(claimedStr && claimedStr !== "None" && claimedStr.length > 5) {
-                document.getElementById('claim-date-text').innerText = `Olingan vaqt: ${claimedStr}`;
-            } else {
-                document.getElementById('claim-date-text').innerText = "Hali olinmagan";
-            }
+        <button class="btn" id="btnPro">🚀 Pro linkni ochish</button>
+        <button class="btn secondary" id="btnCheckDeadline"><span>📅 Holatni tekshirish</span><span>›</span></button>
+      </div>
 
-            if(adTitle && adTitle !== "null" && adTitle.length > 1) {
-                document.getElementById('ad-container').style.display = 'block';
-                document.getElementById('ad-title').innerText = adTitle;
-                document.getElementById('ad-text').innerText = decodeURIComponent(params.get('ax') || "");
-                document.getElementById('ad-container').onclick = () => tg.openTelegramLink(decodeURIComponent(params.get('al') || ""));
-            }
-            renderCategories();
-        };
+      <!-- Tavsiya reklama (Pro pastida) -->
+      <div id="ad-container" class="card" style="display:none; border-color: rgba(0,229,255,0.35);">
+        <div class="pill" style="color:#06101B; background: rgba(0,229,255,0.9); border: none;">TAVSIYA</div>
+        <h3 id="ad-title" style="margin:10px 0 6px 0; font-size:16px;">—</h3>
+        <div id="ad-text" class="muted">—</div>
+        <button class="btn secondary" id="btnAd"><span>Ko‘rish</span><span>↗</span></button>
+      </div>
+    </section>
 
-        function openPro() { 
-            if(PRO_LINK && PRO_LINK.length > 5) {
-                tg.openLink(PRO_LINK);
-                setTimeout(() => { tg.sendData("claim_pro"); }, 500);
-            } else {
-                tg.showPopup({message: "Link hali qo'yilmagan."});
-            }
+    <!-- AI -->
+    <section id="tab-ai" class="section">
+      <div class="card">
+        <h2>🧠 Yordamchi</h2>
+        <div class="muted">Bepul: serverdagi yordamchi (API key kerak emas).</div>
+
+        <div class="chat-box" id="chatBox">
+          <div class="msg bot">Salom! Nima savolingiz bor?</div>
+        </div>
+        <div class="typing" id="typingIndicator">Yozmoqda...</div>
+
+        <div class="chat-input-row">
+          <input class="chat-input" id="chatInput" placeholder="Savol..." />
+          <button class="sendBtn" id="btnSend">↑</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- KNOWLEDGE -->
+    <section id="tab-kb" class="section">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h2>📚 Bilimlar</h2>
+          <button class="backBtn" id="backToCat" style="display:none;">←</button>
+        </div>
+
+        <div id="categories-view" class="cats"></div>
+        <div id="resources-list" style="display:none;"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="navbar" id="main-navbar">
+    <div class="nav-item active" data-tab="home">🏠 <span>Asosiy</span></div>
+    <div class="nav-item" data-tab="ai">✨ <span>Chat</span></div>
+    <div class="nav-item" data-tab="kb">📘 <span>Bilimlar</span></div>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    // ==========================
+    // SET THIS (PythonAnywhere)
+    // ==========================
+    const API_BASE = "https://YOUR_USERNAME.pythonanywhere.com"; // <-- o'zgartiring
+
+    // anti-copy (best-effort)
+    document.addEventListener("contextmenu", e => e.preventDefault());
+    document.addEventListener("keydown", (e)=>{
+      const t = (e.target && e.target.tagName) || "";
+      const allow = (t === "INPUT" || t === "TEXTAREA");
+      const k = (e.key || "").toLowerCase();
+      if(!allow && (e.ctrlKey || e.metaKey) && ["c","x","s","u","p"].includes(k)) e.preventDefault();
+      if(!allow && k === "printscreen") e.preventDefault();
+    });
+
+    const avatarLetter = document.getElementById("avatarLetter");
+    const subline = document.getElementById("subline");
+    const endDateText = document.getElementById("end-date-text");
+    const claimDateText = document.getElementById("claim-date-text");
+
+    const adContainer = document.getElementById("ad-container");
+    const adTitle = document.getElementById("ad-title");
+    const adText = document.getElementById("ad-text");
+
+    const categoriesView = document.getElementById("categories-view");
+    const resourcesList = document.getElementById("resources-list");
+    const backToCat = document.getElementById("backToCat");
+
+    let CATEGORIES = [];
+
+    async function apiFetch(path, opts={}){
+      const headers = Object.assign({}, opts.headers || {}, {
+        "Content-Type":"application/json",
+        "X-TG-INITDATA": tg.initData
+      });
+      const r = await fetch(API_BASE + path, Object.assign({}, opts, {headers}));
+      if(!r.ok) throw new Error("API " + r.status);
+      return await r.json();
+    }
+
+    async function bootstrap(){
+      const u = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+      const name = (u && u.first_name) ? u.first_name : "User";
+      avatarLetter.textContent = name.charAt(0).toUpperCase();
+
+      try{
+        const data = await apiFetch("/api/bootstrap");
+        subline.textContent = "Ulangan: " + data.user.id;
+
+        endDateText.textContent = data.pro.end_date || "Belgilanmagan";
+        claimDateText.textContent = data.pro.claimed_at ? data.pro.claimed_at : "Hali olinmagan";
+
+        // Ad
+        if(data.ad && data.ad.enabled){
+          adContainer.style.display = "block";
+          adTitle.textContent = data.ad.title || "Tavsiya";
+          adText.textContent = data.ad.text || "";
+        }else{
+          adContainer.style.display = "none";
         }
 
-        function renderCategories() {
-            const cv = document.getElementById('categories-view');
-            document.getElementById('resources-list').style.display='none';
-            document.getElementById('backToCat').style.display='none';
-            cv.style.display='block'; cv.innerHTML="";
-            const cats = [...new Set(RESOURCES.map(r => r.category))];
-            if(cats.length===0) { cv.innerHTML="<p>Bo'sh.</p>"; return; }
-            cats.forEach(c => {
-                cv.innerHTML += `<div class="cat-card" onclick="openCat('${c}')"><div class="cat-icon">📂</div><div class="cat-name">${c}</div></div>`;
-            });
-        }
-        function openCat(c) {
-            document.getElementById('categories-view').style.display='none';
-            const rv = document.getElementById('resources-list');
-            rv.style.display='block'; document.getElementById('backToCat').style.display='block';
-            rv.innerHTML = `<h3>${c}</h3>`;
-            RESOURCES.filter(r=>r.category===c).forEach(r=>{
-                rv.innerHTML += `<button class="btn secondary" onclick="tg.sendData('get_resource:'+'${r.id}');tg.close()"><span>📄 ${r.name}</span> <i class="fas fa-download"></i></button>`;
-            });
-        }
+        // Categories
+        CATEGORIES = data.categories || [];
+        renderCategories();
 
-        let msgCount = 0;
-        async function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const txt = input.value.trim();
-            if(!txt) return;
-            addMsg(txt, 'user'); input.value=''; msgCount++;
-            document.getElementById('typingIndicator').style.display='block';
-            const box = document.getElementById('chatBox'); box.scrollTop = box.scrollHeight;
-            try {
-                let rule = msgCount === 1 ? "Salomlash." : "Salomlashma.";
-                const url = 'https://text.pollinations.ai/' + encodeURIComponent(`Siz "Yaxshi AI"siz. 1. ${rule} 2. Professional bo'l. 3. O'zbek tili. Savol: ${txt}`) + '?model=openai';
-                const res = await fetch(url);
-                const ans = await res.text();
-                document.getElementById('typingIndicator').style.display='none';
-                addMsg(ans, 'bot');
-            } catch {
-                document.getElementById('typingIndicator').style.display='none';
-                addMsg("Xatolik.", 'bot');
-            }
-            box.scrollTop = box.scrollHeight;
-        }
-        function addMsg(txt, type) {
-            const div = document.createElement('div'); div.className = `msg ${type}`;
-            div.innerHTML = marked.parse(txt);
-            document.getElementById('chatBox').appendChild(div);
-        }
+      }catch(e){
+        console.error(e);
+        subline.textContent = "Ulanmadi (API)";
+        endDateText.textContent = "—";
+        claimDateText.textContent = "—";
+        adContainer.style.display = "none";
+        categoriesView.innerHTML = `<div class="muted">API ulanmagan. API_BASE ni tekshiring.</div>`;
+      }
+    }
 
-        function goTab(t, el) {
-            document.querySelectorAll('.section').forEach(x => x.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
-            document.getElementById('tab-'+t).classList.add('active');
-            el.classList.add('active');
+    async function openRedirect(type){
+      const data = await apiFetch("/api/redir-token", {method:"POST", body: JSON.stringify({type})});
+      const url = API_BASE + "/go/" + encodeURIComponent(data.token);
+      tg.openLink(url);
+    }
+
+    async function openPro(){
+      try{
+        await openRedirect("pro");
+        setTimeout(()=> tg.sendData("claim_pro"), 500);
+      }catch(e){
+        tg.showPopup({message:"Pro hozircha mavjud emas yoki tugagan."});
+      }
+    }
+
+    async function openAd(){
+      try{
+        await openRedirect("ad");
+      }catch(e){
+        tg.showPopup({message:"Tavsiya hozircha mavjud emas."});
+      }
+    }
+
+    function renderCategories(){
+      resourcesList.style.display = "none";
+      backToCat.style.display = "none";
+      categoriesView.style.display = "flex";
+      categoriesView.innerHTML = "";
+
+      if(!CATEGORIES.length){
+        categoriesView.innerHTML = `<div class="muted">Kategoriya yo‘q.</div>`;
+        return;
+      }
+
+      CATEGORIES.forEach(c=>{
+        const el = document.createElement("div");
+        el.className = "cat";
+        el.innerHTML = `<b>📂 ${escapeHtml(c.name)}</b><small>bo‘limni ochish</small>`;
+        el.onclick = ()=> openCat(c.id, c.name);
+        categoriesView.appendChild(el);
+      });
+    }
+
+    async function openCat(catId, catName){
+      categoriesView.style.display = "none";
+      resourcesList.style.display = "block";
+      backToCat.style.display = "inline-block";
+
+      resourcesList.innerHTML = `<div style="margin-bottom:10px;"><b>${escapeHtml(catName)}</b></div>
+                                 <div class="muted">Yuklanmoqda…</div>`;
+
+      try{
+        const data = await apiFetch("/api/resources?cat_id=" + encodeURIComponent(catId));
+        const items = data.resources || [];
+        let html = `<div style="margin-bottom:10px;"><b>${escapeHtml(catName)}</b></div>`;
+        if(!items.length){
+          html += `<div class="muted">Bo‘sh.</div>`;
+          resourcesList.innerHTML = html;
+          return;
         }
-    </script>
+        items.forEach(r=>{
+          html += `<button class="btn secondary" style="margin-top:10px;"
+                    onclick="tg.sendData('get_resource:${r.id}'); tg.close();">
+                    <span>📄 ${escapeHtml(r.name)}</span><span>⬇</span></button>`;
+        });
+        resourcesList.innerHTML = html;
+      }catch(e){
+        resourcesList.innerHTML = `<div class="muted">Xatolik. Keyinroq urinib ko‘ring.</div>`;
+      }
+    }
+
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+
+    // AI chat -> backend assistant
+    let msgCount = 0;
+    const chatBox = document.getElementById("chatBox");
+    const chatInput = document.getElementById("chatInput");
+    const typing = document.getElementById("typingIndicator");
+
+    function addMsg(txt, who){
+      const div = document.createElement("div");
+      div.className = "msg " + who;
+      div.textContent = txt;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function sendMessage(){
+      const txt = (chatInput.value || "").trim();
+      if(!txt) return;
+      chatInput.value = "";
+      msgCount++;
+      addMsg(txt, "user");
+      typing.style.display = "block";
+      try{
+        const data = await apiFetch("/api/assistant", {method:"POST", body: JSON.stringify({message: txt})});
+        addMsg(data.ok ? data.answer : "Xatolik.", "bot");
+      }catch(e){
+        addMsg("Xatolik. API ulanmagan bo‘lishi mumkin.", "bot");
+      }finally{
+        typing.style.display = "none";
+      }
+    }
+
+    // Nav
+    function goTab(tab, el){
+      document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));
+      document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));
+      document.getElementById("tab-" + tab).classList.add("active");
+      el.classList.add("active");
+    }
+    document.querySelectorAll(".nav-item").forEach(el=>{
+      el.addEventListener("click", ()=>goTab(el.dataset.tab, el));
+    });
+
+    // Bind buttons
+    document.getElementById("btnPro").onclick = openPro;
+    document.getElementById("btnAd").onclick = openAd;
+    document.getElementById("btnCheckDeadline").onclick = ()=> tg.sendData("check_deadline");
+
+    backToCat.onclick = renderCategories;
+    document.getElementById("btnSend").onclick = sendMessage;
+    chatInput.addEventListener("keypress", (e)=>{ if(e.key==="Enter") sendMessage(); });
+
+    // Init
+    bootstrap();
+  </script>
 </body>
 </html>
