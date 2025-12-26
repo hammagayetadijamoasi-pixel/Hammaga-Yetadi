@@ -33,7 +33,7 @@
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     
     /* Cards */
-    .card { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); transition: transform 0.2s; }
+    .card { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); transition: transform 0.2s; cursor: pointer; }
     .card:active { transform: scale(0.98); }
     
     .info-card { background: linear-gradient(135deg, rgba(112,0,255,0.15), rgba(0,240,255,0.05)); border: 1px solid rgba(112,0,255,0.3); border-radius: 20px; padding: 20px; margin-bottom: 24px; text-align: center; box-shadow: 0 4px 20px rgba(112,0,255,0.15); position: relative; overflow: hidden; }
@@ -43,7 +43,6 @@
     .btn-claim { background: var(--primary-gradient); }
     .btn-active { background: rgba(0, 240, 255, 0.1); color: var(--secondary); border: 1px solid rgba(0, 240, 255, 0.3); cursor: default; box-shadow: none; }
     
-    /* Ads */
     .ad-img { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 10px; display: block; }
     
     /* Navbar */
@@ -153,8 +152,8 @@
 
     if (claimed && claimed !== 'None') {
         document.getElementById('btnActive').style.display = 'flex';
-        // O'ZGARISH: Tushunarli matn
-        document.getElementById('btnActive').innerHTML = `<span>✅ SIZDA PRO MAVJUD<br><small style="font-size:11px; opacity:0.7; font-weight:400">Pro botga yuklangan sana: ${claimed}</small></span>`;
+        // Tushunarli matn
+        document.getElementById('btnActive').innerHTML = `<span>✅ PRO FAOL<br><small style="font-size:12px; opacity:0.7; font-weight:400">Olingan sana: ${claimed}</small></span>`;
     } else {
         document.getElementById('btnClaim').style.display = 'flex';
     }
@@ -170,17 +169,16 @@
         showToast("Pro aktivlashdi");
     }
 
-    // ADS (O'ZGARISH: To'g'ridan to'g'ri ochish logikasi)
+    // ADS
     const adsDiv = document.getElementById('ads-container');
     
     function trackAd(id, link) {
-        // Botga signal beramiz (u yopilib, link beradi yoki ochadi)
         tg.sendData('ad_click:' + id);
     }
 
     function renderAd(t, x, l, i, id) {
         if((!t || t==="None") && (!x || x==="None")) return;
-        let h = `<div class="card" onclick="trackAd('${id}', '${decodeURIComponent(l)}')">`; // Butun kartaga bosganda ishlashi uchun
+        let h = `<div class="card" onclick="trackAd('${id}', '${decodeURIComponent(l)}')">`;
         if(i && i!=="None" && i.startsWith('http')) h+=`<img src="${decodeURIComponent(i)}" class="ad-img" onerror="this.style.display='none'">`;
         h+=`<div>`;
         if(t && t!=="None") h+=`<div style="font-weight:700; font-size:16px; margin-bottom:6px;">${decodeURIComponent(t)}</div>`;
