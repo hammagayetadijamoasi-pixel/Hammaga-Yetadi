@@ -2,235 +2,280 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Hammaga Yetadi</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    
     :root { 
-        --primary: #7000ff; 
-        --primary-gradient: linear-gradient(135deg, #7000ff, #9d4dff);
-        --secondary: #00f0ff; 
-        --bg: #0f111a; 
-        --card-bg: rgba(30, 35, 45, 0.6); 
-        --text: #ffffff; 
-        --text-muted: #949aa5;
-        --border: rgba(255,255,255,0.08);
+        --ios-bg: #000000; 
+        --glass: rgba(30, 30, 30, 0.65);
+        --glass-border: rgba(255, 255, 255, 0.12);
+        --primary: #0A84FF; /* iOS Blue */
+        --success: #30D158; /* iOS Green */
+        --text: #FFFFFF; 
+        --text-sec: #8E8E93;
+        --card: #1C1C1E;
     }
     
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
     
-    body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
+    body { background: var(--ios-bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; padding-bottom: env(safe-area-inset-bottom); }
     
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+    /* Smooth Scroll */
+    .main { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; -webkit-overflow-scrolling: touch; }
+    ::-webkit-scrollbar { display: none; }
 
-    .main { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 90px; }
-    
-    /* Skeleton */
-    .skeleton { background: linear-gradient(90deg, #1f242d 25%, #2a303c 50%, #1f242d 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 12px; }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-    
-    /* Cards */
-    .card { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 16px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--border); transition: transform 0.2s; cursor: pointer; }
-    .card:active { transform: scale(0.98); }
-    
-    .info-card { background: linear-gradient(135deg, rgba(112,0,255,0.15), rgba(0,240,255,0.05)); border: 1px solid rgba(112,0,255,0.3); border-radius: 20px; padding: 20px; margin-bottom: 24px; text-align: center; box-shadow: 0 4px 20px rgba(112,0,255,0.15); position: relative; overflow: hidden; }
+    /* Glass Card (iPhone Style) */
+    .glass-card {
+        background: var(--glass);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 16px;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .glass-card:active { transform: scale(0.97); }
 
-    /* Buttons */
-    .btn { width: 100%; padding: 16px; border: none; border-radius: 16px; font-weight: 700; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-    .btn-claim { background: var(--primary-gradient); }
-    .btn-active { background: rgba(0, 240, 255, 0.1); color: var(--secondary); border: 1px solid rgba(0, 240, 255, 0.3); cursor: default; box-shadow: none; }
+    /* Pro Card (Special) */
+    .pro-card {
+        background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(48, 209, 88, 0.1));
+        border: 1px solid rgba(10, 132, 255, 0.3);
+        text-align: center;
+        padding: 25px;
+    }
     
-    .ad-img { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 10px; display: block; }
-    
-    /* Navbar */
-    .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 80px; background: rgba(15, 17, 26, 0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: 15px; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--text-muted); font-size: 11px; padding: 10px; width: 33%; transition: 0.3s; opacity: 0.7; }
-    .nav-item.active { color: var(--secondary); opacity: 1; transform: translateY(-5px); }
+    .slot-count { font-size: 48px; font-weight: 800; background: linear-gradient(to right, #fff, #8E8E93); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0; }
 
-    .section { display: none; animation: fadeIn 0.4s; } 
-    .section.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    /* Buttons (iOS Style) */
+    .btn {
+        width: 100%; padding: 16px; border: none; border-radius: 14px; 
+        font-weight: 600; font-size: 17px; cursor: pointer; 
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        transition: 0.2s;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-success { background: rgba(48, 209, 88, 0.15); color: var(--success); border: 1px solid rgba(48, 209, 88, 0.3); cursor: default; }
+    .btn:active { opacity: 0.7; }
 
-    /* Search & Chat */
-    .search-bar { width: 100%; padding: 14px 18px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 14px; color: white; font-size: 15px; margin-bottom: 15px; }
-    .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .cat-item { background: var(--card-bg); padding: 20px; border-radius: 16px; text-align: center; font-weight: 600; border: 1px solid var(--border); }
+    /* Navbar (Floating Glass) */
+    .navbar {
+        position: fixed; bottom: 20px; left: 20px; right: 20px; height: 70px;
+        background: rgba(44, 44, 46, 0.85);
+        backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+        border-radius: 35px;
+        border: 1px solid rgba(255,255,255,0.1);
+        display: flex; justify-content: space-around; align-items: center;
+        z-index: 100;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 33%; height: 100%; color: var(--text-sec); transition: 0.3s; }
+    .nav-item.active { color: var(--primary); transform: translateY(-2px); }
+    .nav-icon { font-size: 24px; margin-bottom: 2px; }
+    .nav-label { font-size: 10px; font-weight: 500; }
 
+    /* Inputs */
+    .ios-input {
+        width: 100%; padding: 12px 16px; 
+        background: rgba(118, 118, 128, 0.24); 
+        border: none; border-radius: 12px; 
+        color: white; font-size: 17px; margin-bottom: 15px;
+    }
+    .ios-input::placeholder { color: #8E8E93; }
+
+    /* Lists */
+    .list-item {
+        display: flex; align-items: center; gap: 15px; padding: 16px;
+        background: var(--card); border-radius: 14px; margin-bottom: 10px;
+    }
+    .list-icon { 
+        width: 40px; height: 40px; border-radius: 10px; 
+        background: rgba(10, 132, 255, 0.15); color: var(--primary);
+        display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+
+    /* Chat */
     .chat-container { display: flex; flex-direction: column; height: 100%; }
-    .chat-box { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 12px; }
-    .msg { max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
-    .msg.user { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
-    .msg.bot { align-self: flex-start; background: rgba(255,255,255,0.1); border-bottom-left-radius: 4px; }
-    
-    .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #00E676; color: #000; padding: 12px 24px; border-radius: 30px; font-weight: bold; opacity: 0; transition: 0.4s; z-index: 999; }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .chat-bubble { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 16px; line-height: 1.4; margin-bottom: 10px; }
+    .bubble-user { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+    .bubble-bot { align-self: flex-start; background: #2C2C2E; color: white; border-bottom-left-radius: 4px; }
+
+    /* Sections */
+    .section { display: none; opacity: 0; transform: scale(0.98); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .section.active { display: block; opacity: 1; transform: scale(1); }
+
+    /* Toast */
+    .toast {
+        position: fixed; top: 10px; left: 50%; transform: translateX(-50%) translateY(-100px);
+        background: rgba(255,255,255,0.9); color: black;
+        padding: 12px 24px; border-radius: 30px; font-weight: 600;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 200; transition: 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+    .toast.show { transform: translateX(-50%) translateY(20px); }
   </style>
 </head>
-<body oncontextmenu="return false;">
-  
-  <div id="loader" class="main">
-    <div class="skeleton" style="height: 180px; margin-bottom: 20px;"></div>
-    <div class="skeleton" style="height: 60px; margin-bottom: 20px;"></div>
-    <div class="skeleton" style="height: 100px; margin-bottom: 10px;"></div>
-  </div>
+<body>
 
-  <div id="content" class="main" style="display:none;">
+  <div id="loader" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:999;display:flex;align-items:center;justify-content:center;">
+    <div style="width:30px;height:30px;border:3px solid #333;border-top:3px solid #0A84FF;border-radius:50%;animation:spin 1s linear infinite;"></div>
+  </div>
+  <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+
+  <div class="main">
     
     <div id="tab-home" class="section active">
-        <div class="info-card">
-            <div style="font-size:12px; color:var(--secondary); margin-bottom:8px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700;">Aksiya muddati</div>
-            <div style="font-size:14px; font-weight:500; color:#ddd; background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 20px; display: inline-block;">📅 <span id="startDate"></span> — <span id="endDate"></span></div>
-            <div style="margin: 15px 0; height: 1px; background: rgba(255,255,255,0.2);"></div>
-            <div style="font-size:42px; font-weight:800; color:white; text-shadow: 0 0 25px rgba(0,240,255,0.6);" id="remSlots">...</div>
-            <div style="font-size:13px; color:var(--text-muted); margin-top:8px;">Qolgan joylar soni</div>
+        <h1 style="font-size: 32px; font-weight: 800; margin-bottom: 20px;">Asosiy</h1>
+        
+        <div class="glass-card pro-card">
+            <div style="text-transform: uppercase; font-size: 12px; font-weight: 600; color: var(--primary); letter-spacing: 1px;">Aksiya muddati</div>
+            <div style="color: var(--text-sec); font-size: 14px; margin-top: 4px;"><span id="startDate">Today</span> — <span id="endDate">...</span></div>
+            <div class="slot-count" id="remSlots">...</div>
+            <div style="font-size: 13px; color: var(--text-sec);">Qolgan joylar soni</div>
         </div>
 
         <div style="margin-bottom: 30px;">
-            <button id="btnClaim" class="btn btn-claim" onclick="claimPro()" style="display:none">
-                <span>🚀 PRO LINK OLISH</span>
+            <button id="btnClaim" class="btn btn-primary" onclick="claimPro()" style="display:none">
+                🚀 PRO LINK OLISH
             </button>
-            <button id="btnActive" class="btn btn-active" style="display:none">
+            <button id="btnActive" class="btn btn-success" style="display:none">
                 </button>
         </div>
         
-        <div style="font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; padding-left: 5px;">Homiylar va Foydali</div>
+        <div style="font-weight: 600; margin-bottom: 10px; font-size: 20px;">Homiylar</div>
         <div id="ads-container"></div>
     </div>
 
     <div id="tab-ai" class="section" style="height: 100%;">
+        <h1 style="font-size: 32px; font-weight: 800; margin-bottom: 10px;">AI Chat</h1>
         <div class="chat-container">
-            <div class="chat-box" id="chatBox">
-                <div class="msg bot">👋 Assalomu alaykum! Savol bering.</div>
+            <div style="flex:1; overflow-y:auto; padding-bottom:10px;" id="chatBox">
+                <div class="chat-bubble bubble-bot">👋 Assalomu alaykum!</div>
             </div>
-            <div style="padding: 12px; margin-top: 10px; display: flex; gap: 10px;">
-                <input type="text" class="search-bar" id="chatInp" placeholder="Savol yozing..." style="margin:0; border:none; background:rgba(255,255,255,0.1);" onkeypress="if(event.key==='Enter') sendMsg()">
-                <button onclick="sendMsg()" style="width:45px; height: 45px; border-radius:50%; border:none; background:var(--secondary); font-weight:bold;">➤</button>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <input type="text" class="ios-input" id="chatInp" placeholder="Xabar yozing..." style="margin:0;">
+                <button onclick="sendMsg()" style="width:44px; height:44px; border-radius:50%; background:var(--primary); border:none; color:white; font-size:20px; display:flex; align-items:center; justify-content:center;">↑</button>
             </div>
         </div>
     </div>
-    
+
     <div id="tab-kb" class="section">
-        <input type="text" class="search-bar" placeholder="🔍 Qidirish..." onkeyup="filterFiles(this.value)">
-        <div id="cat-view" class="cat-grid"></div>
+        <h1 style="font-size: 32px; font-weight: 800; margin-bottom: 20px;">Bilimlar</h1>
+        <input type="text" class="ios-input" placeholder="🔍 Qidirish" onkeyup="filterFiles(this.value)">
+        
+        <div id="cat-view"></div>
+        
         <div id="res-view" style="display:none;">
-            <button onclick="renderCats()" style="background:none; border:none; color:var(--text-muted); margin-bottom:15px; font-weight:600;">← Orqaga</button>
+            <button onclick="renderCats()" style="background:none; border:none; color:var(--primary); font-size:17px; margin-bottom:15px; display:flex; align-items:center;">
+                <span style="font-size:24px; margin-right:5px;">‹</span> Orqaga
+            </button>
             <div id="file-list"></div>
         </div>
     </div>
+
   </div>
 
-  <div id="toast" class="toast">✅ Bajarildi!</div>
+  <div id="toast" class="toast">Done</div>
 
   <div class="navbar">
-    <div class="nav-item active" onclick="go('home', this)">🏠 Asosiy</div>
-    <div class="nav-item" onclick="go('ai', this)">✨ AI Chat</div>
-    <div class="nav-item" onclick="go('kb', this)">📂 Bilimlar</div>
+    <div class="nav-item active" onclick="go('home', this)">
+        <div class="nav-icon">🏠</div><span class="nav-label">Asosiy</span>
+    </div>
+    <div class="nav-item" onclick="go('ai', this)">
+        <div class="nav-icon">✨</div><span class="nav-label">AI</span>
+    </div>
+    <div class="nav-item" onclick="go('kb', this)">
+        <div class="nav-icon">📂</div><span class="nav-label">Bilim</span>
+    </div>
   </div>
 
   <script>
-    const tg = window.Telegram.WebApp; 
-    tg.expand(); 
+    const tg = window.Telegram.WebApp; tg.expand();
     const p = new URLSearchParams(window.location.search);
 
-    setTimeout(() => {
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('content').style.display = 'block';
-    }, 800);
+    setTimeout(() => document.getElementById('loader').style.display = 'none', 800);
 
-    document.getElementById('startDate').innerText = 'Bugun';
+    // Data Setup
     document.getElementById('endDate').innerText = p.get('ed') || '31.12.2025';
-    
-    const refsCount = parseInt(p.get('rc') || '0');
-    let slots = Math.max(87 - (refsCount * 3), 5); 
+    const slots = p.get('ps') || '50';
     document.getElementById('remSlots').innerText = slots;
-
+    
     const claimed = p.get('cl');
     const proLink = p.get('pl');
 
     if (claimed && claimed !== 'None') {
         document.getElementById('btnActive').style.display = 'flex';
-        // Tushunarli matn
-        document.getElementById('btnActive').innerHTML = `<span>✅ PRO FAOL<br><small style="font-size:12px; opacity:0.7; font-weight:400">Olingan sana: ${claimed}</small></span>`;
+        document.getElementById('btnActive').innerHTML = `✅ PRO FAOL<br><span style='font-size:12px;font-weight:400'>${claimed}</span>`;
     } else {
         document.getElementById('btnClaim').style.display = 'flex';
     }
 
-    function claimPro() { 
-        if(proLink && proLink.startsWith('http')) {
-           tg.openLink(decodeURIComponent(proLink));
-        }
-        tg.sendData('claim_pro'); 
+    // ACTIONS
+    function claimPro() {
+        if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        if(proLink && proLink.startsWith('http')) tg.openLink(decodeURIComponent(proLink));
+        tg.sendData('claim_pro');
+        // Vizual yangilash (Backendga signal ketdi)
         document.getElementById('btnClaim').style.display = 'none';
         document.getElementById('btnActive').style.display = 'flex';
-        document.getElementById('btnActive').innerText = "✅ PRO OLINDI";
-        showToast("Pro aktivlashdi");
+        document.getElementById('btnActive').innerText = "KUTILMOQDA...";
+        showToast("So'rov yuborildi");
     }
 
     // ADS
     const adsDiv = document.getElementById('ads-container');
-    
-    function trackAd(id, link) {
-        tg.sendData('ad_click:' + id);
-    }
-
     function renderAd(t, x, l, i, id) {
-        if((!t || t==="None") && (!x || x==="None")) return;
-        let h = `<div class="card" onclick="trackAd('${id}', '${decodeURIComponent(l)}')">`;
-        if(i && i!=="None" && i.startsWith('http')) h+=`<img src="${decodeURIComponent(i)}" class="ad-img" onerror="this.style.display='none'">`;
-        h+=`<div>`;
-        if(t && t!=="None") h+=`<div style="font-weight:700; font-size:16px; margin-bottom:6px;">${decodeURIComponent(t)}</div>`;
-        if(x && x!=="None") h+=`<div style="font-size:13px; color:#aaa; margin-bottom:15px; line-height: 1.4;">${decodeURIComponent(x)}</div>`;
-        h+=`<button class="btn" style="background:rgba(255,255,255,0.08); font-size:14px; padding:12px; height: auto;">Ochish</button>`;
+        if((!t || t==="None")) return;
+        let h = `<div class="glass-card" onclick="tg.sendData('ad_click:${id}'); if('${l}'!='None') tg.openLink('${l}')">`;
+        if(i && i.startsWith('http')) h+=`<img src="${decodeURIComponent(i)}" style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px">`;
+        h+=`<div><div style="font-weight:700;font-size:17px;margin-bottom:4px">${decodeURIComponent(t)}</div>`;
+        if(x && x!=="None") h+=`<div style="font-size:13px;color:#8E8E93">${decodeURIComponent(x)}</div>`;
         h+=`</div></div>`;
         adsDiv.innerHTML += h;
     }
     renderAd(p.get('at1'), p.get('ax1'), p.get('al1'), p.get('ai1'), p.get('ai1'));
     renderAd(p.get('at2'), p.get('ax2'), p.get('al2'), p.get('ai2'), p.get('ai2'));
 
-    // AI CHAT
+    // AI
     async function sendMsg(){
         const inp = document.getElementById('chatInp'); const txt = inp.value.trim(); if(!txt) return;
-        const box = document.getElementById('chatBox'); 
-        box.innerHTML += `<div class="msg user">${txt}</div>`; inp.value = "";
-        const l = document.createElement('div'); l.className = "msg bot"; l.innerText = "..."; box.appendChild(l); box.scrollTop = box.scrollHeight;
-        try { const r = await fetch(`https://text.pollinations.ai/${encodeURIComponent("Reply in Uzbek. User: "+txt)}`); const a = await r.text(); l.innerText = a; } catch(e) { l.innerText = "Xato."; }
-        box.scrollTop = box.scrollHeight;
+        const box = document.getElementById('chatBox');
+        box.innerHTML += `<div class="chat-bubble bubble-user">${txt}</div>`; inp.value = "";
+        const l = document.createElement('div'); l.className = "chat-bubble bubble-bot"; l.innerText = "..."; box.appendChild(l); box.scrollTop = box.scrollHeight;
+        try { const r = await fetch(`https://text.pollinations.ai/${encodeURIComponent("Reply in Uzbek. User: "+txt)}`); l.innerText = await r.text(); } catch{ l.innerText = "Error"; }
     }
 
-    // RESOURCES
-    let CATS = []; try { CATS = JSON.parse(decodeURIComponent(p.get('cats'))); } catch(e){}
+    // KB
+    let CATS = []; try { CATS = JSON.parse(decodeURIComponent(p.get('cats'))); } catch{}
     function renderCats(){
-        document.getElementById('res-view').style.display = 'none'; 
-        const div = document.getElementById('cat-view'); div.style.display = 'grid'; div.innerHTML = "";
-        if(CATS.length === 0) div.innerHTML = "<div style='grid-column: span 2; text-align:center; padding: 20px; color:#666'>Bo'limlar yo'q</div>";
-        CATS.forEach(c => div.innerHTML += `<div class="cat-item" onclick="loadRes('${c.id}')"><div style="font-size:24px; margin-bottom:5px">📁</div>${c.name}</div>`);
+        document.getElementById('res-view').style.display = 'none'; document.getElementById('cat-view').style.display = 'block';
+        const div = document.getElementById('cat-view'); div.innerHTML = "";
+        CATS.forEach(c => div.innerHTML += `<div class="list-item" onclick="loadRes('${c.id}')"><div class="list-icon">📁</div><div style="font-weight:600;font-size:17px">${c.name}</div><div style="margin-left:auto;color:#8E8E93">${c.items.length}</div></div>`);
     }
     function loadRes(cid){
         const cat = CATS.find(c => c.id == cid); if(!cat) return;
         document.getElementById('cat-view').style.display = 'none'; document.getElementById('res-view').style.display = 'block';
-        const list = document.getElementById('file-list'); list.innerHTML = `<h3 style="margin-bottom:15px; color:var(--secondary);">${cat.name}</h3>`;
-        cat.items.forEach(r => list.innerHTML += `<div onclick="getRes('${r.i}')" style="background:var(--card-bg); padding:16px; margin-bottom:10px; border-radius:14px; display:flex; align-items:center; gap:12px; cursor:pointer; border:1px solid var(--border);">📄 ${r.n}</div>`);
+        const list = document.getElementById('file-list'); list.innerHTML = `<h2 style="margin-bottom:15px;color:var(--primary)">${cat.name}</h2>`;
+        cat.items.forEach(r => list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${r.i}');showToast('Yuborilmoqda...')"><div class="list-icon">📄</div><div>${r.n}</div></div>`);
     }
-    function getRes(rid){ tg.sendData('get_resource:'+rid); showToast("Yuborilmoqda..."); }
     function filterFiles(q){
         q = q.toLowerCase(); if(q.length<2) { renderCats(); return; }
-        document.getElementById('cat-view').style.display = 'none'; document.getElementById('res-view').style.display = 'block'; 
+        document.getElementById('cat-view').style.display = 'none'; document.getElementById('res-view').style.display = 'block';
         const list = document.getElementById('file-list'); list.innerHTML = "";
-        CATS.forEach(c => c.items.forEach(i => { 
-            if(i.n.toLowerCase().includes(q)) list.innerHTML += `<div onclick="getRes('${i.i}')" style="background:var(--card-bg); padding:16px; margin-bottom:10px; border-radius:14px; cursor:pointer;">🔍 ${i.n} <div style="font-size:10px; color:#aaa">${c.name}</div></div>`; 
-        }));
+        CATS.forEach(c => c.items.forEach(i => { if(i.n.toLowerCase().includes(q)) list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${i.i}')"><div class="list-icon">🔍</div><div>${i.n}</div></div>`; }));
     }
 
     function go(t,e){
-        document.querySelectorAll('.section').forEach(s=>{s.style.display='none';s.classList.remove('active')});
+        document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-        const tab = document.getElementById('tab-'+t); tab.style.display = t==='ai'?'flex':'block'; 
-        setTimeout(()=>tab.classList.add('active'), 10); e.classList.add('active');
+        document.getElementById('tab-'+t).classList.add('active'); e.classList.add('active');
+        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
     }
-    function showToast(msg){ const t = document.getElementById('toast'); t.innerText = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+    function showToast(m){ const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
     renderCats();
   </script>
 </body>
