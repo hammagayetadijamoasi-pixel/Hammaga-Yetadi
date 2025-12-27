@@ -14,8 +14,8 @@
         --primary: #0A84FF;
         --text: #FFFFFF; 
         --text-sec: #8E8E93;
-        --border: rgba(255, 255, 255, 0.1);
-        --navbar-height: 80px;
+        --border: rgba(255, 255, 255, 0.12);
+        --navbar-height: 85px; /* Navbar balandligi */
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
@@ -23,34 +23,40 @@
     body { 
         background: var(--bg); 
         color: var(--text); 
-        height: 100dvh; /* Dynamic Viewport Height */
+        height: 100dvh; 
         display: flex; 
         flex-direction: column; 
         overflow: hidden; 
+        position: fixed; /* Ekranni qotirish */
+        width: 100%;
     }
 
-    /* Asosiy Scroll qismi */
-    .main-container {
-        flex: 1;
-        overflow-y: auto;
-        overflow-x: hidden;
+    /* SAHIFA KONTEYNERLARI (ALOHIDA SCROLL) */
+    .view-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto; /* Scroll ruxsat */
         padding: 20px;
-        /* Navbar balandligicha joy tashlaymiz */
-        padding-bottom: calc(var(--navbar-height) + 20px); 
+        padding-bottom: calc(var(--navbar-height) + 20px); /* Navbar orqasida qolmaslik uchun */
+        display: none; /* Boshida yashirin */
+        flex-direction: column;
+        justify-content: flex-start; /* Doim tepadan boshlash */
         -webkit-overflow-scrolling: touch;
+        z-index: 10;
     }
-    
-    /* Scrollbar ni yashirish */
-    .main-container::-webkit-scrollbar { display: none; }
 
-    /* AI Chat Maxsus Konteyneri */
-    #tab-ai {
+    .view-container.active { display: flex; }
+
+    /* AI CHAT MAXSUS KONTEYNERI (SCROLL EMAS FLEX) */
+    #tab-ai.view-container {
+        padding: 0;
+        overflow: hidden; /* Tashqi scroll yo'q */
         display: none;
         flex-direction: column;
-        height: 100%;
-        /* Chatda padding kerak emas, o'zi boshqaradi */
-        padding: 0; 
-        padding-bottom: var(--navbar-height); 
+        height: 100dvh;
     }
     #tab-ai.active { display: flex; }
 
@@ -58,91 +64,102 @@
         flex: 1;
         overflow-y: auto;
         padding: 20px;
-        padding-bottom: 10px;
+        padding-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
     }
 
+    /* Input Navbar tepasida turishi uchun */
     .chat-input-wrapper {
         background: rgba(28, 28, 30, 0.95);
-        backdrop-filter: blur(10px);
-        padding: 10px 15px;
+        backdrop-filter: blur(20px);
+        padding: 12px 15px;
         border-top: 1px solid var(--border);
         display: flex;
         gap: 10px;
         align-items: center;
-        /* Bu Inputni Navbar tepasida ushlab turadi */
-        z-index: 50; 
+        width: 100%;
+        /* Navbardan balandroq turishi kerak */
+        margin-bottom: var(--navbar-height); 
+        z-index: 50;
     }
 
-    /* Umumiy Elementlar */
-    .section { display: none; animation: fade 0.3s; }
-    .section.active { display: block; }
-    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-
-    /* Cards */
+    /* ELEMENTLAR DIZAYNI */
     .glass-card {
         background: var(--card-bg);
         border: 1px solid var(--border);
-        border-radius: 20px;
+        border-radius: 18px;
         padding: 20px;
         margin-bottom: 15px;
+        position: relative;
     }
     
     .pro-card {
-        background: linear-gradient(135deg, rgba(10, 132, 255, 0.15), rgba(10, 132, 255, 0.05));
+        background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(10, 132, 255, 0.05));
         border: 1px solid rgba(10, 132, 255, 0.3);
         text-align: center;
     }
-    .slot-count { font-size: 42px; font-weight: 800; margin: 10px 0; }
+    .slot-count { font-size: 42px; font-weight: 800; margin: 10px 0; letter-spacing: -1px; }
 
-    /* Inputs & Buttons */
+    /* Inputs */
     .ios-input {
-        width: 100%; padding: 12px 16px; 
-        background: #2C2C2E; border: none; border-radius: 12px; 
-        color: white; font-size: 16px;
+        width: 100%; padding: 14px 16px; 
+        background: #2C2C2E; border: none; border-radius: 14px; 
+        color: white; font-size: 16px; transition: 0.2s;
     }
-    
+    .ios-input:focus { background: #3a3a3c; }
+
+    /* Buttons */
     .btn {
-        width: 100%; padding: 16px; border: none; border-radius: 14px; 
+        width: 100%; padding: 16px; border: none; border-radius: 16px; 
         font-weight: 600; font-size: 16px; cursor: pointer; color: white;
         background: var(--primary); margin-bottom: 15px;
+        transition: transform 0.1s;
     }
+    .btn:active { transform: scale(0.98); opacity: 0.8; }
     .btn-active { background: #30D158; cursor: default; }
 
     /* Navbar */
     .navbar {
         position: fixed; bottom: 0; left: 0; right: 0; 
         height: var(--navbar-height);
-        background: rgba(28, 28, 30, 0.9);
-        backdrop-filter: blur(20px);
+        background: rgba(20, 20, 20, 0.9);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
         border-top: 1px solid var(--border);
         display: flex; justify-content: space-around; align-items: center;
         z-index: 100;
-        padding-bottom: env(safe-area-inset-bottom);
+        padding-bottom: 15px; /* iPhone pastki chizig'i uchun joy */
     }
     .nav-item { 
         display: flex; flex-direction: column; align-items: center; 
-        color: var(--text-sec); font-size: 10px; font-weight: 500; 
-        transition: 0.2s;
+        color: var(--text-sec); font-size: 10px; font-weight: 600; 
+        transition: 0.2s; opacity: 0.7;
     }
-    .nav-item.active { color: var(--primary); transform: translateY(-2px); }
-    .nav-icon { font-size: 24px; margin-bottom: 4px; }
+    .nav-item.active { color: var(--primary); transform: translateY(-2px); opacity: 1; }
+    .nav-icon { font-size: 26px; margin-bottom: 4px; }
 
     /* Chat Bubbles */
-    .bubble { max-width: 80%; padding: 12px 16px; border-radius: 18px; margin-bottom: 10px; font-size: 15px; line-height: 1.4; }
-    .bubble.user { align-self: flex-end; background: var(--primary); border-bottom-right-radius: 4px; }
-    .bubble.bot { align-self: flex-start; background: #2C2C2E; border-bottom-left-radius: 4px; }
+    .bubble { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 16px; line-height: 1.4; }
+    .bubble.user { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+    .bubble.bot { align-self: flex-start; background: #2C2C2E; color: white; border-bottom-left-radius: 4px; }
 
     /* Lists */
     .list-item {
-        background: var(--card-bg); padding: 16px; border-radius: 14px; 
+        background: var(--card-bg); padding: 16px; border-radius: 16px; 
         margin-bottom: 10px; display: flex; align-items: center; gap: 15px;
-        border: 1px solid var(--border);
+        border: 1px solid var(--border); transition: background 0.2s;
     }
-    
+    .list-item:active { background: #2c2c2e; }
+    .list-icon { font-size: 22px; }
+
+    /* Toast */
     .toast {
         position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
-        background: white; color: black; padding: 10px 20px; border-radius: 20px; 
-        font-weight: 600; z-index: 2000; transition: 0.4s;
+        background: rgba(255,255,255,0.9); color: black; padding: 10px 24px; border-radius: 50px; 
+        font-weight: 600; z-index: 2000; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
     .toast.show { transform: translateX(-50%) translateY(0); }
   </style>
@@ -154,48 +171,48 @@
   </div>
   <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
 
-  <div id="main-scroll" class="main-container">
-    
-    <div id="tab-home" class="section active">
-        <h1 style="margin-bottom: 20px;">Asosiy</h1>
-        
-        <div class="glass-card pro-card">
-            <div style="font-size:12px; opacity:0.7; text-transform:uppercase;">Aksiya muddati</div>
-            <div style="margin-top:5px; font-weight:500"><span id="startDate">Bugun</span> — <span id="endDate">...</span></div>
-            <div class="slot-count" id="remSlots">...</div>
-            <div style="font-size:13px; opacity:0.7;">Qolgan joylar soni</div>
-        </div>
+  <div id="tab-home" class="view-container active">
+      <h1 style="font-size:32px; font-weight:800; margin-bottom:20px">Asosiy</h1>
+      
+      <div class="glass-card pro-card">
+          <div style="font-size:12px; opacity:0.7; text-transform:uppercase; letter-spacing:1px">Aksiya muddati</div>
+          <div style="margin-top:5px; font-weight:600"><span id="startDate">Bugun</span> — <span id="endDate">...</span></div>
+          <div class="slot-count" id="remSlots">...</div>
+          <div style="font-size:13px; opacity:0.7;">Qolgan joylar soni</div>
+      </div>
 
-        <div style="margin-bottom: 20px;">
-            <button id="btnClaim" class="btn" onclick="claimPro()" style="display:none">🚀 PRO LINK OLISH</button>
-            <button id="btnActive" class="btn btn-active" style="display:none"></button>
-        </div>
-        
-        <h3 style="margin-bottom: 10px;">Homiylar</h3>
-        <div id="ads-container"></div>
-    </div>
+      <div style="margin-bottom: 25px;">
+          <button id="btnClaim" class="btn" onclick="claimPro()" style="display:none">🚀 PRO LINK OLISH</button>
+          <button id="btnActive" class="btn btn-active" style="display:none"></button>
+      </div>
+      
+      <h3 style="margin-bottom: 15px; opacity: 0.6; font-size: 14px; text-transform: uppercase;">Homiylar</h3>
+      <div id="ads-container"></div>
+  </div>
 
-    <div id="tab-kb" class="section">
-        <h1 style="margin-bottom: 20px;">Bilimlar</h1>
-        <input type="text" class="ios-input" placeholder="🔍 Qidirish..." onkeyup="filterFiles(this.value)" style="margin-bottom: 15px;">
-        
-        <div id="cat-view"></div>
-        <div id="res-view" style="display:none;">
-            <button onclick="renderCats()" style="background:none; border:none; color:var(--primary); font-size:16px; margin-bottom:15px;">‹ Orqaga</button>
-            <div id="file-list"></div>
-        </div>
-    </div>
+  <div id="tab-kb" class="view-container">
+      <h1 style="font-size:32px; font-weight:800; margin-bottom:20px">Bilimlar</h1>
+      <input type="text" class="ios-input" placeholder="🔍 Qidirish..." onkeyup="filterFiles(this.value)" style="margin-bottom: 20px;">
+      
+      <div id="cat-view"></div>
+      <div id="res-view" style="display:none;">
+          <button onclick="renderCats()" style="background:none; border:none; color:var(--primary); font-size:17px; margin-bottom:20px; font-weight:600;">‹ Orqaga</button>
+          <div id="file-list"></div>
+      </div>
+  </div>
 
-  </div> <div id="tab-ai" class="section">
-      <div style="padding: 20px; padding-bottom: 0;"><h1>AI Chat</h1></div>
+  <div id="tab-ai" class="view-container">
+      <div style="padding: 20px 20px 0 20px;">
+          <h1 style="font-size:32px; font-weight:800;">AI Chat</h1>
+      </div>
       
       <div class="chat-messages" id="chatBox">
-          <div class="bubble bot">👋 Assalomu alaykum! Savol bering.</div>
+          <div class="bubble bot">👋 Assalomu alaykum! Men sun'iy intellektman. Menga savol bering.</div>
       </div>
       
       <div class="chat-input-wrapper">
-          <input type="text" class="ios-input" id="chatInp" placeholder="Xabar..." style="background:rgba(255,255,255,0.1)">
-          <button onclick="sendMsg()" style="width:40px; height:40px; border-radius:50%; background:var(--primary); border:none; color:white; font-size:20px;">↑</button>
+          <input type="text" class="ios-input" id="chatInp" placeholder="Xabar..." style="flex:1;">
+          <button onclick="sendMsg()" style="width:44px; height:44px; border-radius:50%; background:var(--primary); border:none; color:white; font-size:20px; display:flex; align-items:center; justify-content:center;">↑</button>
       </div>
   </div>
 
@@ -206,7 +223,7 @@
         <div class="nav-icon">🏠</div>Asosiy
     </div>
     <div class="nav-item" onclick="go('ai', this)">
-        <div class="nav-icon">✨</div>AI Chat
+        <div class="nav-icon">✨</div>Chat
     </div>
     <div class="nav-item" onclick="go('kb', this)">
         <div class="nav-icon">📂</div>Bilimlar
@@ -220,7 +237,7 @@
 
     setTimeout(() => document.getElementById('loader').style.display = 'none', 800);
 
-    // Data
+    // DATA
     document.getElementById('endDate').innerText = p.get('ed') || '31.12.2025';
     document.getElementById('remSlots').innerText = p.get('ps') || '50';
     
@@ -229,7 +246,7 @@
 
     if (claimed && claimed !== 'None') {
         document.getElementById('btnActive').style.display = 'flex';
-        document.getElementById('btnActive').innerHTML = `✅ PRO FAOL<br><span style='font-size:12px;font-weight:400'>${claimed}</span>`;
+        document.getElementById('btnActive').innerHTML = `✅ PRO FAOL<br><span style='font-size:12px;font-weight:400;opacity:0.9'>${claimed}</span>`;
     } else {
         document.getElementById('btnClaim').style.display = 'flex';
     }
@@ -263,62 +280,52 @@
         const inp = document.getElementById('chatInp'); const txt = inp.value.trim(); if(!txt) return;
         const box = document.getElementById('chatBox');
         box.innerHTML += `<div class="bubble user">${txt}</div>`; inp.value = "";
-        const l = document.createElement('div'); l.className = "bubble bot"; l.innerText = "..."; box.appendChild(l); box.scrollTop = box.scrollHeight;
-        try { const r = await fetch(`https://text.pollinations.ai/${encodeURIComponent("Reply in Uzbek. User: "+txt)}`); l.innerText = await r.text(); } catch{ l.innerText = "Xato"; }
+        const l = document.createElement('div'); l.className = "bubble bot"; l.innerText = "..."; 
+        box.appendChild(l); box.scrollTop = box.scrollHeight;
+        
+        try { 
+            const r = await fetch(`https://text.pollinations.ai/${encodeURIComponent("Reply in Uzbek. User: "+txt)}`); 
+            l.innerText = await r.text(); 
+        } catch{ l.innerText = "Xatolik"; }
         box.scrollTop = box.scrollHeight;
     }
 
-    // KB
+    // KNOWLEDGE BASE
     let CATS = []; try { CATS = JSON.parse(decodeURIComponent(p.get('cats'))); } catch{}
     function renderCats(){
-        document.getElementById('res-view').style.display = 'none'; document.getElementById('cat-view').style.display = 'grid';
-        const div = document.getElementById('cat-view'); div.style.gridTemplateColumns = "1fr 1fr"; div.style.gap="10px"; div.innerHTML = "";
-        if(CATS.length === 0) div.innerHTML = "<div style='text-align:center;color:#666; grid-column:span 2'>Bo'limlar yo'q</div>";
-        CATS.forEach(c => div.innerHTML += `<div class="glass-card" style="margin:0; text-align:center" onclick="loadRes('${c.id}')"><div style="font-size:24px">📁</div><div style="font-weight:600;margin-top:5px">${c.name}</div></div>`);
+        document.getElementById('res-view').style.display = 'none'; document.getElementById('cat-view').style.display = 'block';
+        const div = document.getElementById('cat-view'); div.innerHTML = "";
+        if(CATS.length === 0) div.innerHTML = "<div style='text-align:center;color:#555;margin-top:40px'>Bo'limlar mavjud emas</div>";
+        CATS.forEach(c => div.innerHTML += `<div class="list-item" onclick="loadRes('${c.id}')"><div class="list-icon">📁</div><div style="font-weight:600;font-size:16px;flex:1">${c.name}</div><div style="color:#666">${c.items.length}</div></div>`);
     }
     function loadRes(cid){
         const cat = CATS.find(c => c.id == cid); if(!cat) return;
         document.getElementById('cat-view').style.display = 'none'; document.getElementById('res-view').style.display = 'block';
         const list = document.getElementById('file-list'); list.innerHTML = `<h2 style="margin-bottom:15px;color:var(--primary)">${cat.name}</h2>`;
         if(cat.items.length === 0) list.innerHTML += "<div style='text-align:center;color:#666'>Fayllar yo'q</div>";
-        cat.items.forEach(r => list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${r.i}');showToast('Yuborilmoqda...')"><div>📄</div><div>${r.n}</div></div>`);
+        cat.items.forEach(r => list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${r.i}');showToast('Yuborilmoqda...')"><div class="list-icon">📄</div><div style="font-size:16px">${r.n}</div></div>`);
     }
     function filterFiles(q){
         q = q.toLowerCase(); if(q.length<2) { renderCats(); return; }
         document.getElementById('cat-view').style.display = 'none'; document.getElementById('res-view').style.display = 'block';
         const list = document.getElementById('file-list'); list.innerHTML = "";
-        CATS.forEach(c => c.items.forEach(i => { if(i.n.toLowerCase().includes(q)) list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${i.i}')"><div>🔍</div><div>${i.n}</div></div>`; }));
+        CATS.forEach(c => c.items.forEach(i => { if(i.n.toLowerCase().includes(q)) list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${i.i}')"><div class="list-icon">🔍</div><div>${i.n}</div></div>`; }));
     }
 
+    // NAVIGATION
     function go(t,e){
-        // Tab almashtirish
+        // Barcha oynalarni yopamiz
+        document.querySelectorAll('.view-container').forEach(s=>s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+        
+        // Tanlanganni ochamiz
+        document.getElementById('tab-'+t).classList.add('active');
         e.classList.add('active');
-
-        // Sahifalarni boshqarish
-        const mainScroll = document.getElementById('main-scroll');
-        const aiTab = document.getElementById('tab-ai');
-        const homeTab = document.getElementById('tab-home');
-        const kbTab = document.getElementById('tab-kb');
-
-        // Hammasini yashiramiz
-        aiTab.classList.remove('active');
-        homeTab.style.display = 'none';
-        kbTab.style.display = 'none';
-        mainScroll.style.display = 'block'; // Default holat
-
-        if(t === 'ai') {
-            mainScroll.style.display = 'none'; // Scroll konteynerini yashiramiz
-            aiTab.classList.add('active'); // Chatni ochamiz
-        } else if (t === 'home') {
-            homeTab.style.display = 'block';
-        } else if (t === 'kb') {
-            kbTab.style.display = 'block';
-        }
-
+        
         if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
     }
     function showToast(m){ const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
+    
     renderCats();
   </script>
 </body>
