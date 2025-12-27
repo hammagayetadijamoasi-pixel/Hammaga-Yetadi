@@ -12,8 +12,8 @@
         --ios-bg: #000000; 
         --glass: rgba(30, 30, 30, 0.65);
         --glass-border: rgba(255, 255, 255, 0.12);
-        --primary: #0A84FF; /* iOS Blue */
-        --success: #30D158; /* iOS Green */
+        --primary: #0A84FF;
+        --success: #30D158;
         --text: #FFFFFF; 
         --text-sec: #8E8E93;
         --card: #1C1C1E;
@@ -23,11 +23,17 @@
     
     body { background: var(--ios-bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; padding-bottom: env(safe-area-inset-bottom); }
     
-    /* Smooth Scroll */
-    .main { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; -webkit-overflow-scrolling: touch; }
+    /* Main Content */
+    .main { 
+        flex: 1; 
+        overflow-y: auto; 
+        padding: 20px; 
+        padding-bottom: 110px; 
+        -webkit-overflow-scrolling: touch; 
+    }
     ::-webkit-scrollbar { display: none; }
 
-    /* Glass Card (iPhone Style) */
+    /* Glass Card */
     .glass-card {
         background: var(--glass);
         backdrop-filter: blur(25px);
@@ -40,19 +46,17 @@
         overflow: hidden;
         transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
-    .glass-card:active { transform: scale(0.97); }
+    .glass-card:active { transform: scale(0.98); }
 
-    /* Pro Card (Special) */
     .pro-card {
         background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(48, 209, 88, 0.1));
         border: 1px solid rgba(10, 132, 255, 0.3);
         text-align: center;
         padding: 25px;
     }
-    
     .slot-count { font-size: 48px; font-weight: 800; background: linear-gradient(to right, #fff, #8E8E93); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 10px 0; }
 
-    /* Buttons (iOS Style) */
+    /* Buttons */
     .btn {
         width: 100%; padding: 16px; border: none; border-radius: 14px; 
         font-weight: 600; font-size: 17px; cursor: pointer; 
@@ -63,15 +67,15 @@
     .btn-success { background: rgba(48, 209, 88, 0.15); color: var(--success); border: 1px solid rgba(48, 209, 88, 0.3); cursor: default; }
     .btn:active { opacity: 0.7; }
 
-    /* Navbar (Floating Glass) */
+    /* Navbar */
     .navbar {
-        position: fixed; bottom: 20px; left: 20px; right: 20px; height: 70px;
+        position: fixed; bottom: 20px; left: 20px; right: 20px; height: 75px;
         background: rgba(44, 44, 46, 0.85);
         backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
         border-radius: 35px;
         border: 1px solid rgba(255,255,255,0.1);
         display: flex; justify-content: space-around; align-items: center;
-        z-index: 100;
+        z-index: 1000;
         box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 33%; height: 100%; color: var(--text-sec); transition: 0.3s; }
@@ -84,7 +88,7 @@
         width: 100%; padding: 12px 16px; 
         background: rgba(118, 118, 128, 0.24); 
         border: none; border-radius: 12px; 
-        color: white; font-size: 17px; margin-bottom: 15px;
+        color: white; font-size: 17px;
     }
     .ios-input::placeholder { color: #8E8E93; }
 
@@ -99,14 +103,46 @@
         display: flex; align-items: center; justify-content: center; font-size: 20px;
     }
 
-    /* Chat */
-    .chat-container { display: flex; flex-direction: column; height: 100%; }
+    /* CHAT FIXED */
+    #tab-ai {
+        display: none;
+        flex-direction: column;
+        height: calc(100vh - 110px); 
+        overflow: hidden;
+    }
+    #tab-ai.active { display: flex; }
+
+    .chat-container { 
+        flex: 1; 
+        display: flex; 
+        flex-direction: column; 
+        overflow: hidden; 
+    }
+    
+    #chatBox {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .chat-input-area {
+        padding: 10px;
+        background: rgba(44, 44, 46, 0.5);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        margin-top: 10px;
+        display: flex; 
+        gap: 10px; 
+        align-items: center;
+    }
+
     .chat-bubble { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 16px; line-height: 1.4; margin-bottom: 10px; }
     .bubble-user { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
     .bubble-bot { align-self: flex-start; background: #2C2C2E; color: white; border-bottom-left-radius: 4px; }
 
     /* Sections */
-    .section { display: none; opacity: 0; transform: scale(0.98); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .section { display: none; opacity: 0; transform: scale(0.99); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
     .section.active { display: block; opacity: 1; transform: scale(1); }
 
     /* Toast */
@@ -114,14 +150,14 @@
         position: fixed; top: 10px; left: 50%; transform: translateX(-50%) translateY(-100px);
         background: rgba(255,255,255,0.9); color: black;
         padding: 12px 24px; border-radius: 30px; font-weight: 600;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 200; transition: 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3); z-index: 2000; transition: 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
     }
     .toast.show { transform: translateX(-50%) translateY(20px); }
   </style>
 </head>
 <body>
 
-  <div id="loader" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:999;display:flex;align-items:center;justify-content:center;">
+  <div id="loader" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;display:flex;align-items:center;justify-content:center;">
     <div style="width:30px;height:30px;border:3px solid #333;border-top:3px solid #0A84FF;border-radius:50%;animation:spin 1s linear infinite;"></div>
   </div>
   <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
@@ -133,7 +169,7 @@
         
         <div class="glass-card pro-card">
             <div style="text-transform: uppercase; font-size: 12px; font-weight: 600; color: var(--primary); letter-spacing: 1px;">Aksiya muddati</div>
-            <div style="color: var(--text-sec); font-size: 14px; margin-top: 4px;"><span id="startDate">Today</span> — <span id="endDate">...</span></div>
+            <div style="color: var(--text-sec); font-size: 14px; margin-top: 4px;"><span id="startDate">Bugun</span> — <span id="endDate">...</span></div>
             <div class="slot-count" id="remSlots">...</div>
             <div style="font-size: 13px; color: var(--text-sec);">Qolgan joylar soni</div>
         </div>
@@ -150,27 +186,28 @@
         <div id="ads-container"></div>
     </div>
 
-    <div id="tab-ai" class="section" style="height: 100%;">
+    <div id="tab-ai" class="section">
         <h1 style="font-size: 32px; font-weight: 800; margin-bottom: 10px;">AI Chat</h1>
         <div class="chat-container">
-            <div style="flex:1; overflow-y:auto; padding-bottom:10px;" id="chatBox">
-                <div class="chat-bubble bubble-bot">👋 Assalomu alaykum!</div>
+            <div id="chatBox">
+                <div class="chat-bubble bubble-bot">👋 Assalomu alaykum! Men sun'iy intellektman. Menga savol bering.</div>
             </div>
-            <div style="display:flex; gap:10px; align-items:center;">
-                <input type="text" class="ios-input" id="chatInp" placeholder="Xabar yozing..." style="margin:0;">
-                <button onclick="sendMsg()" style="width:44px; height:44px; border-radius:50%; background:var(--primary); border:none; color:white; font-size:20px; display:flex; align-items:center; justify-content:center;">↑</button>
+            
+            <div class="chat-input-area">
+                <input type="text" class="ios-input" id="chatInp" placeholder="Xabar yozing..." style="margin:0; background:transparent;">
+                <button onclick="sendMsg()" style="width:40px; height:40px; min-width:40px; border-radius:50%; background:var(--primary); border:none; color:white; font-size:20px; display:flex; align-items:center; justify-content:center;">↑</button>
             </div>
         </div>
     </div>
 
     <div id="tab-kb" class="section">
         <h1 style="font-size: 32px; font-weight: 800; margin-bottom: 20px;">Bilimlar</h1>
-        <input type="text" class="ios-input" placeholder="🔍 Qidirish" onkeyup="filterFiles(this.value)">
+        <input type="text" class="ios-input" placeholder="🔍 Qidirish" onkeyup="filterFiles(this.value)" style="margin-bottom: 15px;">
         
         <div id="cat-view"></div>
         
         <div id="res-view" style="display:none;">
-            <button onclick="renderCats()" style="background:none; border:none; color:var(--primary); font-size:17px; margin-bottom:15px; display:flex; align-items:center;">
+            <button onclick="renderCats()" style="background:none; border:none; color:var(--primary); font-size:17px; margin-bottom:15px; display:flex; align-items:center; cursor:pointer;">
                 <span style="font-size:24px; margin-right:5px;">‹</span> Orqaga
             </button>
             <div id="file-list"></div>
@@ -179,22 +216,23 @@
 
   </div>
 
-  <div id="toast" class="toast">Done</div>
+  <div id="toast" class="toast">Bajarildi</div>
 
   <div class="navbar">
     <div class="nav-item active" onclick="go('home', this)">
         <div class="nav-icon">🏠</div><span class="nav-label">Asosiy</span>
     </div>
     <div class="nav-item" onclick="go('ai', this)">
-        <div class="nav-icon">✨</div><span class="nav-label">AI</span>
+        <div class="nav-icon">✨</div><span class="nav-label">AI Chat</span>
     </div>
     <div class="nav-item" onclick="go('kb', this)">
-        <div class="nav-icon">📂</div><span class="nav-label">Bilim</span>
+        <div class="nav-icon">📂</div><span class="nav-label">Bilimlar</span>
     </div>
   </div>
 
   <script>
-    const tg = window.Telegram.WebApp; tg.expand();
+    const tg = window.Telegram.WebApp; 
+    tg.expand();
     const p = new URLSearchParams(window.location.search);
 
     setTimeout(() => document.getElementById('loader').style.display = 'none', 800);
@@ -219,7 +257,6 @@
         if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         if(proLink && proLink.startsWith('http')) tg.openLink(decodeURIComponent(proLink));
         tg.sendData('claim_pro');
-        // Vizual yangilash (Backendga signal ketdi)
         document.getElementById('btnClaim').style.display = 'none';
         document.getElementById('btnActive').style.display = 'flex';
         document.getElementById('btnActive').innerText = "KUTILMOQDA...";
@@ -244,9 +281,20 @@
     async function sendMsg(){
         const inp = document.getElementById('chatInp'); const txt = inp.value.trim(); if(!txt) return;
         const box = document.getElementById('chatBox');
-        box.innerHTML += `<div class="chat-bubble bubble-user">${txt}</div>`; inp.value = "";
-        const l = document.createElement('div'); l.className = "chat-bubble bubble-bot"; l.innerText = "..."; box.appendChild(l); box.scrollTop = box.scrollHeight;
-        try { const r = await fetch(`https://text.pollinations.ai/${encodeURIComponent("Reply in Uzbek. User: "+txt)}`); l.innerText = await r.text(); } catch{ l.innerText = "Error"; }
+        
+        box.innerHTML += `<div class="chat-bubble bubble-user">${txt}</div>`; 
+        inp.value = "";
+        
+        const l = document.createElement('div'); l.className = "chat-bubble bubble-bot"; l.innerText = "..."; 
+        box.appendChild(l); 
+        box.scrollTop = box.scrollHeight;
+        
+        try { 
+            const r = await fetch(`https://text.pollinations.ai/${encodeURIComponent("Reply in Uzbek. User: "+txt)}`); 
+            l.innerText = await r.text(); 
+        } catch{ l.innerText = "Xatolik yuz berdi."; }
+        
+        box.scrollTop = box.scrollHeight;
     }
 
     // KB
@@ -254,12 +302,14 @@
     function renderCats(){
         document.getElementById('res-view').style.display = 'none'; document.getElementById('cat-view').style.display = 'block';
         const div = document.getElementById('cat-view'); div.innerHTML = "";
+        if(CATS.length === 0) div.innerHTML = "<div style='text-align:center;color:#666;margin-top:20px'>Bo'limlar yo'q</div>";
         CATS.forEach(c => div.innerHTML += `<div class="list-item" onclick="loadRes('${c.id}')"><div class="list-icon">📁</div><div style="font-weight:600;font-size:17px">${c.name}</div><div style="margin-left:auto;color:#8E8E93">${c.items.length}</div></div>`);
     }
     function loadRes(cid){
         const cat = CATS.find(c => c.id == cid); if(!cat) return;
         document.getElementById('cat-view').style.display = 'none'; document.getElementById('res-view').style.display = 'block';
-        const list = document.getElementById('file-list'); list.innerHTML = `<h2 style="margin-bottom:15px;color:var(--primary)">${cat.name}</h2>`;
+        const list = document.getElementById('file-list'); list.innerHTML = `<h2 style="margin-bottom:15px;color:var(--primary);font-size:24px;font-weight:bold">${cat.name}</h2>`;
+        if(cat.items.length === 0) list.innerHTML += "<div style='text-align:center;color:#666'>Fayllar yo'q</div>";
         cat.items.forEach(r => list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${r.i}');showToast('Yuborilmoqda...')"><div class="list-icon">📄</div><div>${r.n}</div></div>`);
     }
     function filterFiles(q){
@@ -272,7 +322,13 @@
     function go(t,e){
         document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-        document.getElementById('tab-'+t).classList.add('active'); e.classList.add('active');
+        
+        const tab = document.getElementById('tab-'+t);
+        tab.classList.add('active');
+        if(t === 'ai') tab.style.display = 'flex';
+        else tab.style.display = 'block';
+
+        e.classList.add('active');
         if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
     }
     function showToast(m){ const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
