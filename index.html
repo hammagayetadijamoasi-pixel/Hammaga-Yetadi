@@ -39,11 +39,14 @@
         overflow-y: auto; 
         padding: 20px;
         padding-bottom: calc(var(--navbar-height) + 20px); 
-        display: none; flex-direction: column;
+        display: none; /* Boshida yashirin */
+        flex-direction: column;
         z-index: 10;
         -webkit-overflow-scrolling: touch;
     }
     .view-container::-webkit-scrollbar { display: none; }
+    
+    /* Active bo'lganda ko'rinadi */
     .view-container.active { display: flex; }
 
     /* AI CHAT MAXSUS KONTEYNERI */
@@ -54,6 +57,7 @@
         flex-direction: column;
         height: 100%;
     }
+    /* AI Chat active bo'lganda ham flex bo'ladi, lekin paddingi 0 */
     #tab-ai.active { display: flex; }
 
     .chat-header {
@@ -81,7 +85,7 @@
         gap: 10px;
         align-items: center;
         width: 100%;
-        padding-bottom: calc(var(--navbar-height) + 10px); /* Navbar ustida */
+        padding-bottom: calc(var(--navbar-height) + 10px); 
         z-index: 50;
     }
 
@@ -99,6 +103,7 @@
         background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(10, 132, 255, 0.05));
         border: 1px solid rgba(10, 132, 255, 0.3);
         text-align: center;
+        padding: 25px;
     }
     .slot-count { font-size: 42px; font-weight: 800; margin: 10px 0; }
 
@@ -168,7 +173,7 @@
       
       <div class="glass-card pro-card">
           <div style="font-size:12px; opacity:0.7; text-transform:uppercase; letter-spacing:1px">PRO MUDDATI</div>
-          <div style="margin-top:5px; font-weight:600"><span id="startDate">PRO TUGASH SANASI</span> — <span id="endDate">...</span></div>
+          <div style="margin-top:5px; font-weight:600"><span id="startDate">PRO TUGASH MUDDATI</span> — <span id="endDate">...</span></div>
           <div class="slot-count" id="remSlots">...</div>
           <div style="font-size:13px; opacity:0.7;">Qolgan joylar soni</div>
       </div>
@@ -236,7 +241,6 @@
 
     if (claimed && claimed !== 'None') {
         document.getElementById('btnActive').style.display = 'flex';
-        // MUDDATNI KOR'SATISH
         document.getElementById('btnActive').innerHTML = `✅ PRO FAOL<br><span style='font-size:11px;font-weight:400;opacity:0.8'>Amal qilish muddati: ${claimed} gacha</span>`;
     } else {
         document.getElementById('btnClaim').style.display = 'flex';
@@ -331,13 +335,18 @@
         if (!found) list.innerHTML = "<div style='text-align:center;color:#666'>Topilmadi</div>";
     }
 
+    // NAVIGATION
     function go(t,e){
-        document.querySelectorAll('.view-container').forEach(s=>s.classList.remove('active'));
+        // Barcha oynalarni yashiramiz va stilni tozalaymiz
+        document.querySelectorAll('.view-container').forEach(s=> {
+            s.classList.remove('active');
+            s.style.display = ''; // Inline stillarni tozalash (MUHIM)
+        });
         document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
         
+        // Tanlanganni ochamiz
         const tab = document.getElementById('tab-'+t);
         tab.classList.add('active');
-        if(t === 'ai') tab.style.display = 'flex'; // AI chat uchun flex
         
         e.classList.add('active');
         if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
