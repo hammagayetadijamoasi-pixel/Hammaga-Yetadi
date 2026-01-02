@@ -2,152 +2,1147 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://telegram.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; media-src 'self' https:; connect-src 'self' https://text.pollinations.ai;">
   <title>Hammaga Yetadi</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    :root { --primary: #6200ea; --secondary: #00e5ff; --bg: #0f111a; --card-bg: rgba(255, 255, 255, 0.05); --text: #ffffff; --gray: #a0a0a0; }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; user-select: none; -webkit-user-select: none; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     
-    .main { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 90px; }
-    .card { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
-    .info-card { background: linear-gradient(135deg, rgba(98,0,234,0.2), rgba(0,229,255,0.1)); border: 1px solid rgba(0,229,255,0.3); border-radius: 16px; padding: 16px; margin-bottom: 20px; text-align: center; }
+    :root { 
+        --bg: #000000; 
+        --card-bg: #1c1c1e;
+        --primary: #0A84FF;
+        --success: #30D158;
+        --error: #FF453A;
+        --warning: #FFD60A;
+        --text: #FFFFFF; 
+        --text-sec: #8E8E93;
+        --border: rgba(255, 255, 255, 0.12);
+        --navbar-height: 85px;
+    }
     
-    .btn { width: 100%; padding: 16px; border: none; border-radius: 14px; font-weight: 700; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; }
-    .btn-claim { background: linear-gradient(90deg, var(--primary), #7c4dff); color: white; }
-    .btn-active { background: rgba(0, 229, 255, 0.1); color: var(--secondary); border: 1px solid rgba(0, 229, 255, 0.3); cursor: default; }
-    .btn-disabled { background: #333; color: #777; cursor: not-allowed; }
+    * { 
+        box-sizing: border-box; 
+        margin: 0; 
+        padding: 0; 
+        font-family: 'Inter', sans-serif; 
+        -webkit-tap-highlight-color: transparent; 
+        outline: none; 
+    }
+    
+    body { 
+        background: var(--bg); 
+        color: var(--text); 
+        height: 100dvh; 
+        display: flex; 
+        flex-direction: column; 
+        overflow: hidden; 
+        position: fixed;
+        width: 100%;
+        overscroll-behavior: none;
+    }
 
-    .ad-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
-    .ad-img { width: 100%; height: 140px; object-fit: cover; }
-    .navbar { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: rgba(15, 17, 26, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-around; align-items: center; z-index: 100; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--gray); font-size: 10px; padding: 10px; width: 33%; opacity: 0.7; }
-    .nav-item.active { color: var(--secondary); opacity: 1; transform: translateY(-2px); }
-    .section { display: none; } .section.active { display: block; }
-    .chat-container { display: flex; flex-direction: column; height: 100%; } .chat-box { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px; } .msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 14px; } .msg.user { align-self: flex-end; background: var(--primary); } .msg.bot { align-self: flex-start; background: rgba(255,255,255,0.1); }
-    .input-area { display: flex; gap: 10px; padding: 10px; background: rgba(0,0,0,0.2); } .chat-input { flex: 1; padding: 12px; border-radius: 20px; border: none; background: rgba(255,255,255,0.1); color: white; }
-    .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .cat-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center; }
-    .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #00E676; color: #000; padding: 10px 20px; border-radius: 20px; font-weight: bold; opacity: 0; pointer-events: none; z-index: 999; transition: 0.3s; } .toast.show { opacity: 1; top: 30px; }
+    /* SAHIFA KONTEYNERLARI */
+    .view-container {
+        position: absolute;
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%;
+        overflow-y: auto; 
+        overflow-x: hidden;
+        padding: 20px;
+        padding-bottom: calc(var(--navbar-height) + 20px); 
+        display: none;
+        flex-direction: column;
+        z-index: 10;
+        -webkit-overflow-scrolling: touch;
+        opacity: 0;
+        transform: translateX(20px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    
+    .view-container::-webkit-scrollbar { display: none; }
+    
+    .view-container.active { 
+        display: flex; 
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    /* AI CHAT MAXSUS KONTEYNERI */
+    #tab-ai {
+        padding: 0;
+        overflow: hidden; 
+        display: none;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    #tab-ai.active { 
+        display: flex; 
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .chat-header {
+        padding: 20px 20px 10px 20px;
+        background: rgba(0,0,0,0.95);
+        backdrop-filter: blur(20px);
+        z-index: 20;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .chat-input-wrapper {
+        background: rgba(28, 28, 30, 0.98);
+        backdrop-filter: blur(30px);
+        padding: 12px 15px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        width: 100%;
+        padding-bottom: calc(var(--navbar-height) + 10px); 
+        z-index: 50;
+    }
+
+    /* ELEMENTLAR */
+    .glass-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 15px;
+        position: relative;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .glass-card:active {
+        transform: scale(0.98);
+    }
+    
+    .pro-card {
+        background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(10, 132, 255, 0.05));
+        border: 1px solid rgba(10, 132, 255, 0.3);
+        text-align: center;
+        padding: 25px;
+    }
+    
+    .slot-count { 
+        font-size: 42px; 
+        font-weight: 800; 
+        margin: 10px 0; 
+        background: linear-gradient(135deg, var(--primary), var(--success));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .ios-input {
+        width: 100%; 
+        padding: 14px 16px; 
+        background: #2C2C2E; 
+        border: 1px solid var(--border); 
+        border-radius: 14px; 
+        color: white; 
+        font-size: 16px; 
+        transition: 0.2s;
+    }
+    
+    .ios-input:focus {
+        border-color: var(--primary);
+        background: #3a3a3c;
+    }
+    
+    .btn {
+        width: 100%; 
+        padding: 16px; 
+        border: none; 
+        border-radius: 16px; 
+        font-weight: 600; 
+        font-size: 16px; 
+        cursor: pointer; 
+        color: white;
+        background: var(--primary); 
+        margin-bottom: 15px;
+        transition: transform 0.1s, opacity 0.2s;
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn:active { 
+        transform: scale(0.98); 
+    }
+    
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .btn-active { 
+        background: rgba(48, 209, 88, 0.15); 
+        color: var(--success); 
+        border: 1px solid rgba(48, 209, 88, 0.5); 
+        cursor: default; 
+    }
+
+    /* Navbar */
+    .navbar {
+        position: fixed; 
+        bottom: 0; 
+        left: 0; 
+        right: 0; 
+        height: var(--navbar-height);
+        background: rgba(20, 20, 20, 0.95);
+        backdrop-filter: blur(30px);
+        border-top: 1px solid var(--border);
+        display: flex; 
+        justify-content: space-around; 
+        align-items: center;
+        z-index: 100;
+        padding-bottom: env(safe-area-inset-bottom, 15px);
+    }
+    
+    .nav-item { 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        color: var(--text-sec); 
+        font-size: 10px; 
+        font-weight: 600; 
+        transition: 0.2s; 
+        opacity: 0.7;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px 12px;
+        border-radius: 12px;
+    }
+    
+    .nav-item:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+    }
+    
+    .nav-item.active { 
+        color: var(--primary); 
+        transform: translateY(-2px); 
+        opacity: 1; 
+    }
+    
+    .nav-icon { 
+        font-size: 26px; 
+        margin-bottom: 4px; 
+    }
+
+    .bubble { 
+        max-width: 80%; 
+        padding: 12px 16px; 
+        border-radius: 20px; 
+        font-size: 16px; 
+        line-height: 1.4; 
+        word-wrap: break-word;
+        animation: bubbleIn 0.3s ease;
+    }
+    
+    @keyframes bubbleIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .bubble.user { 
+        align-self: flex-end; 
+        background: var(--primary); 
+        border-bottom-right-radius: 4px; 
+    }
+    
+    .bubble.bot { 
+        align-self: flex-start; 
+        background: #2C2C2E; 
+        border-bottom-left-radius: 4px; 
+    }
+
+    .list-item {
+        background: var(--card-bg); 
+        padding: 16px; 
+        border-radius: 16px; 
+        margin-bottom: 10px; 
+        display: flex; 
+        align-items: center; 
+        gap: 15px;
+        border: 1px solid var(--border); 
+        transition: background 0.2s, transform 0.1s;
+        cursor: pointer;
+    }
+    
+    .list-item:active { 
+        background: #2c2c2e; 
+        transform: scale(0.98);
+    }
+    
+    .list-icon {
+        font-size: 24px;
+        min-width: 30px;
+    }
+    
+    .toast {
+        position: fixed; 
+        top: 20px; 
+        left: 50%; 
+        transform: translateX(-50%) translateY(-100px);
+        background: rgba(255,255,255,0.95); 
+        color: black; 
+        padding: 12px 24px; 
+        border-radius: 50px; 
+        font-weight: 600; 
+        z-index: 2000; 
+        transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        max-width: 90%;
+        text-align: center;
+    }
+    
+    .toast.show { 
+        transform: translateX(-50%) translateY(0); 
+    }
+    
+    .toast.error {
+        background: var(--error);
+        color: white;
+    }
+    
+    .toast.success {
+        background: var(--success);
+        color: white;
+    }
+    
+    /* Skeleton Loader */
+    .skeleton {
+        background: linear-gradient(90deg, #1c1c1e 25%, #2c2c2e 50%, #1c1c1e 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+        border-radius: 16px;
+        height: 80px;
+        margin-bottom: 10px;
+    }
+    
+    @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+    
+    /* Loading Dots */
+    .loading-dots {
+        display: flex;
+        gap: 4px;
+        padding: 8px 0;
+    }
+    
+    .loading-dots div {
+        width: 8px;
+        height: 8px;
+        background: var(--text-sec);
+        border-radius: 50%;
+        animation: bounce 0.6s infinite;
+    }
+    
+    .loading-dots div:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots div:nth-child(3) { animation-delay: 0.4s; }
+    
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+    
+    /* Media Query */
+    @media (max-width: 360px) {
+        .slot-count { font-size: 36px; }
+        h1 { font-size: 28px !important; }
+    }
+    
+    /* Offline Indicator */
+    .offline-banner {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: var(--error);
+        color: white;
+        text-align: center;
+        padding: 10px;
+        font-weight: 600;
+        z-index: 3000;
+        transform: translateY(-100%);
+        transition: transform 0.3s;
+    }
+    
+    .offline-banner.show {
+        transform: translateY(0);
+    }
   </style>
 </head>
-<body oncontextmenu="return false;">
-  <div class="main">
-    <div id="tab-home" class="section active">
-        <div class="info-card">
-            <div style="font-size:12px; color:var(--secondary); margin-bottom:5px;">📅 <span id="startDate"></span> — <span id="endDate"></span></div>
-            <div style="font-size:24px; font-weight:800; margin:10px 0;">Qolgan Joylar: <span id="remSlots" style="color:#00e5ff; font-size:32px">...</span></div>
-            <div style="font-size:11px; color:var(--gray);">Shoshiling! Joylar soni cheklangan.</div>
-        </div>
-        <div style="margin-bottom: 25px;">
-            <button id="btnClaim" class="btn btn-claim" onclick="claimPro()" style="display:none">🚀 PRO LINK OLISH</button>
-            <button id="btnActive" class="btn btn-active" style="display:none">✅ SIZDA PRO MAVJUD</button>
-            <button id="btnEmpty" class="btn btn-disabled" style="display:none">❌ JOYLAR TUGADI</button>
-        </div>
-        <div id="ads-container"></div>
-    </div>
+<body>
 
-    <div id="tab-ai" class="section" style="height: 100%;"><div class="chat-container"><div class="chat-box" id="chatBox"><div class="msg bot">Assalomu alaykum!</div></div><div class="input-area"><input type="text" class="chat-input" id="chatInp" placeholder="..." onkeypress="if(event.key==='Enter') sendMsg()"><button onclick="sendMsg()" style="width:40px;border-radius:50%;border:none;background:var(--secondary)">➤</button></div></div></div>
-    
-    <div id="tab-kb" class="section">
-        <input type="text" style="width:100%; padding:12px; background:rgba(255,255,255,0.1); border:none; border-radius:12px; color:white; margin-bottom:15px;" placeholder="🔍 Qidirish..." onkeyup="filterFiles(this.value)">
-        <div id="cat-view" class="cat-grid"></div>
-        <div id="res-view" style="display:none;"><button onclick="renderCats()" style="background:none; border:none; color:var(--secondary); margin-bottom:10px;">🔙 Orqaga</button><div id="file-list"></div></div>
-    </div>
+  <!-- LOADER -->
+  <div id="loader" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:15px;">
+    <div style="width:40px;height:40px;border:3px solid #333;border-top:3px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;"></div>
+    <div style="color:var(--text-sec);font-size:14px;">Yuklanmoqda...</div>
   </div>
-  <div id="toast" class="toast">✅ Link ochilmoqda...</div>
-  <div class="navbar"><div class="nav-item active" onclick="go('home', this)">🏠<br>Asosiy</div><div class="nav-item" onclick="go('ai', this)">✨<br>Chat</div><div class="nav-item" onclick="go('kb', this)">📂<br>Bilim</div></div>
+  <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+
+  <!-- OFFLINE BANNER -->
+  <div id="offlineBanner" class="offline-banner">
+    ⚠️ Internet aloqasi yo'q
+  </div>
+
+  <!-- HOME TAB -->
+  <div id="tab-home" class="view-container active">
+      <h1 style="font-size:32px; font-weight:800; margin-bottom:20px">Asosiy</h1>
+      
+      <div class="glass-card pro-card">
+          <div style="font-size:12px; opacity:0.7; text-transform:uppercase; letter-spacing:1px">PRO MUDDATI</div>
+          <div style="margin-top:5px; font-weight:600">
+            <span id="startDate">PRO TUGASH MUDDATI</span> — <span id="endDate">...</span>
+          </div>
+          <div class="slot-count" id="remSlots">...</div>
+          <div style="font-size:13px; opacity:0.7;">Qolgan joylar soni</div>
+      </div>
+
+      <div style="margin-bottom: 25px;">
+          <button id="btnClaim" class="btn" style="display:none" aria-label="PRO link olish">
+            🚀 PRO LINK OLISH
+          </button>
+          <button id="btnActive" class="btn btn-active" style="display:none" disabled></button>
+      </div>
+      
+      <h3 style="margin-bottom: 15px; opacity: 0.6; font-size: 14px; text-transform: uppercase;">Homiylar</h3>
+      <div id="ads-container"></div>
+  </div>
+
+  <!-- KNOWLEDGE BASE TAB -->
+  <div id="tab-kb" class="view-container">
+      <h1 style="font-size:32px; font-weight:800; margin-bottom:20px">Bilimlar</h1>
+      <input 
+        type="text" 
+        class="ios-input" 
+        id="searchInput"
+        placeholder="🔍 Qidirish..." 
+        style="margin-bottom: 20px;"
+        aria-label="Fayllarni qidirish"
+      >
+      
+      <div id="cat-view"></div>
+      <div id="res-view" style="display:none;">
+          <button 
+            id="backToCats"
+            style="background:none; border:none; color:var(--primary); font-size:17px; margin-bottom:20px; font-weight:600; cursor:pointer; padding: 8px 0;"
+            aria-label="Kategoriyalarga qaytish"
+          >
+            ‹ Orqaga
+          </button>
+          <div id="file-list"></div>
+      </div>
+  </div>
+
+  <!-- AI CHAT TAB -->
+  <div id="tab-ai" class="view-container">
+      <div class="chat-header">
+          <h1 style="font-size:32px; font-weight:800;">AI Chat</h1>
+          <p style="font-size:13px; color:var(--text-sec); margin-top:5px;">Savollaringizni bering</p>
+      </div>
+      <div class="chat-messages" id="chatBox" role="log" aria-live="polite"></div>
+      <div class="chat-input-wrapper">
+          <input 
+            type="text" 
+            class="ios-input" 
+            id="chatInp" 
+            placeholder="Xabar..." 
+            style="flex:1;"
+            maxlength="500"
+            aria-label="Xabar matnini kiriting"
+          >
+          <button 
+            id="sendBtn"
+            style="width:44px; height:44px; border-radius:50%; background:var(--primary); border:none; color:white; font-size:20px; cursor:pointer; transition: 0.2s;"
+            aria-label="Xabar yuborish"
+          >↑</button>
+      </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast" role="alert" aria-live="polite"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" role="navigation" aria-label="Asosiy navigatsiya">
+    <button class="nav-item active" data-tab="home" aria-label="Asosiy sahifa">
+        <div class="nav-icon" aria-hidden="true">🏠</div>
+        <span>Asosiy</span>
+    </button>
+    <button class="nav-item" data-tab="ai" aria-label="AI Chat">
+        <div class="nav-icon" aria-hidden="true">✨</div>
+        <span>Chat</span>
+    </button>
+    <button class="nav-item" data-tab="kb" aria-label="Bilimlar bazasi">
+        <div class="nav-icon" aria-hidden="true">📂</div>
+        <span>Bilimlar</span>
+    </button>
+  </nav>
 
   <script>
-    const tg = window.Telegram.WebApp; tg.expand();
-    const p = new URLSearchParams(window.location.search);
-
-    document.getElementById('startDate').innerText = p.get('sd') || 'Bugun';
-    document.getElementById('endDate').innerText = p.get('ed') || '...';
+    'use strict';
     
-    const rem = parseInt(p.get('rem') || '0');
-    document.getElementById('remSlots').innerText = rem;
-
-    const isActive = p.get('act') === '1'; 
-    const userExp = p.get('exp') || '';    
-    const proLink = p.get('pl');
-
-    if (isActive) {
-        document.getElementById('btnActive').style.display = 'flex';
-        document.getElementById('btnActive').innerText = `✅ SIZDA PRO MAVJUD (${userExp})`;
-    } else {
-        if (rem > 0) {
-            document.getElementById('btnClaim').style.display = 'flex';
-        } else {
-            document.getElementById('btnEmpty').style.display = 'flex';
+    // ==================== GLOBAL VARIABLES ====================
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+    tg.enableClosingConfirmation();
+    
+    const params = new URLSearchParams(window.location.search);
+    
+    let CATS = [];
+    let ADS = [];
+    let currentCategory = null;
+    let lastAIRequestTime = 0;
+    const AI_COOLDOWN = 2000; // 2 soniya
+    
+    // ==================== UTILITY FUNCTIONS ====================
+    const Utils = {
+      // XSS zaifligini oldini olish
+      escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      },
+      
+      // URL xavfsizligini tekshirish
+      isSafeUrl(url) {
+        if (!url) return false;
+        try {
+          const parsed = new URL(url);
+          return ['http:', 'https:'].includes(parsed.protocol);
+        } catch {
+          return false;
         }
+      },
+      
+      // Debounce funksiyasi
+      debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      },
+      
+      // Haptic feedback
+      haptic(type = 'light') {
+        if (tg.HapticFeedback) {
+          try {
+            if (['light', 'medium', 'heavy'].includes(type)) {
+              tg.HapticFeedback.impactOccurred(type);
+            } else if (['success', 'warning', 'error'].includes(type)) {
+              tg.HapticFeedback.notificationOccurred(type);
+            }
+          } catch (e) {
+            console.error('Haptic error:', e);
+          }
+        }
+      },
+      
+      // Ma'lumotlarni xavfsiz parse qilish
+      safeJSONParse(str, fallback = null) {
+        try {
+          if (!str) return fallback;
+          return JSON.parse(decodeURIComponent(str));
+        } catch (e) {
+          console.error('JSON parse error:', e);
+          return fallback;
+        }
+      }
+    };
+    
+    // ==================== TOAST NOTIFICATIONS ====================
+    let toastTimeout;
+    function showToast(message, type = 'info', duration = 2000) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = 'toast show';
+      
+      if (type === 'error') {
+        toast.classList.add('error');
+      } else if (type === 'success') {
+        toast.classList.add('success');
+      }
+      
+      clearTimeout(toastTimeout);
+      
+      if (duration > 0) {
+        toastTimeout = setTimeout(() => {
+          toast.classList.remove('show');
+        }, duration);
+      }
     }
-
-    function claimPro() { 
-        if(proLink) {
-            tg.openLink(decodeURIComponent(proLink));
+    
+    // ==================== NAVIGATION ====================
+    function initNavigation() {
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      navItems.forEach(item => {
+        item.addEventListener('click', function() {
+          const tab = this.dataset.tab;
+          if (!tab) return;
+          
+          // Remove active class from all
+          document.querySelectorAll('.view-container').forEach(view => {
+            view.classList.remove('active');
+          });
+          navItems.forEach(nav => nav.classList.remove('active'));
+          
+          // Add active to current
+          document.getElementById(`tab-${tab}`).classList.add('active');
+          this.classList.add('active');
+          
+          Utils.haptic('light');
+        });
+      });
+    }
+    
+    // ==================== HOME PAGE ====================
+    function initHomePage() {
+      try {
+        // Set dates
+        const endDate = params.get('ed') || '...';
+        const claimed = params.get('cl');
+        const proLink = params.get('pl');
+        const slots = params.get('ps') || '0';
+        
+        document.getElementById('endDate').textContent = endDate;
+        document.getElementById('remSlots').textContent = slots;
+        
+        const btnClaim = document.getElementById('btnClaim');
+        const btnActive = document.getElementById('btnActive');
+        
+        // Pro status check
+        if (claimed && claimed !== 'None') {
+          btnActive.style.display = 'flex';
+          btnActive.innerHTML = `✅ PRO FAOL<br><span style='font-size:11px;font-weight:400;opacity:0.8;margin-top:4px;display:block'>Amal qilish muddati: ${Utils.escapeHtml(claimed)} gacha</span>`;
+        } else {
+          btnClaim.style.display = 'flex';
+          btnClaim.addEventListener('click', () => claimPro(proLink));
         }
         
-        // 500ms kutib botga signal yuboramiz
+      } catch (e) {
+        console.error('Home page init error:', e);
+        showToast('⚠️ Ma\'lumotlarni yuklashda xatolik', 'error');
+      }
+    }
+    
+    function claimPro(proLink) {
+      Utils.haptic('success');
+      
+      // Open link if valid
+      if (proLink && Utils.isSafeUrl(decodeURIComponent(proLink))) {
+        tg.openLink(decodeURIComponent(proLink));
+      } else {
+        showToast('❌ Havola noto\'g\'ri', 'error');
+        return;
+      }
+      
+      // Send data to bot
+      try {
+        tg.sendData('claim_pro');
+      } catch (e) {
+        console.error('Send data error:', e);
+      }
+      
+      // Update UI
+      const btnClaim = document.getElementById('btnClaim');
+      const btnActive = document.getElementById('btnActive');
+      
+      btnClaim.style.display = 'none';
+      btnActive.style.display = 'flex';
+      btnActive.textContent = "KUTILMOQDA...";
+      
+      showToast("✅ So'rov yuborildi", 'success');
+    }
+    
+    // ==================== ADS ====================
+    function initAds() {
+      const adsContainer = document.getElementById('ads-container');
+      ADS = Utils.safeJSONParse(params.get('ads'), []);
+      
+      if (!ADS || ADS.length === 0) {
+        adsContainer.innerHTML = "<div style='opacity:0.5;text-align:center;font-size:14px;padding:20px'>Hozircha homiylar yo'q</div>";
+        return;
+      }
+      
+      ADS.forEach(ad => {
+        const card = createAdCard(ad);
+        adsContainer.appendChild(card);
+      });
+    }
+    
+    function createAdCard(ad) {
+      const card = document.createElement('div');
+      card.className = 'glass-card';
+      card.style.cursor = 'pointer';
+      
+      // Media
+      if (ad.m && Utils.isSafeUrl(decodeURIComponent(ad.m))) {
+        const mediaUrl = decodeURIComponent(ad.m);
+        
+        if (mediaUrl.endsWith('.mp4')) {
+          const video = document.createElement('video');
+          video.src = mediaUrl;
+          video.autoplay = true;
+          video.muted = true;
+          video.loop = true;
+          video.playsInline = true;
+          video.style.cssText = "width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:10px";
+          video.onerror = () => video.style.display = 'none';
+          card.appendChild(video);
+        } else {
+          const img = document.createElement('img');
+          img.src = mediaUrl;
+          img.alt = "Reklama";
+          img.style.cssText = "width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:10px";
+          img.onerror = () => img.style.display = 'none';
+          card.appendChild(img);
+        }
+      }
+      
+      // Content
+      const content = document.createElement('div');
+      
+      const title = document.createElement('div');
+      title.style.cssText = "font-weight:700;font-size:17px;margin-bottom:4px";
+      title.textContent = decodeURIComponent(ad.t);
+      content.appendChild(title);
+      
+      if (ad.x && ad.x !== "None") {
+        const desc = document.createElement('div');
+        desc.style.cssText = "font-size:13px;color:#8E8E93";
+        desc.textContent = decodeURIComponent(ad.x);
+        content.appendChild(desc);
+      }
+      
+      card.appendChild(content);
+      
+      // Click handler
+      card.addEventListener('click', () => {
+        Utils.haptic('medium');
+        
+        try {
+          tg.sendData(`ad_click:${ad.i}`);
+        } catch (e) {
+          console.error('Send ad click error:', e);
+        }
+        
+        if (ad.l && ad.l !== 'None' && Utils.isSafeUrl(ad.l)) {
+          tg.openLink(ad.l);
+        }
+      });
+      
+      return card;
+    }
+    
+    // ==================== KNOWLEDGE BASE ====================
+    function initKnowledgeBase() {
+      CATS = Utils.safeJSONParse(params.get('cats'), []);
+      
+      renderCategories();
+      
+      // Search with debounce
+      const searchInput = document.getElementById('searchInput');
+      const debouncedSearch = Utils.debounce(filterFiles, 300);
+      searchInput.addEventListener('input', (e) => debouncedSearch(e.target.value));
+      
+      // Back button
+      document.getElementById('backToCats').addEventListener('click', renderCategories);
+    }
+    
+    function renderCategories() {
+      const catView = document.getElementById('cat-view');
+      const resView = document.getElementById('res-view');
+      
+      resView.style.display = 'none';
+      catView.style.display = 'block';
+      catView.innerHTML = '';
+      
+      currentCategory = null;
+      
+      if (!CATS || CATS.length === 0) {
+        catView.innerHTML = "<div style='text-align:center;color:var(--text-sec);margin-top:40px;font-size:14px'>📂 Bo'limlar mavjud emas</div>";
+        return;
+      }
+      
+      CATS.forEach(cat => {
+        const item = createCategoryItem(cat);
+        catView.appendChild(item);
+      });
+    }
+    
+    function createCategoryItem(cat) {
+      const item = document.createElement('div');
+      item.className = 'list-item';
+      item.setAttribute('role', 'button');
+      item.setAttribute('tabindex', '0');
+      
+      const icon = document.createElement('div');
+      icon.className = 'list-icon';
+      icon.textContent = '📁';
+      icon.setAttribute('aria-hidden', 'true');
+      
+      const name = document.createElement('div');
+      name.style.cssText = "font-weight:600;font-size:16px;flex:1";
+      name.textContent = cat.name;
+      
+      const count = document.createElement('div');
+      count.style.color = 'var(--text-sec)';
+      count.textContent = cat.items.length;
+      
+      item.appendChild(icon);
+      item.appendChild(name);
+      item.appendChild(count);
+      
+      item.addEventListener('click', () => loadResources(cat.id));
+      item.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') loadResources(cat.id);
+      });
+      
+      return item;
+    }
+    
+    function loadResources(catId) {
+      const cat = CATS.find(c => c.id == catId);
+      if (!cat) return;
+      
+      currentCategory = cat;
+      
+      const catView = document.getElementById('cat-view');
+      const resView = document.getElementById('res-view');
+      const fileList = document.getElementById('file-list');
+      
+      catView.style.display = 'none';
+      resView.style.display = 'block';
+      fileList.innerHTML = '';
+      
+      const header = document.createElement('h2');
+      header.style.cssText = "margin-bottom:15px;color:var(--primary)";
+      header.textContent = cat.name;
+      fileList.appendChild(header);
+      
+      if (cat.items.length === 0) {
+        const empty = document.createElement('div');
+        empty.style.cssText = "text-align:center;color:var(--text-sec);padding:20px";
+        empty.textContent = "📄 Fayllar yo'q";
+        fileList.appendChild(empty);
+        return;
+      }
+      
+      cat.items.forEach(resource => {
+        const item = createResourceItem(resource);
+        fileList.appendChild(item);
+      });
+      
+      Utils.haptic('light');
+    }
+    
+    function createResourceItem(resource) {
+      const item = document.createElement('div');
+      item.className = 'list-item';
+      item.setAttribute('role', 'button');
+      item.setAttribute('tabindex', '0');
+      
+      const icon = document.createElement('div');
+      icon.className = 'list-icon';
+      icon.textContent = '📄';
+      icon.setAttribute('aria-hidden', 'true');
+      
+      const name = document.createElement('div');
+      name.style.fontSize = '16px';
+      name.textContent = resource.n;
+      
+      item.appendChild(icon);
+      item.appendChild(name);
+      
+      const downloadHandler = () => {
+        Utils.haptic('medium');
+        
+        try {
+          tg.sendData(`get_resource:${resource.i}`);
+          showToast('📥 Yuborilmoqda...', 'success');
+        } catch (e) {
+          console.error('Send resource error:', e);
+          showToast('❌ Xatolik yuz berdi', 'error');
+        }
+      };
+      
+      item.addEventListener('click', downloadHandler);
+      item.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') downloadHandler();
+      });
+      
+      return item;
+    }
+    
+    function filterFiles(query) {
+      query = query.trim().toLowerCase();
+      
+      if (query.length < 2) {
+        renderCategories();
+        return;
+      }
+      
+      const catView = document.getElementById('cat-view');
+      const resView = document.getElementById('res-view');
+      const fileList = document.getElementById('file-list');
+      
+      catView.style.display = 'none';
+      resView.style.display = 'block';
+      fileList.innerHTML = '';
+      
+      const header = document.createElement('h2');
+      header.style.cssText = "margin-bottom:15px;color:var(--primary)";
+      header.textContent = `🔍 "${query}" bo'yicha qidiruv`;
+      fileList.appendChild(header);
+      
+      let found = false;
+      
+      CATS.forEach(cat => {
+        cat.items.forEach(resource => {
+          if (resource.n.toLowerCase().includes(query)) {
+            found = true;
+            const item = createResourceItem(resource);
+            fileList.appendChild(item);
+          }
+        });
+      });
+      
+      if (!found) {
+        const empty = document.createElement('div');
+        empty.style.cssText = "text-align:center;color:var(--text-sec);padding:20px";
+        empty.textContent = "❌ Hech narsa topilmadi";
+        fileList.appendChild(empty);
+      }
+    }
+    
+    // ==================== AI CHAT ====================
+    function initAIChat() {
+      const sendBtn = document.getElementById('sendBtn');
+      const chatInp = document.getElementById('chatInp');
+      
+      sendBtn.addEventListener('click', sendMessage);
+      chatInp.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+      
+      // Initial message
+      addMessage('👋 Assalomu alaykum! Savollaringizni bering.', false);
+    }
+    
+    async function sendMessage() {
+      const inp = document.getElementById('chatInp');
+      const txt = inp.value.trim();
+      
+      if (!txt) return;
+      
+      if (txt.length > 500) {
+        showToast('❌ Xabar juda uzun (max 500 belgi)', 'error');
+        return;
+      }
+      
+      // Rate limiting
+      const now = Date.now();
+      if (now - lastAIRequestTime < AI_COOLDOWN) {
+        const remaining = Math.ceil((AI_COOLDOWN - (now - lastAIRequestTime)) / 1000);
+        showToast(`⏳ ${remaining} soniya kuting...`, 'warning');
+        return;
+      }
+      lastAIRequestTime = now;
+      
+      // Add user message
+      addMessage(txt, true);
+      inp.value = '';
+      
+      // Add loading indicator
+      const loadingBubble = createLoadingBubble();
+      const chatBox = document.getElementById('chatBox');
+      chatBox.appendChild(loadingBubble);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+        
+        const response = await fetch(
+          `https://text.pollinations.ai/${encodeURIComponent("Reply in Uzbek language. User: " + txt)}`,
+          { 
+            signal: controller.signal,
+            headers: {
+              'Accept': 'text/plain'
+            }
+          }
+        );
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const responseText = await response.text();
+        
+        // Remove loading bubble
+        loadingBubble.remove();
+        
+        // Add bot response
+        if (responseText && responseText.trim()) {
+          addMessage(responseText.slice(0, 1000), false); // Limit to 1000 chars
+        } else {
+          addMessage("❌ Javob bo'sh", false);
+        }
+        
+      } catch (error) {
+        console.error('AI error:', error);
+        loadingBubble.remove();
+        
+        let errorMessage = "❌ Xatolik yuz berdi";
+        
+        if (error.name === 'AbortError') {
+          errorMessage = "⏱ Javob berish vaqti tugadi";
+        } else if (!navigator.onLine) {
+          errorMessage = "📡 Internet aloqasi yo'q";
+        }
+        
+        addMessage(errorMessage, false);
+      }
+    }
+    
+    function addMessage(text, isUser) {
+      const bubble = document.createElement('div');
+      bubble.className = `bubble ${isUser ? 'user' : 'bot'}`;
+      bubble.textContent = text;
+      
+      const chatBox = document.getElementById('chatBox');
+      chatBox.appendChild(bubble);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+    
+    function createLoadingBubble() {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble bot';
+      
+      const dots = document.createElement('div');
+      dots.className = 'loading-dots';
+      
+      for (let i = 0; i < 3; i++) {
+        const dot = document.createElement('div');
+        dots.appendChild(dot);
+      }
+      
+      bubble.appendChild(dots);
+      return bubble;
+    }
+    
+    // ==================== OFFLINE DETECTION ====================
+    function initOfflineDetection() {
+      const banner = document.getElementById('offlineBanner');
+      
+      window.addEventListener('online', () => {
+        banner.classList.remove('show');
+        showToast('✅ Internet ulandi', 'success');
+      });
+      
+      window.addEventListener('offline', () => {
+        banner.classList.add('show');
+        showToast('❌ Internet yo\'q', 'error', 5000);
+      });
+      
+      // Initial check
+      if (!navigator.onLine) {
+        banner.classList.add('show');
+      }
+    }
+    
+    // ==================== ERROR HANDLING ====================
+    function initErrorHandling() {
+      window.addEventListener('error', (e) => {
+        console.error('Global error:', e.error);
+        showToast('❌ Xatolik yuz berdi', 'error');
+        
+        // Send to bot for logging
+        try {
+          tg.sendData(`error:${e.message}`);
+        } catch {}
+      });
+      
+      window.addEventListener('unhandledrejection', (e) => {
+        console.error('Unhandled promise:', e.reason);
+        showToast('❌ So\'rov bajarilmadi', 'error');
+      });
+    }
+    
+    // ==================== INITIALIZATION ====================
+    async function init() {
+      try {
+        // Initialize all modules
+        initNavigation();
+        initHomePage();
+        initAds();
+        initKnowledgeBase();
+        initAIChat();
+        initOfflineDetection();
+        initErrorHandling();
+        
+        // Hide loader
         setTimeout(() => {
-            tg.sendData('claim_pro'); 
-        }, 500);
-
-        document.getElementById('btnClaim').style.display = 'none';
-        document.getElementById('btnActive').style.display = 'flex';
-        document.getElementById('btnActive').innerText = "✅ PRO OLINDI";
-        showToast();
+          document.getElementById('loader').style.display = 'none';
+        }, 800);
+        
+        // Ready signal
+        tg.ready();
+        
+      } catch (error) {
+        console.error('Initialization error:', error);
+        document.getElementById('loader').innerHTML = `
+          <div style="color:var(--error);text-align:center;padding:20px;">
+            <div style="font-size:48px;margin-bottom:10px;">⚠️</div>
+            <div>Yuklanishda xatolik</div>
+            <button onclick="location.reload()" style="margin-top:20px;padding:10px 20px;background:var(--primary);border:none;border-radius:10px;color:white;cursor:pointer;">
+              🔄 Qayta yuklash
+            </button>
+          </div>
+        `;
+      }
     }
-
-    // ADS
-    const adsDiv = document.getElementById('ads-container');
-    function renderAd(t, x, l, i) {
-        if((!t || t==="None") && (!x || x==="None") && (!i || i==="None")) return;
-        let h = `<div class="ad-card">`;
-        if(i && i!=="None" && i.startsWith('http')) h+=`<img src="${decodeURIComponent(i)}" class="ad-img" onerror="this.style.display='none'">`;
-        h+=`<div style="padding:12px">`;
-        if(t && t!=="None") h+=`<div style="font-weight:bold;margin-bottom:5px">${decodeURIComponent(t)}</div>`;
-        if(x && x!=="None") h+=`<div style="font-size:12px;color:#aaa;margin-bottom:10px">${decodeURIComponent(x)}</div>`;
-        if(l && l!=="None") h+=`<div style="background:rgba(255,255,255,0.1);color:#00e5ff;padding:8px;border-radius:8px;text-align:center;font-size:12px;cursor:pointer" onclick="tg.openLink('${decodeURIComponent(l)}')">Batafsil ↗</div>`;
-        h+=`</div></div>`;
-        adsDiv.innerHTML += h;
+    
+    // Start application
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
     }
-    renderAd(p.get('at1'), p.get('ax1'), p.get('al1'), p.get('ai1'));
-    renderAd(p.get('at2'), p.get('ax2'), p.get('al2'), p.get('ai2'));
-
-    // AI CHAT
-    async function sendMsg(){
-        const inp = document.getElementById('chatInp'); const txt = inp.value.trim(); if(!txt) return;
-        const box = document.getElementById('chatBox'); box.innerHTML += `<div class="msg user">${txt}</div>`; inp.value = "";
-        const l = document.createElement('div'); l.className = "msg bot"; l.innerText = "..."; box.appendChild(l); box.scrollTop = box.scrollHeight;
-        try { const r = await fetch(`https://text.pollinations.ai/${encodeURIComponent("Reply in Uzbek. User: "+txt)}`); const a = await r.text(); l.innerText = a; } catch(e) { l.innerText = "Xato"; }
-        box.scrollTop = box.scrollHeight;
-    }
-
-    // CATS
-    let CATS = []; try { CATS = JSON.parse(decodeURIComponent(p.get('cats'))); } catch(e){}
-    function renderCats(){
-        document.getElementById('res-view').style.display = 'none'; const div = document.getElementById('cat-view'); div.style.display = 'grid'; div.innerHTML = "";
-        CATS.forEach(c => div.innerHTML += `<div class="cat-item" onclick="loadRes('${c.id}')">📁 ${c.name}</div>`);
-    }
-    function loadRes(cid){
-        const cat = CATS.find(c => c.id == cid); if(!cat) return;
-        document.getElementById('cat-view').style.display = 'none'; document.getElementById('res-view').style.display = 'block';
-        const list = document.getElementById('file-list'); list.innerHTML = "";
-        cat.items.forEach(r => list.innerHTML += `<button class="file-btn" onclick="getRes('${r.id}')" style="width:100%;padding:10px;margin-bottom:5px;background:rgba(255,255,255,0.1);border:none;color:white;text-align:left;border-radius:8px">📄 ${r.name}</button>`);
-    }
-    function getRes(rid){ tg.sendData('get_resource:'+rid); showToast(); }
-    function filterFiles(q){
-        q = q.toLowerCase(); if(q.length<2) { renderCats(); return; }
-        document.getElementById('cat-view').style.display = 'none'; document.getElementById('res-view').style.display = 'block'; const list = document.getElementById('file-list'); list.innerHTML = "";
-        CATS.forEach(c => c.items.forEach(i => { if(i.name.toLowerCase().includes(q)) list.innerHTML += `<button class="file-btn" onclick="getRes('${i.id}')" style="width:100%;padding:10px;margin-bottom:5px;background:rgba(255,255,255,0.1);border:none;color:white;text-align:left;border-radius:8px">📄 ${i.name}</button>`; }));
-    }
-    function go(t,e){
-        document.querySelectorAll('.section').forEach(s=>{s.style.display='none';s.classList.remove('active')});document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-        const tab = document.getElementById('tab-'+t); tab.style.display = t==='ai'?'flex':'block'; e.classList.add('active');
-    }
-    function showToast(){ const t = document.getElementById('toast'); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
-    renderCats();
   </script>
 </body>
 </html>
