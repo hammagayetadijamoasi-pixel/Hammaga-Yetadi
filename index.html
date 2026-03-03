@@ -21,7 +21,7 @@
         --glass-blur: blur(24px);
         --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         
-        --navbar-height: 80px; /* Navbar qalinligi kamaytirildi */
+        --navbar-height: 68px; /* Navbar qalinligi yana ham kamaytirildi */
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
@@ -124,12 +124,12 @@
         background: rgba(20, 20, 20, 0.8);
         -webkit-backdrop-filter: blur(30px);
         backdrop-filter: blur(30px);
-        padding: 12px 20px;
+        padding: 10px 16px;
         border-top: 1px solid var(--glass-border);
-        display: flex; gap: 12px; align-items: center;
+        display: flex; gap: 10px; align-items: center;
         width: 100%;
-        /* Navbardan yuqorida turishi uchun margin qo'shildi */
-        padding-bottom: 95px; 
+        /* Navbardan yuqorida turishi uchun ixcham padding */
+        padding-bottom: 80px; 
         z-index: 50;
     }
 
@@ -199,23 +199,23 @@
 
     /* FLOATING NAVBAR (SUZUVCHI MENYU) - YANADA PREMIUM VA INGICHKA */
     .navbar {
-        position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
-        width: 95%; max-width: 420px; height: 65px; /* Ingichkalashtirildi */
-        background: rgba(20, 20, 20, 0.7);
+        position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%);
+        width: 90%; max-width: 400px; height: 56px; /* Ingichkalashtirildi (56px) */
+        background: rgba(20, 20, 20, 0.75);
         -webkit-backdrop-filter: blur(40px) saturate(180%);
         backdrop-filter: blur(40px) saturate(180%);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 35px;
+        border-radius: 30px;
         display: flex; justify-content: space-evenly; align-items: center;
         z-index: 100;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         padding: 0 5px;
     }
     .nav-item { 
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         color: var(--text-sec); font-size: 10px; font-weight: 500; 
         transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        width: 65px; height: 55px; border-radius: 18px;
+        width: 60px; height: 46px; border-radius: 16px;
         cursor: pointer;
     }
     
@@ -225,7 +225,7 @@
         display: flex; align-items: center; justify-content: center;
     }
     .nav-icon svg {
-        width: 22px; height: 22px;
+        width: 20px; height: 20px;
         stroke: var(--text-sec);
         transition: all 0.3s ease;
     }
@@ -354,9 +354,9 @@
           <div class="bubble bot">Assalomu alaykum! Men sun'iy intellektman. Sizga qanday yordam bera olaman?</div>
       </div>
       <div class="chat-input-wrapper">
-          <input type="text" class="ios-input" id="chatInp" placeholder="Xabar yozing..." style="flex:1; border-radius: 22px; padding: 12px 18px;">
-          <button onclick="sendMsg()" style="width:45px; height:45px; flex-shrink: 0; border-radius:50%; background:linear-gradient(180deg, #2E9CFF 0%, #0A84FF 100%); border:none; color:white; font-size:22px; box-shadow: 0 4px 15px rgba(10,132,255,0.4); display:flex; align-items:center; justify-content:center; transition: 0.2s;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+          <input type="text" class="ios-input" id="chatInp" placeholder="Xabar yozing..." style="flex:1; border-radius: 20px; padding: 10px 16px;">
+          <button onclick="sendMsg()" style="width:40px; height:40px; flex-shrink: 0; border-radius:50%; background:linear-gradient(180deg, #2E9CFF 0%, #0A84FF 100%); border:none; color:white; font-size:18px; box-shadow: 0 4px 15px rgba(10,132,255,0.4); display:flex; align-items:center; justify-content:center; transition: 0.2s;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
           </button>
       </div>
   </div>
