@@ -9,20 +9,25 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     
     :root { 
-        --bg: #000000; 
-        --card-bg: #1c1c1e;
+        --bg-color: #000000;
         --primary: #0A84FF;
-        --success: #30D158;
+        --success: #32D74B;
         --text: #FFFFFF; 
-        --text-sec: #8E8E93;
-        --border: rgba(255, 255, 255, 0.12);
-        --navbar-height: 85px;
+        --text-sec: rgba(255, 255, 255, 0.6);
+        
+        /* Glassmorphism Variables */
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --glass-blur: blur(24px);
+        --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        
+        --navbar-height: 100px;
     }
     
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
     
     body { 
-        background: var(--bg); 
+        background-color: var(--bg-color); 
         color: var(--text); 
         height: 100dvh; 
         display: flex; 
@@ -32,216 +37,378 @@
         width: 100%;
     }
 
-    /* SAHIFA KONTEYNERLARI */
+    /* --- ANIMATED MESH BACKGROUND --- */
+    .bg-blobs {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden;
+        background: #000;
+    }
+    .blob {
+        position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.6; animation: float 15s infinite alternate ease-in-out;
+    }
+    .blob-1 { width: 300px; height: 300px; background: rgba(10, 132, 255, 0.4); top: -10%; left: -10%; animation-delay: 0s; }
+    .blob-2 { width: 350px; height: 350px; background: rgba(142, 45, 226, 0.3); bottom: 10%; right: -20%; animation-delay: -5s; }
+    .blob-3 { width: 250px; height: 250px; background: rgba(48, 209, 88, 0.2); bottom: -10%; left: 20%; animation-delay: -10s; }
+    
+    @keyframes float {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(30px, 50px) scale(1.1); }
+    }
+
+    /* --- KRISTALL YALTIRASH EFFEKTI (SHINE) --- */
+    @keyframes crystal-shine {
+        0% { transform: translateX(-200%) skewX(-30deg); }
+        15% { transform: translateX(300%) skewX(-30deg); }
+        100% { transform: translateX(300%) skewX(-30deg); }
+    }
+    
+    .crystal-shine {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .crystal-shine::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 60%;
+        height: 100%;
+        background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+        transform: skewX(-30deg) translateX(-200%);
+        animation: crystal-shine 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    /* --- SAHIFA KONTEYNERLARI --- */
     .view-container {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
         overflow-y: auto; 
-        padding: 20px;
+        padding: 24px;
         padding-bottom: calc(var(--navbar-height) + 20px); 
-        display: none; /* Boshida yashirin */
+        display: none; 
         flex-direction: column;
         z-index: 10;
         -webkit-overflow-scrolling: touch;
+        opacity: 0;
+        transform: scale(0.98) translateY(10px);
+        transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
     .view-container::-webkit-scrollbar { display: none; }
     
-    /* Active bo'lganda ko'rinadi */
-    .view-container.active { display: flex; }
+    .view-container.active { 
+        display: flex; 
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 
     /* AI CHAT MAXSUS KONTEYNERI */
-    #tab-ai {
-        padding: 0;
-        overflow: hidden; 
-        display: none;
-        flex-direction: column;
-        height: 100%;
-    }
-    /* AI Chat active bo'lganda ham flex bo'ladi, lekin paddingi 0 */
-    #tab-ai.active { display: flex; }
-
+    #tab-ai { padding: 0; height: 100%; }
+    
     .chat-header {
-        padding: 20px 20px 10px 20px;
-        background: rgba(0,0,0,0.8);
-        backdrop-filter: blur(10px);
+        padding: 24px 24px 15px 24px;
+        background: rgba(0,0,0,0.3);
+        -webkit-backdrop-filter: var(--glass-blur);
+        backdrop-filter: var(--glass-blur);
+        border-bottom: 1px solid var(--glass-border);
         z-index: 20;
     }
 
     .chat-messages {
-        flex: 1;
-        overflow-y: auto;
-        padding: 10px 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+        flex: 1; overflow-y: auto; padding: 20px 24px;
+        display: flex; flex-direction: column; gap: 12px;
     }
 
     .chat-input-wrapper {
-        background: rgba(28, 28, 30, 0.95);
-        backdrop-filter: blur(20px);
-        padding: 12px 15px;
-        border-top: 1px solid var(--border);
-        display: flex;
-        gap: 10px;
-        align-items: center;
+        background: rgba(20, 20, 20, 0.6);
+        -webkit-backdrop-filter: blur(30px);
+        backdrop-filter: blur(30px);
+        padding: 16px 20px;
+        border-top: 1px solid var(--glass-border);
+        display: flex; gap: 12px; align-items: center;
         width: 100%;
-        padding-bottom: calc(var(--navbar-height) + 10px); 
+        padding-bottom: calc(var(--navbar-height) - 10px); 
         z-index: 50;
     }
 
-    /* ELEMENTLAR */
+    /* --- O'TA SHAFFOF ELEMENTLAR (GLASSMORPHISM) --- */
     .glass-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 20px;
-        margin-bottom: 15px;
+        background: var(--glass-bg);
+        -webkit-backdrop-filter: var(--glass-blur);
+        backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--glass-border);
+        border-radius: 28px;
+        padding: 24px;
+        margin-bottom: 16px;
+        box-shadow: var(--glass-shadow);
         position: relative;
     }
     
+    .glass-card::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.2), rgba(255,255,255,0));
+    }
+
     .pro-card {
-        background: linear-gradient(135deg, rgba(10, 132, 255, 0.2), rgba(10, 132, 255, 0.05));
+        background: linear-gradient(135deg, rgba(10, 132, 255, 0.15), rgba(0, 0, 0, 0));
         border: 1px solid rgba(10, 132, 255, 0.3);
         text-align: center;
-        padding: 25px;
+        padding: 30px 20px;
     }
-    .slot-count { font-size: 42px; font-weight: 800; margin: 10px 0; }
+    .slot-count { 
+        font-size: 56px; font-weight: 800; margin: 5px 0; 
+        background: linear-gradient(180deg, #FFFFFF, #8E8E93);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        text-shadow: 0 4px 20px rgba(10, 132, 255, 0.4);
+    }
 
+    /* INPUT VA TUGMALAR */
     .ios-input {
-        width: 100%; padding: 14px 16px; 
-        background: #2C2C2E; border: none; border-radius: 14px; 
-        color: white; font-size: 16px; transition: 0.2s;
+        width: 100%; padding: 16px 20px; 
+        background: rgba(255, 255, 255, 0.08); 
+        -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+        border: 1px solid var(--glass-border); 
+        border-radius: 20px; 
+        color: white; font-size: 16px; font-weight: 500;
+        transition: all 0.3s ease;
     }
+    .ios-input:focus { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.4); box-shadow: 0 0 20px rgba(10,132,255,0.2); }
+    .ios-input::placeholder { color: var(--text-sec); }
     
     .btn {
-        width: 100%; padding: 16px; border: none; border-radius: 16px; 
-        font-weight: 600; font-size: 16px; cursor: pointer; color: white;
-        background: var(--primary); margin-bottom: 15px;
-        transition: transform 0.1s;
+        width: 100%; padding: 18px; border: none; border-radius: 24px; 
+        font-weight: 600; font-size: 17px; cursor: pointer; color: white;
+        background: linear-gradient(180deg, #2E9CFF 0%, #0A84FF 100%);
+        box-shadow: 0 8px 25px rgba(10, 132, 255, 0.4), inset 0 1px 0 rgba(255,255,255,0.4);
+        margin-bottom: 20px;
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
         display: flex; align-items: center; justify-content: center; text-align: center;
+        gap: 8px;
     }
-    .btn:active { transform: scale(0.98); opacity: 0.8; }
-    .btn-active { background: rgba(48, 209, 88, 0.15); color: var(--success); border: 1px solid rgba(48, 209, 88, 0.5); cursor: default; }
+    .btn:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(10, 132, 255, 0.2); }
+    
+    .btn-active { 
+        background: rgba(48, 209, 88, 0.1); color: var(--success); 
+        border: 1px solid rgba(48, 209, 88, 0.3); 
+        box-shadow: none; cursor: default;
+        -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    }
+    .btn-active:active { transform: none; }
 
-    /* Navbar */
+    /* FLOATING NAVBAR (SUZUVCHI MENYU) */
     .navbar {
-        position: fixed; bottom: 0; left: 0; right: 0; 
-        height: var(--navbar-height);
-        background: rgba(20, 20, 20, 0.9);
-        backdrop-filter: blur(30px);
-        border-top: 1px solid var(--border);
-        display: flex; justify-content: space-around; align-items: center;
+        position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+        width: 90%; max-width: 400px; height: 75px;
+        background: rgba(30, 30, 30, 0.6);
+        -webkit-backdrop-filter: blur(40px) saturate(150%);
+        backdrop-filter: blur(40px) saturate(150%);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 40px;
+        display: flex; justify-content: space-evenly; align-items: center;
         z-index: 100;
-        padding-bottom: 15px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        padding: 0 10px;
     }
     .nav-item { 
-        display: flex; flex-direction: column; align-items: center; 
-        color: var(--text-sec); font-size: 10px; font-weight: 600; 
-        transition: 0.2s; opacity: 0.7;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        color: var(--text-sec); font-size: 11px; font-weight: 500; 
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        width: 70px; height: 60px; border-radius: 20px;
+        cursor: pointer;
     }
-    .nav-item.active { color: var(--primary); transform: translateY(-2px); opacity: 1; }
-    .nav-icon { font-size: 26px; margin-bottom: 4px; }
-
-    .bubble { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 16px; line-height: 1.4; }
-    .bubble.user { align-self: flex-end; background: var(--primary); border-bottom-right-radius: 4px; }
-    .bubble.bot { align-self: flex-start; background: #2C2C2E; border-bottom-left-radius: 4px; }
-
-    .list-item {
-        background: var(--card-bg); padding: 16px; border-radius: 16px; 
-        margin-bottom: 10px; display: flex; align-items: center; gap: 15px;
-        border: 1px solid var(--border); transition: background 0.2s;
-    }
-    .list-item:active { background: #2c2c2e; }
     
-    .toast {
-        position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
-        background: rgba(255,255,255,0.9); color: black; padding: 10px 24px; border-radius: 50px; 
-        font-weight: 600; z-index: 2000; transition: 0.4s;
+    .nav-icon { 
+        margin-bottom: 3px; 
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); 
+        display: flex; align-items: center; justify-content: center;
     }
-    .toast.show { transform: translateX(-50%) translateY(0); }
+    .nav-icon svg {
+        width: 24px; height: 24px;
+        stroke: var(--text-sec);
+        transition: all 0.3s ease;
+    }
+
+    .nav-item.active { 
+        color: #fff; background: rgba(255,255,255,0.1); 
+    }
+    .nav-item.active .nav-icon { 
+        transform: translateY(-2px) scale(1.15); 
+    }
+    .nav-item.active .nav-icon svg {
+        stroke: #fff;
+        filter: drop-shadow(0 0 8px rgba(255,255,255,0.7));
+    }
+
+    /* CHAT BUBBLES */
+    .bubble { 
+        max-width: 82%; padding: 14px 18px; border-radius: 24px; 
+        font-size: 15px; line-height: 1.5; font-weight: 500;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .bubble.user { 
+        align-self: flex-end; border-bottom-right-radius: 6px; 
+        background: linear-gradient(135deg, #0A84FF, #0056b3); color: white;
+    }
+    .bubble.bot { 
+        align-self: flex-start; border-bottom-left-radius: 6px; 
+        background: rgba(255,255,255,0.1); 
+        -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+    }
+
+    /* LIST ITEMS (KB) */
+    .list-item {
+        background: rgba(255, 255, 255, 0.04); 
+        -webkit-backdrop-filter: blur(15px); backdrop-filter: blur(15px);
+        padding: 18px; border-radius: 22px; 
+        margin-bottom: 12px; display: flex; align-items: center; gap: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05); 
+        transition: all 0.2s ease; cursor: pointer;
+    }
+    .list-item:active { background: rgba(255, 255, 255, 0.1); transform: scale(0.98); }
+    .list-icon { 
+        width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; 
+        background: rgba(255,255,255,0.08); border-radius: 14px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    .list-icon svg { width: 22px; height: 22px; stroke: #fff; }
+    
+    /* TOAST (DYNAMIC ISLAND STYLE) */
+    .toast {
+        position: fixed; top: 15px; left: 50%; transform: translateX(-50%) translateY(-100px) scale(0.5);
+        background: rgba(20, 20, 20, 0.8); color: white; 
+        -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+        padding: 12px 24px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
+        font-weight: 600; font-size: 14px; z-index: 2000; 
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        opacity: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+
+    /* TYPOGRAPHY HELPERS */
+    h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 24px; }
+    .sec-title { margin-bottom: 16px; opacity: 0.5; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
+
   </style>
 </head>
 <body>
 
-  <div id="loader" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;display:flex;align-items:center;justify-content:center;">
-    <div style="width:30px;height:30px;border:3px solid #333;border-top:3px solid #0A84FF;border-radius:50%;animation:spin 1s linear infinite;"></div>
+  <!-- BACKGROUND BLOBS -->
+  <div class="bg-blobs">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+  </div>
+
+  <div id="loader" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:15px;">
+    <div style="width:40px;height:40px;border:4px solid rgba(255,255,255,0.1);border-top:4px solid #0A84FF;border-radius:50%;animation:spin 1s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite;"></div>
+    <div style="color:rgba(255,255,255,0.6);font-size:14px;font-weight:500;">Yuklanmoqda...</div>
   </div>
   <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
 
+  <!-- ASOSIY SAHIFA -->
   <div id="tab-home" class="view-container active">
-      <h1 style="font-size:32px; font-weight:800; margin-bottom:20px">Asosiy</h1>
+      <h1>Asosiy</h1>
       
       <div class="glass-card pro-card">
-          <div style="font-size:12px; opacity:0.7; text-transform:uppercase; letter-spacing:1px">PRO MUDDATI</div>
-          <div style="margin-top:5px; font-weight:600"><span id="startDate">PRO TUGASH MUDDATI</span> — <span id="endDate">...</span></div>
+          <div style="font-size:12px; color:var(--text-sec); font-weight:600; text-transform:uppercase; letter-spacing:1.5px">PRO MUDDATI</div>
+          <div style="margin-top:8px; font-size: 15px; font-weight:500"><span id="startDate">PRO TUGASH MUDDATI</span> — <span id="endDate">...</span></div>
           <div class="slot-count" id="remSlots">...</div>
-          <div style="font-size:13px; opacity:0.7;">Qolgan joylar soni</div>
+          <div style="font-size:14px; color:var(--text-sec); font-weight:500;">Qolgan joylar soni</div>
       </div>
 
-      <div style="margin-bottom: 25px;">
-          <button id="btnClaim" class="btn" onclick="claimPro()" style="display:none">🚀 PRO LINK OLISH</button>
+      <div>
+          <button id="btnClaim" class="btn crystal-shine" onclick="claimPro()" style="display:none">
+              🚀 PRO LINK OLISH
+          </button>
           <button id="btnActive" class="btn btn-active" style="display:none"></button>
       </div>
       
-      <h3 style="margin-bottom: 15px; opacity: 0.6; font-size: 14px; text-transform: uppercase;">Homiylar</h3>
+      <div class="sec-title" style="margin-top: 10px;">Homiylar</div>
       <div id="ads-container"></div>
   </div>
 
+  <!-- BILIMLAR SAHIFASI -->
   <div id="tab-kb" class="view-container">
-      <h1 style="font-size:32px; font-weight:800; margin-bottom:20px">Bilimlar</h1>
-      <input type="text" class="ios-input" placeholder="🔍 Qidirish..." onkeyup="filterFiles(this.value)" style="margin-bottom: 20px;">
+      <h1>Bilimlar</h1>
+      <input type="text" class="ios-input" placeholder="🔍 Qidirish..." onkeyup="filterFiles(this.value)" style="margin-bottom: 24px;">
       
       <div id="cat-view"></div>
       <div id="res-view" style="display:none;">
-          <button onclick="renderCats()" style="background:none; border:none; color:var(--primary); font-size:17px; margin-bottom:20px; font-weight:600;">‹ Orqaga</button>
+          <button onclick="renderCats()" style="background:none; border:none; color:var(--primary); font-size:16px; margin-bottom:20px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:5px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              Orqaga
+          </button>
           <div id="file-list"></div>
       </div>
   </div>
 
-  <div id="tab-ai" class="view-container" style="padding:0; overflow:hidden;">
+  <!-- AI CHAT SAHIFASI -->
+  <div id="tab-ai" class="view-container">
       <div class="chat-header">
-          <h1 style="font-size:32px; font-weight:800;">AI Chat</h1>
+          <h1 style="margin:0; font-size: 28px;">AI Yordamchi</h1>
       </div>
       <div class="chat-messages" id="chatBox">
-          <div class="bubble bot">👋 Assalomu alaykum! Savol bering.</div>
+          <div class="bubble bot">Assalomu alaykum! Men sun'iy intellektman. Sizga qanday yordam bera olaman?</div>
       </div>
       <div class="chat-input-wrapper">
-          <input type="text" class="ios-input" id="chatInp" placeholder="Xabar..." style="flex:1;">
-          <button onclick="sendMsg()" style="width:44px; height:44px; border-radius:50%; background:var(--primary); border:none; color:white; font-size:20px;">↑</button>
+          <input type="text" class="ios-input" id="chatInp" placeholder="Xabar yozing..." style="flex:1; border-radius: 24px;">
+          <button onclick="sendMsg()" style="width:50px; height:50px; border-radius:50%; background:linear-gradient(180deg, #2E9CFF 0%, #0A84FF 100%); border:none; color:white; font-size:22px; box-shadow: 0 4px 15px rgba(10,132,255,0.4); display:flex; align-items:center; justify-content:center; transition: 0.2s;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
+          </button>
       </div>
   </div>
 
+  <!-- TOAST -->
   <div id="toast" class="toast">Bajarildi</div>
 
+  <!-- FLOATING NAVBAR (SVG ICONS) -->
   <div class="navbar">
     <div class="nav-item active" onclick="go('home', this)">
-        <div class="nav-icon">🏠</div>Asosiy
+        <div class="nav-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>Asosiy
     </div>
     <div class="nav-item" onclick="go('ai', this)">
-        <div class="nav-icon">✨</div>Chat
+        <div class="nav-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.2 1.2L3 12l5.8 1.9a2 2 0 0 1 1.2 1.2L12 21l1.9-5.8a2 2 0 0 1 1.2-1.2L21 12l-5.8-1.9a2 2 0 0 1-1.2-1.2L12 3Z"/></svg>
+        </div>Chat
     </div>
     <div class="nav-item" onclick="go('kb', this)">
-        <div class="nav-icon">📂</div>Bilimlar
+        <div class="nav-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h16Z"/></svg>
+        </div>Bilimlar
     </div>
   </div>
 
   <script>
     const tg = window.Telegram.WebApp; 
     tg.expand();
+    tg.setHeaderColor('#000000');
+    tg.setBackgroundColor('#000000');
+
     const p = new URLSearchParams(window.location.search);
 
-    setTimeout(() => document.getElementById('loader').style.display = 'none', 800);
+    setTimeout(() => {
+        const loader = document.getElementById('loader');
+        loader.style.opacity = '0';
+        loader.style.transition = 'opacity 0.5s';
+        setTimeout(() => loader.style.display = 'none', 500);
+    }, 1200);
 
     // DATA
     document.getElementById('endDate').innerText = p.get('ed') || '...';
     document.getElementById('remSlots').innerText = p.get('ps') || '0';
     
-    const claimed = p.get('cl'); // Sana yoki 'None'
+    const claimed = p.get('cl'); 
     const proLink = p.get('pl');
 
     if (claimed && claimed !== 'None') {
         document.getElementById('btnActive').style.display = 'flex';
-        document.getElementById('btnActive').innerHTML = `✅ PRO FAOL<br><span style='font-size:11px;font-weight:400;opacity:0.8'>Amal qilish muddati: ${claimed} gacha</span>`;
+        document.getElementById('btnActive').innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <div><div style="font-weight:700; color:#fff;">PRO FAOL</div><div style='font-size:12px;font-weight:500;opacity:0.8'>Muddat: ${claimed}</div></div>`;
     } else {
         document.getElementById('btnClaim').style.display = 'flex';
     }
@@ -253,8 +420,9 @@
         tg.sendData('claim_pro');
         
         document.getElementById('btnClaim').style.display = 'none';
-        document.getElementById('btnActive').style.display = 'flex';
-        document.getElementById('btnActive').innerText = "KUTILMOQDA...";
+        const btnActive = document.getElementById('btnActive');
+        btnActive.style.display = 'flex';
+        btnActive.innerHTML = "<div style='color:#fff; font-weight:600;'>KUTILMOQDA...</div>";
         showToast("So'rov yuborildi");
     }
 
@@ -264,19 +432,20 @@
     try { ADS = JSON.parse(decodeURIComponent(p.get('ads'))); } catch(e){}
 
     if (!ADS || ADS.length === 0) {
-        adsDiv.innerHTML = "<div style='opacity:0.5;text-align:center;font-size:14px;padding:20px'>Hozircha homiylar yo'q</div>";
+        adsDiv.innerHTML = "<div style='opacity:0.4;text-align:center;font-size:14px;padding:20px;font-weight:500;'>Hozircha homiylar yo'q</div>";
     } else {
         ADS.forEach(ad => {
-            let h = `<div class="glass-card" onclick="tg.sendData('ad_click:${ad.i}'); if('${ad.l}'!='None') tg.openLink('${ad.l}')">`;
+            // "crystal-shine" klasi orqali yaltirash effekti qo'shiladi
+            let h = `<div class="glass-card crystal-shine" style="padding:16px; border-radius:24px;" onclick="tg.sendData('ad_click:${ad.i}'); if('${ad.l}'!='None') tg.openLink('${ad.l}')">`;
             if(ad.m && ad.m.startsWith('http')) {
                 if(ad.m.endsWith('.mp4')) {
-                    h += `<video src="${decodeURIComponent(ad.m)}" autoplay muted loop style="width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:10px"></video>`;
+                    h += `<video src="${decodeURIComponent(ad.m)}" autoplay muted loop style="width:100%;height:180px;object-fit:cover;border-radius:16px;margin-bottom:12px"></video>`;
                 } else {
-                    h += `<img src="${decodeURIComponent(ad.m)}" style="width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:10px" onerror="this.style.display='none'">`;
+                    h += `<img src="${decodeURIComponent(ad.m)}" style="width:100%;height:180px;object-fit:cover;border-radius:16px;margin-bottom:12px" onerror="this.style.display='none'">`;
                 }
             }
-            h += `<div><div style="font-weight:700;font-size:17px;margin-bottom:4px">${decodeURIComponent(ad.t)}</div>`;
-            if(ad.x && ad.x!=="None") h+=`<div style="font-size:13px;color:#8E8E93">${decodeURIComponent(ad.x)}</div>`;
+            h += `<div><div style="font-weight:700;font-size:18px;margin-bottom:6px">${decodeURIComponent(ad.t)}</div>`;
+            if(ad.x && ad.x!=="None") h+=`<div style="font-size:14px;color:var(--text-sec);line-height:1.4;">${decodeURIComponent(ad.x)}</div>`;
             h += `</div></div>`;
             adsDiv.innerHTML += h;
         });
@@ -285,13 +454,20 @@
     // AI
     async function sendMsg(){
         const inp = document.getElementById('chatInp'); const txt = inp.value.trim(); if(!txt) return;
+        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
         const box = document.getElementById('chatBox');
         box.innerHTML += `<div class="bubble user">${txt}</div>`; inp.value = "";
-        const l = document.createElement('div'); l.className = "bubble bot"; l.innerText = "..."; 
+        const l = document.createElement('div'); l.className = "bubble bot"; l.innerHTML = "<span style='opacity:0.5'>Yozmoqda...</span>"; 
         box.appendChild(l); box.scrollTop = box.scrollHeight;
-        try { const r = await fetch(`https://text.pollinations.ai/${encodeURIComponent("Reply in Uzbek. User: "+txt)}`); l.innerText = await r.text(); } catch{ l.innerText = "Xatolik"; }
+        try { const r = await fetch(`https://text.pollinations.ai/${encodeURIComponent("Reply in Uzbek. User: "+txt)}`); l.innerText = await r.text(); } catch{ l.innerText = "Xatolik yuz berdi."; }
+        if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         box.scrollTop = box.scrollHeight;
     }
+
+    // SVG ICONS FOR KB
+    const iconFolder = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h16Z"/></svg>`;
+    const iconFile = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>`;
+    const iconSearch = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>`;
 
     // KNOWLEDGE BASE
     let CATS = []; 
@@ -303,21 +479,21 @@
         const div = document.getElementById('cat-view'); div.innerHTML = "";
         
         if (!CATS || CATS.length === 0) {
-            div.innerHTML = "<div style='text-align:center;color:#666;margin-top:40px'>Bo'limlar mavjud emas</div>";
+            div.innerHTML = "<div style='text-align:center;color:var(--text-sec);margin-top:40px;font-weight:500;'>Bo'limlar mavjud emas</div>";
             return;
         }
 
-        CATS.forEach(c => div.innerHTML += `<div class="list-item" onclick="loadRes('${c.id}')"><div class="list-icon">📁</div><div style="font-weight:600;font-size:16px;flex:1">${c.name}</div><div style="color:#666">${c.items.length}</div></div>`);
+        CATS.forEach(c => div.innerHTML += `<div class="list-item" onclick="loadRes('${c.id}')"><div class="list-icon" style="color:#0A84FF; stroke:#0A84FF; background:rgba(10,132,255,0.15); border-color:rgba(10,132,255,0.2);">${iconFolder}</div><div style="font-weight:600;font-size:16px;flex:1">${c.name}</div><div style="color:var(--text-sec);font-size:14px;font-weight:500;">${c.items.length} ta</div></div>`);
     }
 
     function loadRes(cid){
         const cat = CATS.find(c => c.id == cid); if(!cat) return;
         document.getElementById('cat-view').style.display = 'none'; document.getElementById('res-view').style.display = 'block';
-        const list = document.getElementById('file-list'); list.innerHTML = `<h2 style="margin-bottom:15px;color:var(--primary)">${cat.name}</h2>`;
+        const list = document.getElementById('file-list'); list.innerHTML = `<h2 style="margin-bottom:20px; font-size:24px; font-weight:700;">${cat.name}</h2>`;
         
-        if(cat.items.length === 0) list.innerHTML += "<div style='text-align:center;color:#666'>Fayllar yo'q</div>";
+        if(cat.items.length === 0) list.innerHTML += "<div style='text-align:center;color:var(--text-sec);font-weight:500;'>Fayllar yo'q</div>";
         
-        cat.items.forEach(r => list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${r.i}');showToast('Yuborilmoqda...')"><div class="list-icon">📄</div><div style="font-size:16px">${r.n}</div></div>`);
+        cat.items.forEach(r => list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${r.i}');showToast('Fayl botga yuborilmoqda...')"><div class="list-icon" style="background:rgba(255,255,255,0.08);">${iconFile}</div><div style="font-size:16px; font-weight:500;">${r.n}</div></div>`);
     }
 
     function filterFiles(q){
@@ -329,29 +505,38 @@
         CATS.forEach(c => c.items.forEach(i => { 
             if(i.n.toLowerCase().includes(q)) {
                 found = true;
-                list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${i.i}')"><div class="list-icon">🔍</div><div>${i.n}</div></div>`; 
+                list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${i.i}');showToast('Fayl botga yuborilmoqda...')"><div class="list-icon" style="background:rgba(48,209,88,0.15); stroke:#32D74B; border-color:rgba(48,209,88,0.2);">${iconSearch}</div><div style="font-weight:500;">${i.n}</div></div>`; 
             }
         }));
-        if (!found) list.innerHTML = "<div style='text-align:center;color:#666'>Topilmadi</div>";
+        if (!found) list.innerHTML = "<div style='text-align:center;color:var(--text-sec);margin-top:20px;font-weight:500;'>Hech narsa topilmadi</div>";
     }
 
     // NAVIGATION
-    function go(t,e){
-        // Barcha oynalarni yashiramiz va stilni tozalaymiz
+    function go(t, e){
+        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        
         document.querySelectorAll('.view-container').forEach(s=> {
             s.classList.remove('active');
-            s.style.display = ''; // Inline stillarni tozalash (MUHIM)
+            setTimeout(() => { if(!s.classList.contains('active')) s.style.display = 'none'; }, 400); 
         });
         document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
         
-        // Tanlanganni ochamiz
         const tab = document.getElementById('tab-'+t);
-        tab.classList.add('active');
+        tab.style.display = 'flex';
+        setTimeout(() => tab.classList.add('active'), 10);
         
         e.classList.add('active');
-        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
     }
-    function showToast(m){ const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
+
+    // DYNAMIC ISLAND TOAST
+    let toastTimer;
+    function showToast(m){ 
+        const t = document.getElementById('toast'); 
+        t.innerText = m; 
+        t.classList.add('show'); 
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove('show'), 2500); 
+    }
     
     renderCats();
   </script>
