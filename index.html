@@ -21,7 +21,7 @@
         --glass-blur: blur(24px);
         --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         
-        --navbar-height: 100px;
+        --navbar-height: 80px; /* Navbar qalinligi kamaytirildi */
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
@@ -121,14 +121,15 @@
     }
 
     .chat-input-wrapper {
-        background: rgba(20, 20, 20, 0.6);
+        background: rgba(20, 20, 20, 0.8);
         -webkit-backdrop-filter: blur(30px);
         backdrop-filter: blur(30px);
-        padding: 16px 20px;
+        padding: 12px 20px;
         border-top: 1px solid var(--glass-border);
         display: flex; gap: 12px; align-items: center;
         width: 100%;
-        padding-bottom: calc(var(--navbar-height) - 10px); 
+        /* Navbardan yuqorida turishi uchun margin qo'shildi */
+        padding-bottom: 95px; 
         z-index: 50;
     }
 
@@ -165,7 +166,7 @@
 
     /* INPUT VA TUGMALAR */
     .ios-input {
-        width: 100%; padding: 16px 20px; 
+        width: 100%; padding: 14px 20px; 
         background: rgba(255, 255, 255, 0.08); 
         -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
         border: 1px solid var(--glass-border); 
@@ -196,44 +197,44 @@
     }
     .btn-active:active { transform: none; }
 
-    /* FLOATING NAVBAR (SUZUVCHI MENYU) */
+    /* FLOATING NAVBAR (SUZUVCHI MENYU) - YANADA PREMIUM VA INGICHKA */
     .navbar {
-        position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-        width: 90%; max-width: 400px; height: 75px;
-        background: rgba(30, 30, 30, 0.6);
-        -webkit-backdrop-filter: blur(40px) saturate(150%);
-        backdrop-filter: blur(40px) saturate(150%);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 40px;
+        position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+        width: 95%; max-width: 420px; height: 65px; /* Ingichkalashtirildi */
+        background: rgba(20, 20, 20, 0.7);
+        -webkit-backdrop-filter: blur(40px) saturate(180%);
+        backdrop-filter: blur(40px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 35px;
         display: flex; justify-content: space-evenly; align-items: center;
         z-index: 100;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        padding: 0 10px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        padding: 0 5px;
     }
     .nav-item { 
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        color: var(--text-sec); font-size: 11px; font-weight: 500; 
+        color: var(--text-sec); font-size: 10px; font-weight: 500; 
         transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        width: 70px; height: 60px; border-radius: 20px;
+        width: 65px; height: 55px; border-radius: 18px;
         cursor: pointer;
     }
     
     .nav-icon { 
-        margin-bottom: 3px; 
+        margin-bottom: 2px; 
         transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); 
         display: flex; align-items: center; justify-content: center;
     }
     .nav-icon svg {
-        width: 24px; height: 24px;
+        width: 22px; height: 22px;
         stroke: var(--text-sec);
         transition: all 0.3s ease;
     }
 
     .nav-item.active { 
-        color: #fff; background: rgba(255,255,255,0.1); 
+        color: #fff; background: rgba(255,255,255,0.08); 
     }
     .nav-item.active .nav-icon { 
-        transform: translateY(-2px) scale(1.15); 
+        transform: translateY(-2px) scale(1.1); 
     }
     .nav-item.active .nav-icon svg {
         stroke: #fff;
@@ -257,11 +258,11 @@
         border: 1px solid var(--glass-border);
     }
 
-    /* LIST ITEMS (KB) */
+    /* LIST ITEMS */
     .list-item {
         background: rgba(255, 255, 255, 0.04); 
         -webkit-backdrop-filter: blur(15px); backdrop-filter: blur(15px);
-        padding: 18px; border-radius: 22px; 
+        padding: 16px; border-radius: 20px; 
         margin-bottom: 12px; display: flex; align-items: center; gap: 16px;
         border: 1px solid rgba(255, 255, 255, 0.05); 
         transition: all 0.2s ease; cursor: pointer;
@@ -270,7 +271,7 @@
     .list-icon { 
         width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; 
         background: rgba(255,255,255,0.08); border-radius: 14px;
-        border: 1px solid rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
     }
     .list-icon svg { width: 22px; height: 22px; stroke: #fff; }
     
@@ -353,8 +354,8 @@
           <div class="bubble bot">Assalomu alaykum! Men sun'iy intellektman. Sizga qanday yordam bera olaman?</div>
       </div>
       <div class="chat-input-wrapper">
-          <input type="text" class="ios-input" id="chatInp" placeholder="Xabar yozing..." style="flex:1; border-radius: 24px;">
-          <button onclick="sendMsg()" style="width:50px; height:50px; border-radius:50%; background:linear-gradient(180deg, #2E9CFF 0%, #0A84FF 100%); border:none; color:white; font-size:22px; box-shadow: 0 4px 15px rgba(10,132,255,0.4); display:flex; align-items:center; justify-content:center; transition: 0.2s;">
+          <input type="text" class="ios-input" id="chatInp" placeholder="Xabar yozing..." style="flex:1; border-radius: 22px; padding: 12px 18px;">
+          <button onclick="sendMsg()" style="width:45px; height:45px; flex-shrink: 0; border-radius:50%; background:linear-gradient(180deg, #2E9CFF 0%, #0A84FF 100%); border:none; color:white; font-size:22px; box-shadow: 0 4px 15px rgba(10,132,255,0.4); display:flex; align-items:center; justify-content:center; transition: 0.2s;">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
           </button>
       </div>
@@ -363,7 +364,7 @@
   <!-- TOAST -->
   <div id="toast" class="toast">Bajarildi</div>
 
-  <!-- FLOATING NAVBAR (SVG ICONS) -->
+  <!-- FLOATING NAVBAR -->
   <div class="navbar">
     <div class="nav-item active" onclick="go('home', this)">
         <div class="nav-icon">
@@ -435,7 +436,6 @@
         adsDiv.innerHTML = "<div style='opacity:0.4;text-align:center;font-size:14px;padding:20px;font-weight:500;'>Hozircha homiylar yo'q</div>";
     } else {
         ADS.forEach(ad => {
-            // "crystal-shine" klasi orqali yaltirash effekti qo'shiladi
             let h = `<div class="glass-card crystal-shine" style="padding:16px; border-radius:24px;" onclick="tg.sendData('ad_click:${ad.i}'); if('${ad.l}'!='None') tg.openLink('${ad.l}')">`;
             if(ad.m && ad.m.startsWith('http')) {
                 if(ad.m.endsWith('.mp4')) {
