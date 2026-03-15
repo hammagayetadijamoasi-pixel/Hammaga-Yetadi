@@ -404,7 +404,8 @@
 
     // --- PARAMETRLAR ---
     const endDate     = p.get('ed') || '31.12.2025';   // PRO tugash sanasi
-    const claimedDate = p.get('cl');                    // PRO olingan sana (yoki 'None')
+    const claimedDate = p.get('cl');                    // PRO faolligini bildiradi (tugash sanasi yoki 'None')
+    const claimedAt   = p.get('ca');                    // PRO OLGAN VAQTI — boshlanish sanasi "DD.MM.YYYY"
     const proLink     = p.get('pl') || '';              // PRO havolasi
     const slotsLeft   = parseInt(p.get('ps') || '0');   // Qolgan joylar
     const userId      = p.get('id') || '';              // Foydalanuvchi ID
@@ -452,7 +453,9 @@
     // URL'da claimed kelganmi?
     if (claimedDate && claimedDate !== 'None') {
         proState = 'active';
-        proClaimedAt = claimedDate;
+        // ca (claimed_at) — PRO OLGAN VAQT (boshlanish sanasi)
+        // cl — tugash sanasi (faolligini bildiradi)
+        proClaimedAt = (claimedAt && claimedAt !== 'None') ? claimedAt : claimedDate;
         // localStorage ni ham tozalash (endi aniq ma'lum)
         localStorage.removeItem(LS_KEY);
     } else {
