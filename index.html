@@ -7,741 +7,736 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-    
-    :root { 
-        --bg-color: #000000;
-        --primary: #0A84FF;
-        --success: #32D74B;
-        --warning: #FF9F0A;
-        --text: #FFFFFF; 
-        --text-sec: rgba(255, 255, 255, 0.6);
-        --glass-bg: rgba(255, 255, 255, 0.05);
-        --glass-border: rgba(255, 255, 255, 0.1);
-        --glass-blur: blur(24px);
-        --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-        --navbar-height: 68px;
-    }
-    
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
-    
-    body { 
-        background-color: var(--bg-color); 
-        color: var(--text); 
-        height: 100dvh; 
-        display: flex; 
-        flex-direction: column; 
-        overflow: hidden; 
-        position: fixed;
-        width: 100%;
+
+    :root {
+      --bg: #07090f;
+      --bg-2: #0d111b;
+      --card: rgba(255,255,255,0.06);
+      --card-strong: rgba(255,255,255,0.09);
+      --stroke: rgba(255,255,255,0.10);
+      --text: #f7f9fc;
+      --muted: rgba(247,249,252,0.68);
+      --muted-2: rgba(247,249,252,0.45);
+      --primary: #4da3ff;
+      --primary-2: #0a84ff;
+      --success: #32d74b;
+      --warning: #ffcc00;
+      --danger: #ff5f57;
+      --radius: 24px;
+      --nav-h: 72px;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+      --blur: blur(22px);
     }
 
-    /* BACKGROUND */
-    .bg-blobs {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden;
-        background: #000;
-    }
-    .blob {
-        position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.6; animation: float 15s infinite alternate ease-in-out;
-    }
-    .blob-1 { width: 300px; height: 300px; background: rgba(10, 132, 255, 0.4); top: -10%; left: -10%; animation-delay: 0s; }
-    .blob-2 { width: 350px; height: 350px; background: rgba(142, 45, 226, 0.3); bottom: 10%; right: -20%; animation-delay: -5s; }
-    .blob-3 { width: 250px; height: 250px; background: rgba(48, 209, 88, 0.2); bottom: -10%; left: 20%; animation-delay: -10s; }
-    
-    @keyframes float {
-        0% { transform: translate(0, 0) scale(1); }
-        100% { transform: translate(30px, 50px) scale(1.1); }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    body {
+      background:
+        radial-gradient(circle at 10% 10%, rgba(77,163,255,0.20), transparent 28%),
+        radial-gradient(circle at 90% 20%, rgba(142,45,226,0.18), transparent 30%),
+        radial-gradient(circle at 30% 100%, rgba(50,215,75,0.12), transparent 28%),
+        linear-gradient(180deg, var(--bg), var(--bg-2));
+      color: var(--text);
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
     }
 
-    @keyframes crystal-shine {
-        0% { transform: translateX(-200%) skewX(-30deg); }
-        15% { transform: translateX(300%) skewX(-30deg); }
-        100% { transform: translateX(300%) skewX(-30deg); }
+    .noise, .mesh { position: fixed; inset: 0; pointer-events: none; }
+    .noise { opacity: 0.03; background-image: radial-gradient(#fff 0.6px, transparent 0.6px); background-size: 12px 12px; }
+    .mesh::before, .mesh::after {
+      content: ""; position: absolute; border-radius: 999px; filter: blur(90px); opacity: .45;
+      animation: float 14s ease-in-out infinite alternate;
     }
-    
-    .crystal-shine { position: relative; overflow: hidden; }
-    .crystal-shine::after {
-        content: '';
-        position: absolute; top: 0; left: 0; width: 60%; height: 100%;
-        background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
-        transform: skewX(-30deg) translateX(-200%);
-        animation: crystal-shine 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 2; pointer-events: none;
-    }
+    .mesh::before { width: 280px; height: 280px; left: -40px; top: -40px; background: rgba(77,163,255,.45); }
+    .mesh::after { width: 300px; height: 300px; right: -60px; bottom: 40px; background: rgba(142,45,226,.34); animation-delay: -5s; }
+    @keyframes float { from { transform: translate(0,0) scale(1); } to { transform: translate(28px,42px) scale(1.12); } }
 
-    /* SAHIFA KONTEYNERLARI */
-    .view-container {
-        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        overflow-y: auto; padding: 24px;
-        padding-bottom: calc(var(--navbar-height) + 20px); 
-        display: none; flex-direction: column;
-        z-index: 10;
-        -webkit-overflow-scrolling: touch;
-        opacity: 0;
-        transform: scale(0.98) translateY(10px);
-        transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    .app-view {
+      position: absolute; inset: 0; display: none; flex-direction: column;
+      padding: 22px 18px calc(var(--nav-h) + 26px);
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
+      opacity: 0; transform: translateY(8px) scale(.985);
+      transition: .28s ease;
     }
-    .view-container::-webkit-scrollbar { display: none; }
-    .view-container.active { display: flex; opacity: 1; transform: scale(1) translateY(0); }
+    .app-view.active { display: flex; opacity: 1; transform: none; }
+    .app-view::-webkit-scrollbar { display: none; }
 
-    /* AI CHAT */
-    #tab-ai { padding: 0; height: 100%; }
-    .chat-header {
-        padding: 24px 24px 15px 24px;
-        background: rgba(0,0,0,0.3);
-        -webkit-backdrop-filter: var(--glass-blur);
-        backdrop-filter: var(--glass-blur);
-        border-bottom: 1px solid var(--glass-border);
-        z-index: 20;
+    .header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+    .title-xl { font-size: 30px; font-weight: 800; letter-spacing: -.6px; }
+    .subtle { color: var(--muted); font-size: 14px; line-height: 1.45; }
+    .chip, .mini-chip {
+      border: 1px solid var(--stroke); background: rgba(255,255,255,.05);
+      -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+      color: var(--text); border-radius: 999px; display: inline-flex; align-items: center; gap: 8px;
     }
-    .chat-messages { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 12px; }
-    .chat-input-wrapper {
-        background: rgba(20, 20, 20, 0.8);
-        -webkit-backdrop-filter: blur(30px); backdrop-filter: blur(30px);
-        padding: 10px 16px; padding-bottom: 80px;
-        border-top: 1px solid var(--glass-border);
-        display: flex; gap: 10px; align-items: center;
-        width: 100%; z-index: 50;
-    }
+    .chip { padding: 10px 14px; font-size: 13px; font-weight: 600; }
+    .mini-chip { padding: 7px 10px; font-size: 12px; color: var(--muted); }
 
-    /* GLASS CARD */
-    .glass-card {
-        background: var(--glass-bg);
-        -webkit-backdrop-filter: var(--glass-blur);
-        backdrop-filter: var(--glass-blur);
-        border: 1px solid var(--glass-border);
-        border-radius: 28px; padding: 24px; margin-bottom: 16px;
-        box-shadow: var(--glass-shadow); position: relative;
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      -webkit-backdrop-filter: var(--blur);
+      backdrop-filter: var(--blur);
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 14px;
     }
-    .glass-card::before {
-        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-        background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.2), rgba(255,255,255,0));
+    .card::before {
+      content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
     }
+    .hero {
+      padding: 20px;
+      background:
+        radial-gradient(circle at top right, rgba(77,163,255,.22), transparent 30%),
+        linear-gradient(145deg, rgba(12,27,50,.85), rgba(8,11,18,.72));
+    }
+    .hero h2 { font-size: 23px; line-height: 1.2; margin-bottom: 8px; }
+    .hero p { color: var(--muted); font-size: 14px; line-height: 1.55; }
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 18px; }
 
-    /* PRO CARD — YAXSHILANGAN */
-    .pro-card {
-        background: linear-gradient(135deg, rgba(10, 132, 255, 0.15), rgba(0, 0, 0, 0));
-        border: 1px solid rgba(10, 132, 255, 0.3);
-        text-align: center; padding: 28px 20px;
-    }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    .metric { padding: 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.04); }
+    .metric .label { color: var(--muted-2); font-size: 12px; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+    .metric .value { font-size: 26px; font-weight: 800; }
+    .metric .hint { color: var(--muted); font-size: 12px; margin-top: 4px; }
 
-    /* PRO FAOL CARD */
-    .pro-active-card {
-        background: linear-gradient(135deg, rgba(50, 215, 75, 0.12), rgba(0, 0, 0, 0));
-        border: 1px solid rgba(50, 215, 75, 0.35);
-        padding: 24px;
+    .actions { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; margin-top: 14px; }
+    .action-btn, .primary-btn, .ghost-btn, .icon-btn {
+      border: none; cursor: pointer; color: white; transition: .18s ease; text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .pro-active-card::before {
-        background: linear-gradient(90deg, rgba(50,215,75,0), rgba(50,215,75,0.25), rgba(50,215,75,0));
+    .primary-btn {
+      width: 100%; border-radius: 22px; padding: 16px 18px; font-size: 16px; font-weight: 700;
+      background: linear-gradient(180deg, var(--primary), var(--primary-2));
+      box-shadow: 0 12px 28px rgba(10,132,255,.35), inset 0 1px 0 rgba(255,255,255,.3);
     }
+    .ghost-btn {
+      width: 100%; border-radius: 22px; padding: 14px 18px; font-size: 15px; font-weight: 700;
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.10);
+    }
+    .action-btn {
+      border-radius: 18px; padding: 14px 12px; font-size: 14px; font-weight: 700;
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+    }
+    .icon-btn {
+      width: 42px; height: 42px; border-radius: 14px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.10);
+      flex-shrink: 0;
+    }
+    .primary-btn:active, .ghost-btn:active, .action-btn:active, .icon-btn:active, .nav-item:active, .list-item:active { transform: scale(.97); }
 
-    /* PRO KUTILMOQDA CARD */
-    .pro-pending-card {
-        background: linear-gradient(135deg, rgba(255, 159, 10, 0.12), rgba(0, 0, 0, 0));
-        border: 1px solid rgba(255, 159, 10, 0.35);
-        padding: 24px; text-align: center;
-    }
+    .section-title { margin: 10px 0 12px; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted-2); }
 
-    .slot-count { 
-        font-size: 56px; font-weight: 800; margin: 5px 0; 
-        background: linear-gradient(180deg, #FFFFFF, #8E8E93);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        text-shadow: 0 4px 20px rgba(10, 132, 255, 0.4);
+    .search-wrap {
+      display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.09); border-radius: 22px; padding: 0 14px; min-height: 54px;
     }
+    .search-input, .chat-input {
+      width: 100%; background: transparent; border: none; color: var(--text); font-size: 15px; outline: none;
+    }
+    .search-input::placeholder, .chat-input::placeholder { color: var(--muted-2); }
 
-    /* PRO STATUS ROW */
-    .pro-status-row {
-        display: flex; align-items: center; gap: 14px;
-    }
-    .pro-icon-circle {
-        width: 52px; height: 52px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 26px; flex-shrink: 0;
-    }
-    .pro-icon-circle.active { background: rgba(50, 215, 75, 0.15); border: 1px solid rgba(50,215,75,0.3); }
-    .pro-icon-circle.pending { background: rgba(255, 159, 10, 0.15); border: 1px solid rgba(255,159,10,0.3); }
-    .pro-icon-circle.none { background: rgba(10, 132, 255, 0.15); border: 1px solid rgba(10,132,255,0.3); }
+    .stack { display: flex; flex-direction: column; gap: 10px; }
+    .row { display: flex; gap: 10px; align-items: center; }
+    .row-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
 
-    .pro-info { flex: 1; text-align: left; }
-    .pro-info-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; opacity: 0.5; margin-bottom: 3px; }
-    .pro-info-main { font-size: 17px; font-weight: 700; }
-    .pro-info-sub { font-size: 13px; color: var(--text-sec); margin-top: 2px; font-weight: 500; }
-
-    /* PROGRESS BAR (kun hisoblagich) */
-    .days-progress {
-        margin-top: 16px;
-    }
-    .days-progress-bar-bg {
-        height: 6px; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden;
-        margin: 8px 0 6px 0;
-    }
-    .days-progress-bar-fill {
-        height: 100%; border-radius: 99px;
-        transition: width 1s ease;
-    }
-    .days-progress-labels {
-        display: flex; justify-content: space-between;
-        font-size: 12px; color: var(--text-sec); font-weight: 500;
-    }
-
-    /* DIVIDER */
-    .pro-divider {
-        height: 1px; background: rgba(255,255,255,0.06); margin: 16px 0;
-    }
-
-    /* PRO DETAIL ROWS */
-    .pro-detail-row {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 6px 0;
-    }
-    .pro-detail-key { font-size: 13px; color: var(--text-sec); font-weight: 500; }
-    .pro-detail-val { font-size: 13px; font-weight: 600; }
-
-    /* INPUT VA TUGMALAR */
-    .ios-input {
-        width: 100%; padding: 14px 20px; 
-        background: rgba(255, 255, 255, 0.08); 
-        -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-        border: 1px solid var(--glass-border); 
-        border-radius: 20px; color: white; font-size: 16px; font-weight: 500;
-        transition: all 0.3s ease;
-    }
-    .ios-input:focus { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.4); box-shadow: 0 0 20px rgba(10,132,255,0.2); }
-    .ios-input::placeholder { color: var(--text-sec); }
-    
-    .btn {
-        width: 100%; padding: 18px; border: none; border-radius: 24px; 
-        font-weight: 600; font-size: 17px; cursor: pointer; color: white;
-        background: linear-gradient(180deg, #2E9CFF 0%, #0A84FF 100%);
-        box-shadow: 0 8px 25px rgba(10, 132, 255, 0.4), inset 0 1px 0 rgba(255,255,255,0.4);
-        margin-bottom: 20px;
-        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-        display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
-    .btn:active { transform: scale(0.96); box-shadow: 0 4px 10px rgba(10, 132, 255, 0.2); }
-
-    /* FLOATING NAVBAR */
-    .navbar {
-        position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%);
-        width: 90%; max-width: 400px; height: 56px;
-        background: rgba(20, 20, 20, 0.75);
-        -webkit-backdrop-filter: blur(40px) saturate(180%);
-        backdrop-filter: blur(40px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 30px;
-        display: flex; justify-content: space-evenly; align-items: center;
-        z-index: 100;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        padding: 0 5px;
-    }
-    .nav-item { 
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        color: var(--text-sec); font-size: 10px; font-weight: 500; 
-        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-        width: 60px; height: 46px; border-radius: 16px; cursor: pointer;
-    }
-    .nav-icon { margin-bottom: 2px; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; align-items: center; justify-content: center; }
-    .nav-icon svg { width: 20px; height: 20px; stroke: var(--text-sec); transition: all 0.3s ease; }
-    .nav-item.active { color: #fff; background: rgba(255,255,255,0.08); }
-    .nav-item.active .nav-icon { transform: translateY(-2px) scale(1.1); }
-    .nav-item.active .nav-icon svg { stroke: #fff; filter: drop-shadow(0 0 8px rgba(255,255,255,0.7)); }
-
-    /* CHAT */
-    .bubble { 
-        max-width: 82%; padding: 14px 18px; border-radius: 24px; 
-        font-size: 15px; line-height: 1.5; font-weight: 500;
-    }
-    .bubble.user { align-self: flex-end; border-bottom-right-radius: 6px; background: linear-gradient(135deg, #0A84FF, #0056b3); }
-    .bubble.bot { 
-        align-self: flex-start; border-bottom-left-radius: 6px; 
-        background: rgba(255,255,255,0.1); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-        border: 1px solid var(--glass-border);
-    }
-
-    /* LIST ITEMS */
     .list-item {
-        background: rgba(255, 255, 255, 0.04); -webkit-backdrop-filter: blur(15px); backdrop-filter: blur(15px);
-        padding: 16px; border-radius: 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.2s ease; cursor: pointer;
+      display: flex; gap: 14px; align-items: center; padding: 14px; border-radius: 20px;
+      background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.07);
+      transition: .18s ease; cursor: pointer;
     }
-    .list-item:active { background: rgba(255, 255, 255, 0.1); transform: scale(0.98); }
-    .list-icon { 
-        width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; 
-        background: rgba(255,255,255,0.08); border-radius: 14px;
-        border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
+    .list-item .icon {
+      width: 44px; height: 44px; border-radius: 16px; display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(255,255,255,.09); background: rgba(255,255,255,.06); flex-shrink: 0;
     }
-    .list-icon svg { width: 22px; height: 22px; stroke: #fff; }
+    .list-item .meta { flex: 1; min-width: 0; }
+    .list-item .name { font-size: 15px; font-weight: 700; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .list-item .desc { font-size: 12px; color: var(--muted); }
+    .badge {
+      display: inline-flex; align-items: center; justify-content: center; height: 24px; min-width: 24px; padding: 0 9px;
+      border-radius: 999px; font-size: 11px; font-weight: 700; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.06);
+    }
+    .star-btn {
+      width: 36px; height: 36px; border-radius: 12px; border: 1px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.05); color: #ffd54a; font-size: 17px; cursor: pointer;
+    }
 
-    /* TOAST */
+    .empty {
+      text-align: center; padding: 22px 16px; color: var(--muted); background: rgba(255,255,255,.03);
+      border: 1px dashed rgba(255,255,255,.08); border-radius: 20px;
+    }
+
+    .chat-layout { padding: 0 0 calc(var(--nav-h) + 10px); }
+    .chat-top {
+      position: sticky; top: 0; z-index: 30; padding: 20px 18px 14px; background: rgba(7,9,15,.72);
+      -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .chat-messages { padding: 16px 18px 14px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+    .bubble {
+      max-width: 84%; padding: 14px 16px; border-radius: 22px; font-size: 14px; line-height: 1.5; word-break: break-word;
+    }
+    .bubble.user { align-self: flex-end; background: linear-gradient(135deg, var(--primary), var(--primary-2)); border-bottom-right-radius: 8px; }
+    .bubble.bot { align-self: flex-start; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.09); border-bottom-left-radius: 8px; }
+    .chat-bar {
+      position: sticky; bottom: 0; padding: 12px 16px calc(18px + env(safe-area-inset-bottom)); background: rgba(8,10,16,.86);
+      -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+    .navbar {
+      position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); width: calc(100% - 24px); max-width: 430px;
+      height: var(--nav-h); border-radius: 30px; padding: 8px; display: flex; align-items: center; justify-content: space-between;
+      background: rgba(15,18,27,.78); border: 1px solid rgba(255,255,255,.10); box-shadow: 0 16px 40px rgba(0,0,0,.45);
+      -webkit-backdrop-filter: blur(28px) saturate(160%); backdrop-filter: blur(28px) saturate(160%); z-index: 100;
+    }
+    .nav-item {
+      flex: 1; height: 100%; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: var(--muted); font-size: 11px; font-weight: 700; gap: 5px; cursor: pointer; transition: .22s ease;
+    }
+    .nav-item.active { color: #fff; background: rgba(255,255,255,.07); }
+    .nav-item svg { width: 20px; height: 20px; stroke: currentColor; }
+
     .toast {
-        position: fixed; top: 15px; left: 50%; transform: translateX(-50%) translateY(-100px) scale(0.5);
-        background: rgba(20, 20, 20, 0.8); color: white; 
-        -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-        padding: 12px 24px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1);
-        font-weight: 600; font-size: 14px; z-index: 2000; 
-        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        opacity: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-90px) scale(.8);
+      padding: 12px 16px; border-radius: 999px; font-size: 13px; font-weight: 700; color: white;
+      background: rgba(18,22,31,.88); border: 1px solid rgba(255,255,255,.10); z-index: 300; opacity: 0;
+      transition: .35s cubic-bezier(.2,.8,.2,1.15); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
     }
-    .toast.show { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
 
-    /* PULSE animatsiyasi (PRO faol belgisi uchun) */
-    @keyframes pulse-green {
-        0%, 100% { box-shadow: 0 0 0 0 rgba(50, 215, 75, 0.4); }
-        50% { box-shadow: 0 0 0 8px rgba(50, 215, 75, 0); }
+    .loader {
+      position: fixed; inset: 0; z-index: 400; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 14px;
+      background: rgba(7,9,15,.96);
     }
-    .pulse-green { animation: pulse-green 2.5s infinite; }
+    .spinner { width: 42px; height: 42px; border: 4px solid rgba(255,255,255,.08); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* SHIMMER loading */
-    @keyframes shimmer {
-        0% { background-position: -200% 0; }
-        100% { background-position: 200% 0; }
+    @media (min-width: 560px) {
+      body { max-width: 430px; margin: 0 auto; left: 50%; transform: translateX(-50%); }
     }
-    .shimmer {
-        background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.04) 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.5s infinite;
-    }
-
-    h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 24px; }
-    .sec-title { margin-bottom: 16px; opacity: 0.5; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
   </style>
 </head>
 <body>
+  <div class="mesh"></div>
+  <div class="noise"></div>
 
-  <div class="bg-blobs">
-      <div class="blob blob-1"></div>
-      <div class="blob blob-2"></div>
-      <div class="blob blob-3"></div>
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+    <div class="subtle">Miniapp yuklanmoqda...</div>
   </div>
 
-  <div id="loader" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:15px;">
-    <div style="width:40px;height:40px;border:4px solid rgba(255,255,255,0.1);border-top:4px solid #0A84FF;border-radius:50%;animation:spin 1s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite;"></div>
-    <div style="color:rgba(255,255,255,0.6);font-size:14px;font-weight:500;">Yuklanmoqda...</div>
-  </div>
-  <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+  <div class="toast" id="toast">Bajarildi</div>
 
-  <!-- ASOSIY SAHIFA -->
-  <div id="tab-home" class="view-container active">
-      <h1>Asosiy</h1>
-      
-      <!-- PRO STATUS CARD — dinamik render qilinadi -->
-      <div id="pro-status-area"></div>
-
-      <!-- CLAIM TUGMASI — faqat PRO yo'q bo'lsa ko'rsatiladi -->
-      <div id="btn-area"></div>
-      
-      <div class="sec-title" style="margin-top: 4px;">Homiylar</div>
-      <div id="ads-container"></div>
-  </div>
-
-  <!-- BILIMLAR -->
-  <div id="tab-kb" class="view-container">
-      <h1>Bilimlar</h1>
-      <input type="text" class="ios-input" placeholder="🔍 Qidirish..." onkeyup="filterFiles(this.value)" style="margin-bottom: 24px;">
-      <div id="cat-view"></div>
-      <div id="res-view" style="display:none;">
-          <button onclick="renderCats()" style="background:none; border:none; color:var(--primary); font-size:16px; margin-bottom:20px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:5px;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-              Orqaga
-          </button>
-          <div id="file-list"></div>
+  <section id="view-home" class="app-view active">
+    <div class="header">
+      <div>
+        <div class="subtle">Salom, <span id="helloName">do‘st</span></div>
+        <div class="title-xl">Asosiy panel</div>
       </div>
-  </div>
+      <button class="icon-btn" onclick="openSupport()" aria-label="Yordam">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </button>
+    </div>
 
-  <!-- AI CHAT -->
-  <div id="tab-ai" class="view-container">
-      <div class="chat-header">
-          <h1 style="margin:0; font-size: 28px;">AI Yordamchi</h1>
+    <div class="card hero">
+      <div class="chip" id="statusChip">⏳ Holat tekshirilmoqda</div>
+      <h2 style="margin-top:12px;">Canva resurslari, AI yordamchi va premium kirish — barchasi bir joyda</h2>
+      <p>Miniapp foydalanuvchini yo‘naltirishi, tezkor amallar berishi va ishonchli ko‘rinishi kerak. Shu sabab asosiy sahifani dashboard formatiga o‘tkazdim.</p>
+      <div class="hero-badges">
+        <div class="mini-chip">⚡ Tez kirish</div>
+        <div class="mini-chip">⭐ Sevimlilar</div>
+        <div class="mini-chip">🧠 AI yordamchi</div>
+        <div class="mini-chip">📚 Bilimlar bazasi</div>
       </div>
-      <div class="chat-messages" id="chatBox">
-          <div class="bubble bot">Assalomu alaykum! Men sun'iy intellektman. Sizga qanday yordam bera olaman?</div>
+      <div class="actions">
+        <button id="btnClaim" class="primary-btn" onclick="claimPro()">🚀 PRO ni olish</button>
+        <button id="btnClaimed" class="ghost-btn" style="display:none" onclick="go('home')">✅ PRO faol</button>
       </div>
-      <div class="chat-input-wrapper">
-          <input type="text" class="ios-input" id="chatInp" placeholder="Xabar yozing..." style="flex:1; border-radius: 20px; padding: 10px 16px;">
-          <button onclick="sendMsg()" style="width:40px;height:40px;flex-shrink:0;border-radius:50%;background:linear-gradient(180deg,#2E9CFF 0%,#0A84FF 100%);border:none;color:white;font-size:18px;box-shadow:0 4px 15px rgba(10,132,255,0.4);display:flex;align-items:center;justify-content:center;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
-          </button>
-      </div>
-  </div>
+    </div>
 
-  <div id="toast" class="toast"></div>
+    <div class="grid-2">
+      <div class="card metric">
+        <div class="label">PRO muddati</div>
+        <div class="value" id="endDateText">...</div>
+        <div class="hint">Tugash sanasi</div>
+      </div>
+      <div class="card metric">
+        <div class="label">Qolgan joy</div>
+        <div class="value" id="slotCount">0</div>
+        <div class="hint">Aktiv slotlar</div>
+      </div>
+    </div>
 
-  <!-- NAVBAR -->
+    <div class="card">
+      <div class="section-title">Tezkor amallar</div>
+      <div class="actions">
+        <button class="action-btn" onclick="go('kb')">📚 Resurslar</button>
+        <button class="action-btn" onclick="go('favorites')">⭐ Sevimlilar</button>
+        <button class="action-btn" onclick="go('ai')">🧠 AI chat</button>
+        <button class="action-btn" onclick="scrollToSponsors()">📣 Homiylar</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Faollik</div>
+      <div class="row-wrap">
+        <div class="mini-chip">🎁 Referal: <span id="refCount">0</span></div>
+        <div class="mini-chip">🗓 Boshlanish: <span id="startDateText">—</span></div>
+        <div class="mini-chip">🔒 Status: <span id="statusText">Tekshirilmoqda</span></div>
+      </div>
+    </div>
+
+    <div class="section-title">So‘nggi ochilganlar</div>
+    <div id="recentList" class="stack"></div>
+
+    <div class="section-title">Homiylar</div>
+    <div id="adsContainer" class="stack"></div>
+  </section>
+
+  <section id="view-kb" class="app-view">
+    <div class="header">
+      <div>
+        <div class="subtle">Bilimlar bazasi</div>
+        <div class="title-xl">Resurslar</div>
+      </div>
+      <button class="icon-btn" onclick="go('home')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <div class="search-wrap" style="margin-bottom:12px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="searchInput" class="search-input" type="text" placeholder="Resurs qidiring..." oninput="filterFiles(this.value)">
+    </div>
+
+    <div class="row-wrap" id="quickCategoryChips" style="margin-bottom:14px;"></div>
+    <div id="kbContent" class="stack"></div>
+  </section>
+
+  <section id="view-favorites" class="app-view">
+    <div class="header">
+      <div>
+        <div class="subtle">Shaxsiy bo‘lim</div>
+        <div class="title-xl">Sevimlilar</div>
+      </div>
+      <button class="icon-btn" onclick="go('home')">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+    </div>
+    <div class="card">
+      <div class="subtle">Belgilangan resurslar shu yerda saqlanadi. Bu hozircha miniapp ichida local saqlanadi; backend bilan ulansa barcha qurilmalarda ham ishlaydi.</div>
+    </div>
+    <div id="favoritesList" class="stack"></div>
+  </section>
+
+  <section id="view-ai" class="app-view chat-layout">
+    <div class="chat-top">
+      <div class="header" style="margin-bottom:0;">
+        <div>
+          <div class="subtle">Sun’iy intellekt yordamchi</div>
+          <div class="title-xl" style="font-size:26px;">AI Chat</div>
+        </div>
+        <button class="icon-btn" onclick="clearChat()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatBox"></div>
+    <div class="chat-bar">
+      <div class="search-wrap">
+        <input id="chatInp" class="chat-input" type="text" placeholder="Savolingizni yozing..." onkeydown="if(event.key==='Enter') sendMsg()">
+        <button class="icon-btn" onclick="sendMsg()" style="width:40px;height:40px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9 22 2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
   <div class="navbar">
-    <div class="nav-item active" onclick="go('home', this)">
-        <div class="nav-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </div>Asosiy
+    <div class="nav-item active" data-target="home" onclick="go('home')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Asosiy</span>
     </div>
-    <div class="nav-item" onclick="go('ai', this)">
-        <div class="nav-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.2 1.2L3 12l5.8 1.9a2 2 0 0 1 1.2 1.2L12 21l1.9-5.8a2 2 0 0 1 1.2-1.2L21 12l-5.8-1.9a2 2 0 0 1-1.2-1.2L12 3Z"/></svg>
-        </div>Chat
+    <div class="nav-item" data-target="kb" onclick="go('kb')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h16Z"/></svg>
+      <span>Bilimlar</span>
     </div>
-    <div class="nav-item" onclick="go('kb', this)">
-        <div class="nav-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h16Z"/></svg>
-        </div>Bilimlar
+    <div class="nav-item" data-target="favorites" onclick="go('favorites')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 17.27-5.18 3.05 1.4-5.93L3.5 9.97l6.09-.52L12 4l2.41 5.45 6.09.52-4.72 4.42 1.4 5.93z"/></svg>
+      <span>Saqlangan</span>
+    </div>
+    <div class="nav-item" data-target="ai" onclick="go('ai')">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.2 1.2L3 12l5.8 1.9a2 2 0 0 1 1.2 1.2L12 21l1.9-5.8a2 2 0 0 1 1.2-1.2L21 12l-5.8-1.9a2 2 0 0 1-1.2-1.2L12 3Z"/></svg>
+      <span>AI</span>
     </div>
   </div>
 
   <script>
-    // Telegram WebApp mavjudligini tekshirish (browser da ochilganda xato bermaydi)
-    const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : {
-        expand: () => {},
-        setHeaderColor: () => {},
-        setBackgroundColor: () => {},
-        sendData: (d) => { console.log('[TG sendData]:', d); },
-        openLink: (u) => { window.open(u, '_blank'); },
-        HapticFeedback: { impactOccurred: () => {}, notificationOccurred: () => {} },
-        initDataUnsafe: {}
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      tg.setHeaderColor('#07090f');
+      tg.setBackgroundColor('#07090f');
+    }
+
+    const qs = new URLSearchParams(window.location.search);
+    const state = {
+      name: decodeURIComponent(qs.get('n') || 'Do‘st'),
+      userId: qs.get('id') || '',
+      endDate: qs.get('ed') || '—',
+      claimedExpiry: qs.get('cl') || 'None',
+      claimedAt: qs.get('ca') || 'None',
+      proLink: qs.get('pl') || '',
+      refs: Number(qs.get('rc') || 0),
+      slots: qs.get('ps') || '0',
+      cats: [],
+      ads: [],
+      chatHistory: [],
+      currentCatId: null
     };
 
-    try { tg.expand(); } catch(e) {}
-    try { tg.setHeaderColor('#000000'); } catch(e) {}
-    try { tg.setBackgroundColor('#000000'); } catch(e) {}
+    try { state.cats = JSON.parse(decodeURIComponent(qs.get('cats') || '[]')); } catch(e) { state.cats = []; }
+    try { state.ads = JSON.parse(decodeURIComponent(qs.get('ads') || '[]')); } catch(e) { state.ads = []; }
 
-    const p = new URLSearchParams(window.location.search);
+    const storeKey = (suffix) => `hy_${suffix}_${state.userId || 'guest'}`;
+    const getLocal = (key, fallback) => {
+      try { return JSON.parse(localStorage.getItem(storeKey(key))) ?? fallback; } catch { return fallback; }
+    };
+    const setLocal = (key, value) => localStorage.setItem(storeKey(key), JSON.stringify(value));
 
-    // --- PARAMETRLAR ---
-    const endDate     = p.get('ed') || '31.12.2025';   // PRO tugash sanasi
-    const claimedDate = p.get('cl');                    // PRO faolligini bildiradi (tugash sanasi yoki 'None')
-    const claimedAt   = p.get('ca');                    // PRO OLGAN VAQTI — boshlanish sanasi "DD.MM.YYYY"
-    const proLink     = p.get('pl') || '';              // PRO havolasi
-    const slotsLeft   = parseInt(p.get('ps') || '0');   // Qolgan joylar
-    const userId      = p.get('id') || '';              // Foydalanuvchi ID
-    const userName    = p.get('n') || '';               // Foydalanuvchi ismi
+    const favorites = new Set(getLocal('favorites', []));
+    let recentItems = getLocal('recent', []);
 
-    // LocalStorage kaliti — foydalanuvchiga xos
-    const LS_KEY = 'proStatus_' + userId;
+    const icons = {
+      folder: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h16Z"/></svg>',
+      file: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>',
+      ad: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-1.2-5.88"/></svg>'
+    };
 
-    // ─── PRO holatini aniqlash ───
-    // 1. URL parametrida claimed kelsa => faol
-    // 2. LocalStorage da "just_claimed" => pending (bot tasdiqini kutmoqda)
-    // 3. Hech nima yo'q => PRO yo'q
-
-    let proState = 'none'; // 'active' | 'pending' | 'none'
-    let proClaimedAt = null;
-    let proExpiresAt = endDate;
-
-    function parseDateStr(s) {
-        // "DD.MM.YYYY" yoki "DD.MM.YYYY HH:MM" formatini Date ga aylantirish
-        if (!s || s === 'None') return null;
-        const parts = s.split(' ')[0].split('.');
-        if (parts.length < 3) return null;
-        return new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => el.classList.remove('show'), 2200);
     }
 
-    function calcDaysLeft(endDateStr) {
-        const end = parseDateStr(endDateStr);
-        if (!end) return 0;
-        const now = new Date();
-        const diff = end - now;
-        return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+    function pulse(kind = 'light') {
+      try { tg?.HapticFeedback?.impactOccurred(kind); } catch {}
     }
 
-    function calcProgress(claimedStr, endStr) {
-        // Necha foiz o'tdi (0–100)
-        const start = parseDateStr(claimedStr);
-        const end   = parseDateStr(endStr);
-        if (!start || !end) return 50;
-        const total = end - start;
-        const elapsed = new Date() - start;
-        if (total <= 0) return 100;
-        return Math.min(100, Math.max(0, Math.round((1 - elapsed/total) * 100)));
+    function notification(kind = 'success') {
+      try { tg?.HapticFeedback?.notificationOccurred(kind); } catch {}
     }
 
-    // URL'da claimed kelganmi?
-    if (claimedDate && claimedDate !== 'None') {
-        proState = 'active';
-        // ca (claimed_at) — PRO OLGAN VAQT (boshlanish sanasi)
-        // cl — tugash sanasi (faolligini bildiradi)
-        proClaimedAt = (claimedAt && claimedAt !== 'None') ? claimedAt : claimedDate;
-        // localStorage ni ham tozalash (endi aniq ma'lum)
-        localStorage.removeItem(LS_KEY);
-    } else {
-        // localStorage tekshirish
-        const ls = localStorage.getItem(LS_KEY);
-        if (ls) {
-            try {
-                const saved = JSON.parse(ls);
-                if (saved.state === 'pending') {
-                    proState = 'pending';
-                    proClaimedAt = saved.claimedAt;
-                }
-            } catch(e) {}
-        }
+    function isProActive() {
+      return state.claimedExpiry && state.claimedExpiry !== 'None';
     }
 
-    // ─── PRO STATUS RENDER ───
-    function renderProStatus() {
-        const area = document.getElementById('pro-status-area');
-        const btnArea = document.getElementById('btn-area');
+    function updateHomeHeader() {
+      document.getElementById('helloName').textContent = state.name;
+      document.getElementById('endDateText').textContent = state.endDate || '—';
+      document.getElementById('slotCount').textContent = state.slots || '0';
+      document.getElementById('refCount').textContent = state.refs || 0;
+      document.getElementById('startDateText').textContent = state.claimedAt && state.claimedAt !== 'None' ? state.claimedAt : '—';
 
-        if (proState === 'active') {
-            // ✅ PRO FAOL
-            const daysLeft   = calcDaysLeft(proExpiresAt);
-            const progress   = calcProgress(proClaimedAt, proExpiresAt);
-            const barColor   = daysLeft > 10 ? '#32D74B' : daysLeft > 3 ? '#FF9F0A' : '#FF453A';
-            const statusText = daysLeft > 0 ? `${daysLeft} kun qoldi` : 'Muddati tugagan';
-
-            area.innerHTML = `
-                <div class="glass-card pro-active-card">
-                    <div class="pro-status-row">
-                        <div class="pro-icon-circle active pulse-green">👑</div>
-                        <div class="pro-info">
-                            <div class="pro-info-label">PRO STATUS</div>
-                            <div class="pro-info-main" style="color:#32D74B;">Faol</div>
-                            <div class="pro-info-sub">${statusText}</div>
-                        </div>
-                    </div>
-
-                    <div class="pro-divider"></div>
-
-                    <div class="pro-detail-row">
-                        <span class="pro-detail-key">📅 Boshlanish</span>
-                        <span class="pro-detail-val">${proClaimedAt ? proClaimedAt.split(' ')[0] : '—'}</span>
-                    </div>
-                    <div class="pro-detail-row">
-                        <span class="pro-detail-key">⏳ Tugash sanasi</span>
-                        <span class="pro-detail-val" style="color:${barColor}">${proExpiresAt}</span>
-                    </div>
-                    <div class="pro-detail-row">
-                        <span class="pro-detail-key">📊 Qolgan joylar</span>
-                        <span class="pro-detail-val">${slotsLeft} ta</span>
-                    </div>
-
-                    <div class="days-progress">
-                        <div class="days-progress-bar-bg">
-                            <div class="days-progress-bar-fill" style="width:${progress}%;background:${barColor};"></div>
-                        </div>
-                        <div class="days-progress-labels">
-                            <span>${proClaimedAt ? proClaimedAt.split(' ')[0] : 'Boshlangan'}</span>
-                            <span>${proExpiresAt}</span>
-                        </div>
-                    </div>
-                </div>`;
-
-            btnArea.innerHTML = `
-                <button class="btn" style="background:rgba(50,215,75,0.1);color:#32D74B;border:1px solid rgba(50,215,75,0.3);box-shadow:none;cursor:default;margin-bottom:16px;" onclick="void(0)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                    PRO FAOL
-                </button>`;
-
-        } else if (proState === 'pending') {
-            // ⏳ KUTILMOQDA
-            area.innerHTML = `
-                <div class="glass-card pro-pending-card">
-                    <div class="pro-status-row">
-                        <div class="pro-icon-circle pending">⏳</div>
-                        <div class="pro-info">
-                            <div class="pro-info-label">PRO STATUS</div>
-                            <div class="pro-info-main" style="color:#FF9F0A;">Tekshirilmoqda</div>
-                            <div class="pro-info-sub">Bot tasdiqini kuting...</div>
-                        </div>
-                    </div>
-                    <div class="pro-divider"></div>
-                    <div style="font-size:13px;color:var(--text-sec);line-height:1.6;">
-                        ✅ So'rovingiz yuborildi.<br>
-                        📩 Botdan tasdiqlash xabari keladi.<br>
-                        ❓ Muammo bo'lsa adminga yozing.
-                    </div>
-                    <div class="pro-detail-row" style="margin-top:12px;">
-                        <span class="pro-detail-key">📅 Tugash sanasi</span>
-                        <span class="pro-detail-val">${proExpiresAt}</span>
-                    </div>
-                </div>`;
-
-            btnArea.innerHTML = `
-                <button class="btn shimmer" style="background:rgba(255,159,10,0.15);border:1px solid rgba(255,159,10,0.3);box-shadow:none;color:#FF9F0A;cursor:default;margin-bottom:16px;" onclick="void(0)">
-                    ⏳ So'rov yuborildi...
-                </button>`;
-
-        } else {
-            // ❌ PRO YO'Q — olish tugmasi
-            area.innerHTML = `
-                <div class="glass-card pro-card">
-                    <div style="font-size:11px;color:var(--text-sec);font-weight:600;text-transform:uppercase;letter-spacing:1.5px;">PRO MUDDATI</div>
-                    <div style="margin-top:8px;font-size:15px;font-weight:600;">
-                        <span style="opacity:0.6">Tugash:</span> <span>${proExpiresAt}</span>
-                    </div>
-                    <div class="slot-count">${slotsLeft}</div>
-                    <div style="font-size:14px;color:var(--text-sec);font-weight:500;">Qolgan joylar soni</div>
-                </div>`;
-
-            btnArea.innerHTML = `
-                <button id="btnClaim" class="btn crystal-shine" onclick="claimPro()">
-                    🚀 PRO OLISH
-                </button>`;
-        }
+      const statusChip = document.getElementById('statusChip');
+      const statusText = document.getElementById('statusText');
+      if (isProActive()) {
+        statusChip.textContent = '✅ PRO faol';
+        statusText.textContent = 'Faol';
+        document.getElementById('btnClaim').style.display = 'none';
+        const btn = document.getElementById('btnClaimed');
+        btn.style.display = 'inline-flex';
+        btn.innerHTML = `✅ PRO faol · ${state.claimedExpiry}`;
+      } else {
+        statusChip.textContent = '⏳ PRO hali olinmagan';
+        statusText.textContent = 'Nofaol';
+        document.getElementById('btnClaim').style.display = 'inline-flex';
+        document.getElementById('btnClaimed').style.display = 'none';
+      }
     }
 
-    // ─── PRO OLISH ───
     function claimPro() {
-        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+      pulse('medium');
+      if (state.proLink && state.proLink.startsWith('http')) {
+        tg?.openLink?.(decodeURIComponent(state.proLink));
+      }
+      tg?.sendData?.('claim_pro');
+      showToast('So‘rov yuborildi');
+      document.getElementById('btnClaim').style.display = 'none';
+      const btn = document.getElementById('btnClaimed');
+      btn.style.display = 'inline-flex';
+      btn.textContent = '⏳ Kutilmoqda...';
+    }
 
-        // PRO linkni ochish
-        if (proLink && proLink.startsWith('http')) {
-            tg.openLink(decodeURIComponent(proLink));
+    function go(view) {
+      pulse('light');
+      document.querySelectorAll('.app-view').forEach(el => el.classList.remove('active'));
+      document.getElementById(`view-${view}`).classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.target === view));
+    }
+
+    function findResource(resourceId) {
+      for (const cat of state.cats) {
+        const item = (cat.items || []).find(x => String(x.i) === String(resourceId));
+        if (item) return { ...item, category: cat.name, categoryId: cat.id };
+      }
+      return null;
+    }
+
+    function markRecent(item) {
+      recentItems = recentItems.filter(x => String(x.i) !== String(item.i));
+      recentItems.unshift({ i: item.i, n: item.n, category: item.category || '' });
+      recentItems = recentItems.slice(0, 8);
+      setLocal('recent', recentItems);
+      renderRecent();
+    }
+
+    function toggleFavorite(resourceId, event) {
+      event?.stopPropagation?.();
+      pulse('light');
+      if (favorites.has(String(resourceId))) {
+        favorites.delete(String(resourceId));
+        showToast('Sevimlilardan olib tashlandi');
+      } else {
+        favorites.add(String(resourceId));
+        showToast('Sevimlilarga saqlandi');
+      }
+      setLocal('favorites', [...favorites]);
+      renderKB();
+      renderFavorites();
+      renderRecent();
+    }
+
+    function openResource(resourceId) {
+      const resource = findResource(resourceId);
+      if (resource) markRecent(resource);
+      tg?.sendData?.(`get_resource:${resourceId}`);
+      notification('success');
+      showToast('Fayl botga yuborilmoqda...');
+    }
+
+    function renderResourceItem(item, categoryName = '') {
+      const starred = favorites.has(String(item.i));
+      const catText = categoryName || item.category || 'Resurs';
+      return `
+        <div class="list-item" onclick="openResource('${item.i}')">
+          <div class="icon">${icons.file}</div>
+          <div class="meta">
+            <div class="name">${escapeHtml(item.n)}</div>
+            <div class="desc">${escapeHtml(catText)}</div>
+          </div>
+          <button class="star-btn" onclick="toggleFavorite('${item.i}', event)">${starred ? '★' : '☆'}</button>
+        </div>`;
+    }
+
+    function renderCategoryItem(cat) {
+      return `
+        <div class="list-item" onclick="openCategory('${cat.id}')">
+          <div class="icon">${icons.folder}</div>
+          <div class="meta">
+            <div class="name">${escapeHtml(cat.name)}</div>
+            <div class="desc">${(cat.items || []).length} ta resurs</div>
+          </div>
+          <div class="badge">Ochish</div>
+        </div>`;
+    }
+
+    function openCategory(catId) {
+      state.currentCatId = String(catId);
+      renderKB();
+      document.getElementById('searchInput').value = '';
+    }
+
+    function backToCategories() {
+      state.currentCatId = null;
+      renderKB();
+    }
+
+    function renderCategoryChips() {
+      const container = document.getElementById('quickCategoryChips');
+      const top = state.cats.slice(0, 6);
+      container.innerHTML = top.map(cat => `<button class="mini-chip" style="cursor:pointer" onclick="openCategory('${cat.id}')">${escapeHtml(cat.name)}</button>`).join('');
+    }
+
+    function renderKB(filteredItems = null) {
+      const content = document.getElementById('kbContent');
+      if (filteredItems) {
+        content.innerHTML = filteredItems.length
+          ? filteredItems.map(item => renderResourceItem(item, item.category)).join('')
+          : `<div class="empty">Bu so‘rov bo‘yicha hech narsa topilmadi.</div>`;
+        return;
+      }
+
+      if (state.currentCatId) {
+        const cat = state.cats.find(x => String(x.id) === String(state.currentCatId));
+        if (!cat) {
+          state.currentCatId = null;
+          return renderKB();
         }
+        content.innerHTML = `
+          <button class="ghost-btn" style="margin-bottom:12px" onclick="backToCategories()">← Kategoriyalarga qaytish</button>
+          <div class="card" style="margin-bottom:12px">
+            <div class="subtle">Bo‘lim</div>
+            <div style="font-size:22px;font-weight:800;margin-top:4px">${escapeHtml(cat.name)}</div>
+          </div>
+          ${(cat.items || []).length ? cat.items.map(item => renderResourceItem(item, cat.name)).join('') : '<div class="empty">Bu bo‘limda resurslar yo‘q.</div>'}`;
+        return;
+      }
 
-        // Bot ga so'rov yuborish
-        tg.sendData('claim_pro');
-
-        // LocalStorage ga pending yozish
-        const now = new Date();
-        const d = String(now.getDate()).padStart(2,'0');
-        const mo = String(now.getMonth()+1).padStart(2,'0');
-        const y = now.getFullYear();
-        const h = String(now.getHours()).padStart(2,'0');
-        const mi = String(now.getMinutes()).padStart(2,'0');
-        const claimedNow = `${d}.${mo}.${y} ${h}:${mi}`;
-
-        localStorage.setItem(LS_KEY, JSON.stringify({
-            state: 'pending',
-            claimedAt: claimedNow,
-            endDate: proExpiresAt
-        }));
-
-        // UI ni darhol pending ga o'tkazish
-        proState = 'pending';
-        proClaimedAt = claimedNow;
-        renderProStatus();
-
-        showToast('✅ So\'rov yuborildi!');
+      if (!state.cats.length) {
+        content.innerHTML = `<div class="empty">Hozircha bo‘limlar mavjud emas.</div>`;
+        return;
+      }
+      content.innerHTML = state.cats.map(renderCategoryItem).join('');
     }
 
-    // ─── ADS ───
-    const adsDiv = document.getElementById('ads-container');
-    let ADS = []; 
-    try { ADS = JSON.parse(decodeURIComponent(p.get('ads'))); } catch(e){}
-
-    if (!ADS || ADS.length === 0) {
-        adsDiv.innerHTML = "<div style='opacity:0.4;text-align:center;font-size:14px;padding:20px;font-weight:500;'>Hozircha homiylar yo'q</div>";
-    } else {
-        ADS.forEach(ad => {
-            let h = `<div class="glass-card crystal-shine" style="padding:16px;border-radius:24px;" onclick="tg.sendData('ad_click:${ad.i}');if('${ad.l}'!='None')tg.openLink('${ad.l}')">`;
-            if (ad.m && ad.m.startsWith('http')) {
-                if (ad.m.endsWith('.mp4')) {
-                    h += `<video src="${decodeURIComponent(ad.m)}" autoplay muted loop style="width:100%;height:180px;object-fit:cover;border-radius:16px;margin-bottom:12px"></video>`;
-                } else {
-                    h += `<img src="${decodeURIComponent(ad.m)}" style="width:100%;height:180px;object-fit:cover;border-radius:16px;margin-bottom:12px" onerror="this.style.display='none'">`;
-                }
-            }
-            h += `<div><div style="font-weight:700;font-size:18px;margin-bottom:6px">${decodeURIComponent(ad.t)}</div>`;
-            if (ad.x && ad.x !== "None") h += `<div style="font-size:14px;color:var(--text-sec);line-height:1.4;">${decodeURIComponent(ad.x)}</div>`;
-            h += `</div></div>`;
-            adsDiv.innerHTML += h;
-        });
+    function filterFiles(query) {
+      const q = query.trim().toLowerCase();
+      if (!q) {
+        renderKB();
+        return;
+      }
+      const found = [];
+      for (const cat of state.cats) {
+        for (const item of cat.items || []) {
+          if ((item.n || '').toLowerCase().includes(q) || (cat.name || '').toLowerCase().includes(q)) {
+            found.push({ ...item, category: cat.name });
+          }
+        }
+      }
+      renderKB(found);
     }
 
-    // ─── AI CHAT ───
+    function renderFavorites() {
+      const box = document.getElementById('favoritesList');
+      const items = [...favorites].map(findResource).filter(Boolean);
+      box.innerHTML = items.length
+        ? items.map(item => renderResourceItem(item, item.category)).join('')
+        : `<div class="empty">Hozircha saqlangan resurslar yo‘q.</div>`;
+    }
+
+    function renderRecent() {
+      const box = document.getElementById('recentList');
+      box.innerHTML = recentItems.length
+        ? recentItems.map(item => renderResourceItem(item, item.category)).join('')
+        : `<div class="empty">Siz ochgan oxirgi resurslar shu yerda chiqadi.</div>`;
+    }
+
+    function renderAds() {
+      const box = document.getElementById('adsContainer');
+      if (!state.ads.length) {
+        box.innerHTML = `<div class="empty">Hozircha homiylar mavjud emas.</div>`;
+        return;
+      }
+      box.innerHTML = state.ads.map(ad => {
+        const media = ad.m && ad.m.startsWith('http')
+          ? (ad.m.endsWith('.mp4')
+            ? `<video src="${decodeURIComponent(ad.m)}" autoplay muted loop playsinline style="width:100%;height:180px;object-fit:cover;border-radius:18px;margin-bottom:12px"></video>`
+            : `<img src="${decodeURIComponent(ad.m)}" alt="Ad" style="width:100%;height:180px;object-fit:cover;border-radius:18px;margin-bottom:12px" onerror="this.style.display='none'">`)
+          : '';
+        return `
+          <div class="card" onclick="openAd('${ad.i}','${ad.l || ''}')" style="cursor:pointer">
+            ${media}
+            <div class="row" style="align-items:flex-start">
+              <div class="icon-btn" style="pointer-events:none">${icons.ad}</div>
+              <div style="flex:1">
+                <div style="font-size:17px;font-weight:800;margin-bottom:6px">${escapeHtml(decodeURIComponent(ad.t || 'Homiy'))}</div>
+                <div class="subtle">${escapeHtml(ad.x && ad.x !== 'None' ? decodeURIComponent(ad.x) : 'Homiy taklifi')}</div>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function openAd(id, link) {
+      tg?.sendData?.(`ad_click:${id}`);
+      if (link && link !== 'None') tg?.openLink?.(link);
+      showToast('Havola ochildi');
+    }
+
+    function scrollToSponsors() {
+      document.getElementById('adsContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function openSupport() {
+      tg?.sendData?.('support_open');
+      showToast('Adminga yozish uchun botga qayting');
+    }
+
+    function ensureChatSeed() {
+      if (!state.chatHistory.length) {
+        state.chatHistory = [{ role: 'bot', text: 'Assalomu alaykum! Men yordamchiman. Canva, dizayn, resurslar yoki bot bo‘yicha savol bering.' }];
+      }
+      renderChat();
+    }
+
+    function renderChat() {
+      const box = document.getElementById('chatBox');
+      box.innerHTML = state.chatHistory.map(m => `<div class="bubble ${m.role === 'user' ? 'user' : 'bot'}">${escapeHtml(m.text).replace(/\n/g, '<br>')}</div>`).join('');
+      box.scrollTop = box.scrollHeight;
+    }
+
     async function sendMsg() {
-        const inp = document.getElementById('chatInp');
-        const txt = inp.value.trim();
-        if (!txt) return;
-        if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-        const box = document.getElementById('chatBox');
-        box.innerHTML += `<div class="bubble user">${txt}</div>`;
-        inp.value = "";
-        const l = document.createElement('div');
-        l.className = "bubble bot";
-        l.innerHTML = "<span style='opacity:0.5'>Yozmoqda...</span>";
-        box.appendChild(l);
-        box.scrollTop = box.scrollHeight;
-        try {
-            const r = await fetch(`https://text.pollinations.ai/${encodeURIComponent("Reply in Uzbek. User: "+txt)}`);
-            l.innerText = await r.text();
-        } catch { l.innerText = "Xatolik yuz berdi."; }
-        if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        box.scrollTop = box.scrollHeight;
+      const inp = document.getElementById('chatInp');
+      const txt = inp.value.trim();
+      if (!txt) return;
+      pulse('light');
+      state.chatHistory.push({ role: 'user', text: txt });
+      state.chatHistory.push({ role: 'bot', text: 'Yozmoqda...' });
+      inp.value = '';
+      renderChat();
+
+      try {
+        const prompt = `Reply in Uzbek. Be concise and helpful. User: ${txt}`;
+        const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
+        const text = await res.text();
+        state.chatHistory[state.chatHistory.length - 1] = { role: 'bot', text: text || 'Javob bo‘sh qaytdi.' };
+        notification('success');
+      } catch (e) {
+        state.chatHistory[state.chatHistory.length - 1] = { role: 'bot', text: 'Xatolik yuz berdi. Iltimos, birozdan keyin qayta urinib ko‘ring.' };
+        notification('error');
+      }
+      renderChat();
     }
 
-    document.getElementById('chatInp').addEventListener('keydown', e => {
-        if (e.key === 'Enter') sendMsg();
-    });
-
-    // ─── BILIMLAR (KB) ───
-    const iconFolder = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h16Z"/></svg>`;
-    const iconFile   = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>`;
-    const iconSearch = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>`;
-
-    let CATS = [];
-    try { CATS = JSON.parse(decodeURIComponent(p.get('cats'))); } catch(e) {}
-
-    function renderCats() {
-        document.getElementById('res-view').style.display = 'none';
-        document.getElementById('cat-view').style.display = 'block';
-        const div = document.getElementById('cat-view');
-        div.innerHTML = "";
-        if (!CATS || CATS.length === 0) {
-            div.innerHTML = "<div style='text-align:center;color:var(--text-sec);margin-top:40px;font-weight:500;'>Bo'limlar mavjud emas</div>";
-            return;
-        }
-        CATS.forEach(c => div.innerHTML += `<div class="list-item" onclick="loadRes('${c.id}')"><div class="list-icon" style="color:#0A84FF;background:rgba(10,132,255,0.15);border-color:rgba(10,132,255,0.2);">${iconFolder}</div><div style="font-weight:600;font-size:16px;flex:1">${c.name}</div><div style="color:var(--text-sec);font-size:14px;font-weight:500;">${c.items.length} ta</div></div>`);
+    function clearChat() {
+      state.chatHistory = [];
+      ensureChatSeed();
+      showToast('Chat tozalandi');
     }
 
-    function loadRes(cid) {
-        const cat = CATS.find(c => c.id == cid);
-        if (!cat) return;
-        document.getElementById('cat-view').style.display = 'none';
-        document.getElementById('res-view').style.display = 'block';
-        const list = document.getElementById('file-list');
-        list.innerHTML = `<h2 style="margin-bottom:20px;font-size:24px;font-weight:700;">${cat.name}</h2>`;
-        if (cat.items.length === 0) list.innerHTML += "<div style='text-align:center;color:var(--text-sec);font-weight:500;'>Fayllar yo'q</div>";
-        cat.items.forEach(r => list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${r.i}');showToast('📥 Botga yuborilmoqda...')"><div class="list-icon" style="background:rgba(255,255,255,0.08);">${iconFile}</div><div style="font-size:16px;font-weight:500;">${r.n}</div></div>`);
+    function escapeHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
 
-    function filterFiles(q) {
-        q = q.toLowerCase();
-        if (q.length < 2) { renderCats(); return; }
-        document.getElementById('cat-view').style.display = 'none';
-        document.getElementById('res-view').style.display = 'block';
-        const list = document.getElementById('file-list');
-        list.innerHTML = "";
-        let found = false;
-        CATS.forEach(c => c.items.forEach(i => {
-            if (i.n.toLowerCase().includes(q)) {
-                found = true;
-                list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${i.i}');showToast('📥 Botga yuborilmoqda...')"><div class="list-icon" style="background:rgba(48,209,88,0.15);border-color:rgba(48,209,88,0.2);">${iconSearch}</div><div style="font-weight:500;">${i.n}</div></div>`;
-            }
-        }));
-        if (!found) list.innerHTML = "<div style='text-align:center;color:var(--text-sec);margin-top:20px;font-weight:500;'>Hech narsa topilmadi</div>";
-    }
-
-    // ─── NAVIGATSIYA ───
-    function go(t, e) {
-        if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-        document.querySelectorAll('.view-container').forEach(s => {
-            s.classList.remove('active');
-            setTimeout(() => { if (!s.classList.contains('active')) s.style.display = 'none'; }, 400);
-        });
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        const tab = document.getElementById('tab-'+t);
-        tab.style.display = 'flex';
-        setTimeout(() => tab.classList.add('active'), 10);
-        e.classList.add('active');
-    }
-
-    // ─── TOAST ───
-    let toastTimer;
-    function showToast(m) {
-        const t = document.getElementById('toast');
-        t.innerText = m;
-        t.classList.add('show');
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
-    }
-
-    // ─── ISHGA TUSHIRISH ───
-    renderProStatus();
-    renderCats();
-
-    setTimeout(() => {
+    function boot() {
+      updateHomeHeader();
+      renderCategoryChips();
+      renderKB();
+      renderFavorites();
+      renderRecent();
+      renderAds();
+      ensureChatSeed();
+      setTimeout(() => {
         const loader = document.getElementById('loader');
         loader.style.opacity = '0';
-        loader.style.transition = 'opacity 0.5s';
-        setTimeout(() => loader.style.display = 'none', 500);
-    }, 1000);
+        loader.style.transition = 'opacity .35s ease';
+        setTimeout(() => loader.remove(), 360);
+      }, 800);
+    }
+
+    boot();
   </script>
 </body>
 </html>
