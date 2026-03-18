@@ -303,6 +303,34 @@
 
     h1 { font-size: 34px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 24px; }
     .sec-title { margin-bottom: 16px; opacity: 0.5; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
+
+    /* ✅ YANGILIKLAR CARD */
+    .news-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 18px;
+        margin-bottom: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        -webkit-backdrop-filter: var(--glass-blur);
+        backdrop-filter: var(--glass-blur);
+    }
+    .news-card:active { transform: scale(0.98); opacity: 0.8; }
+    .news-card.new-item { border-color: rgba(10,132,255,0.3); background: rgba(10,132,255,0.07); }
+    .news-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .news-badge {
+        font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
+        background: rgba(10,132,255,0.2); color: #0A84FF; letter-spacing: 0.5px;
+        text-transform: uppercase; white-space: nowrap;
+    }
+    .news-badge.green { background: rgba(50,215,75,0.2); color: #32D74B; }
+    .news-badge.orange { background: rgba(255,159,10,0.2); color: #FF9F0A; }
+    .news-badge.red { background: rgba(255,69,58,0.2); color: #FF453A; }
+    .news-date { font-size: 12px; color: var(--text-sec); margin-left: auto; font-weight: 500; }
+    .news-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+    .news-body { font-size: 14px; color: var(--text-sec); line-height: 1.5; }
+    .news-action { margin-top: 12px; font-size: 13px; color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 4px; }
   </style>
 </head>
 <body>
@@ -347,6 +375,17 @@
       </div>
   </div>
 
+  <!-- ✅ YANGILIKLAR TAB -->
+  <div id="tab-news" class="view-container">
+      <h1>Yangiliklar</h1>
+      <div id="news-list">
+          <div style="text-align:center;color:var(--text-sec);margin-top:60px;font-size:14px;font-weight:500;">
+              <div style="font-size:48px;margin-bottom:16px;">📰</div>
+              Yangiliklar yuklanmoqda...
+          </div>
+      </div>
+  </div>
+
   <!-- AI CHAT -->
   <div id="tab-ai" class="view-container">
       <div class="chat-header">
@@ -382,6 +421,12 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h16Z"/></svg>
         </div>Bilimlar
     </div>
+    <div class="nav-item" onclick="go('news', this); loadNews();">
+        <div class="nav-icon" style="position:relative;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 0-2-2v-4"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg>
+            <div id="news-dot" style="display:none;position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:#FF453A;border-radius:50%;border:1.5px solid #000;"></div>
+        </div>Yangilik
+    </div>
   </div>
 
   <script>
@@ -408,9 +453,9 @@
     const claimedAt   = p.get('ca');                    // PRO OLGAN VAQTI — boshlanish sanasi "DD.MM.YYYY"
     const proLink     = p.get('pl') || '';              // PRO havolasi
     const slotsLeft   = parseInt(p.get('ps') || '0');   // Qolgan joylar
-    const retryAllowed = p.get('pr') === '1';           // Admin PRO qayta olishga ruxsat berganmi
     const userId      = p.get('id') || '';              // Foydalanuvchi ID
     const userName    = p.get('n') || '';               // Foydalanuvchi ismi
+    const proRetry    = parseInt(p.get('pr') || '0');   // ✅ PRO qayta olish ruxsati
 
     // LocalStorage kaliti — foydalanuvchiga xos
     const LS_KEY = 'proStatus_' + userId;
@@ -420,7 +465,7 @@
     // 2. LocalStorage da "just_claimed" => pending (bot tasdiqini kutmoqda)
     // 3. Hech nima yo'q => PRO yo'q
 
-    let proState = 'none'; // 'active' | 'pending' | 'retry' | 'none'
+    let proState = 'none'; // 'active' | 'pending' | 'none'
     let proClaimedAt = null;
     let proExpiresAt = endDate;
 
@@ -451,17 +496,14 @@
         return Math.min(100, Math.max(0, Math.round((1 - elapsed/total) * 100)));
     }
 
-    // Admin ruxsat bergan bo'lsa, doim qayta olish ekrani ko'rsatiladi
-    if (retryAllowed) {
-        proState = 'retry';
-        proClaimedAt = (claimedAt && claimedAt !== 'None') ? claimedAt : null;
-        localStorage.removeItem(LS_KEY);
-    } else if (claimedDate && claimedDate !== 'None') {
+    // URL'da claimed kelganmi?
+    if (claimedDate && claimedDate !== 'None') {
         proState = 'active';
-        // ca (claimed_at) — PRO OLGAN VAQT (boshlanish sanasi)
-        // cl — tugash sanasi (faolligini bildiradi)
         proClaimedAt = (claimedAt && claimedAt !== 'None') ? claimedAt : claimedDate;
-        // localStorage ni ham tozalash (endi aniq ma'lum)
+        localStorage.removeItem(LS_KEY);
+    } else if (proRetry === 1) {
+        // ✅ Admin PRO qayta olish ruxsati bergan — "none" holat, lekin tugma ko'rinsin
+        proState = 'none';
         localStorage.removeItem(LS_KEY);
     } else {
         // localStorage tekshirish
@@ -482,35 +524,7 @@
         const area = document.getElementById('pro-status-area');
         const btnArea = document.getElementById('btn-area');
 
-        if (proState === 'retry') {
-            area.innerHTML = `
-                <div class="glass-card pro-pending-card">
-                    <div class="pro-status-row">
-                        <div class="pro-icon-circle pending">♻️</div>
-                        <div class="pro-info">
-                            <div class="pro-info-label">PRO STATUS</div>
-                            <div class="pro-info-main" style="color:#FF9F0A;">Qayta olish ruxsati bor</div>
-                            <div class="pro-info-sub">Admin sizga qayta olish uchun ruxsat berdi</div>
-                        </div>
-                    </div>
-                    <div class="pro-divider"></div>
-                    <div style="font-size:13px;color:var(--text-sec);line-height:1.6;">
-                        ♻️ Pastdagi tugmani bosing.<br>
-                        ✅ Slot sarflanmaydi.<br>
-                        📩 Bot tasdiqlagach PRO yana faol bo'ladi.
-                    </div>
-                    <div class="pro-detail-row" style="margin-top:12px;">
-                        <span class="pro-detail-key">📅 Yangi tugash sanasi</span>
-                        <span class="pro-detail-val">${proExpiresAt}</span>
-                    </div>
-                </div>`;
-
-            btnArea.innerHTML = `
-                <button id="btnClaim" class="btn crystal-shine" onclick="claimPro()">
-                    ♻️ PRO QAYTA OLISH
-                </button>`;
-
-        } else if (proState === 'active') {
+        if (proState === 'active') {
             // ✅ PRO FAOL
             const daysLeft   = calcDaysLeft(proExpiresAt);
             const progress   = calcProgress(proClaimedAt, proExpiresAt);
@@ -721,24 +735,29 @@
         const list = document.getElementById('file-list');
         list.innerHTML = `<h2 style="margin-bottom:20px;font-size:24px;font-weight:700;">${cat.name}</h2>`;
         if (cat.items.length === 0) list.innerHTML += "<div style='text-align:center;color:var(--text-sec);font-weight:500;'>Fayllar yo'q</div>";
-        cat.items.forEach(r => list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${r.i}');showToast('📥 Botga yuborilmoqda...')"><div class="list-icon" style="background:rgba(255,255,255,0.08);">${iconFile}</div><div style="font-size:16px;font-weight:500;">${r.n}</div></div>`);
+        cat.items.forEach(r => list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${r.i}');showToast('📥 Yuklanmoqda...')"><div class="list-icon" style="background:rgba(255,255,255,0.08);">${iconFile}</div><div style="font-size:15px;font-weight:500;flex:1">${r.n}</div></div>`);
     }
 
     function filterFiles(q) {
-        q = q.toLowerCase();
+        q = q.toLowerCase().trim();
         if (q.length < 2) { renderCats(); return; }
         document.getElementById('cat-view').style.display = 'none';
         document.getElementById('res-view').style.display = 'block';
         const list = document.getElementById('file-list');
-        list.innerHTML = "";
-        let found = false;
+        list.innerHTML = `<h2 style="margin-bottom:16px;font-size:18px;font-weight:700;opacity:0.6;">Qidiruv natijalari</h2>`;
+        let found = 0;
         CATS.forEach(c => c.items.forEach(i => {
-            if (i.n.toLowerCase().includes(q)) {
-                found = true;
-                list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${i.i}');showToast('📥 Botga yuborilmoqda...')"><div class="list-icon" style="background:rgba(48,209,88,0.15);border-color:rgba(48,209,88,0.2);">${iconSearch}</div><div style="font-weight:500;">${i.n}</div></div>`;
+            // ✅ FIX: nom + keywords bo'yicha qidirish
+            const inName = i.n.toLowerCase().includes(q);
+            const inKeys = (i.k || '').toLowerCase().includes(q);
+            if (inName || inKeys) {
+                found++;
+                const match = inName ? i.n : `${i.n} <span style="font-size:11px;opacity:0.5;font-weight:400;">#${c.name}</span>`;
+                list.innerHTML += `<div class="list-item" onclick="tg.sendData('get_resource:${i.i}');showToast('📥 Yuklanmoqda...')"><div class="list-icon" style="background:rgba(48,209,88,0.15);border-color:rgba(48,209,88,0.2);">${iconSearch}</div><div style="font-weight:500;flex:1;font-size:15px">${match}</div></div>`;
             }
         }));
-        if (!found) list.innerHTML = "<div style='text-align:center;color:var(--text-sec);margin-top:20px;font-weight:500;'>Hech narsa topilmadi</div>";
+        if (!found) list.innerHTML += "<div style='text-align:center;color:var(--text-sec);margin-top:20px;font-weight:500;'>Hech narsa topilmadi 🤔</div>";
+        else list.innerHTML = `<h2 style="margin-bottom:16px;font-size:18px;font-weight:700;opacity:0.6;">${found} ta natija</h2>` + list.innerHTML.replace(/<h2.*?<\/h2>/,'');
     }
 
     // ─── NAVIGATSIYA ───
@@ -768,6 +787,74 @@
     // ─── ISHGA TUSHIRISH ───
     renderProStatus();
     renderCats();
+
+    // ─── YANGILIKLAR ───
+    // Bot URL parametridan yangiliklar (news_json) kelsa — ularni ko'rsatish
+    // Yoki statik default yangiliklar
+    let NEWS_DATA = [];
+    try {
+        const newsRaw = p.get('news');
+        if (newsRaw) NEWS_DATA = JSON.parse(decodeURIComponent(newsRaw));
+    } catch(e) {}
+
+    // O'qilgan yangiliklar ID lari
+    const READ_NEWS_KEY = 'readNews_' + userId;
+    let readNewsIds = [];
+    try { readNewsIds = JSON.parse(localStorage.getItem(READ_NEWS_KEY) || '[]'); } catch(e) {}
+
+    function loadNews() {
+        const list = document.getElementById('news-list');
+        document.getElementById('news-dot').style.display = 'none';
+
+        if (!NEWS_DATA || NEWS_DATA.length === 0) {
+            list.innerHTML = `
+                <div style="text-align:center;color:var(--text-sec);margin-top:60px;">
+                    <div style="font-size:48px;margin-bottom:16px;">📰</div>
+                    <div style="font-weight:600;font-size:16px;margin-bottom:8px;">Yangilik yo'q</div>
+                    <div style="font-size:14px;">Bot yangiliklarni bu yerga yuboradi</div>
+                </div>`;
+            return;
+        }
+
+        list.innerHTML = '';
+        NEWS_DATA.forEach(item => {
+            const isNew = !readNewsIds.includes(String(item.id));
+            const badgeClass = item.type === 'update' ? 'green' : item.type === 'alert' ? 'red' : item.type === 'promo' ? 'orange' : '';
+            const badgeText = item.type === 'update' ? 'Yangilanish' : item.type === 'alert' ? 'Muhim' : item.type === 'promo' ? 'Aksiya' : 'Yangilik';
+            const actionHtml = item.link ? `<div class="news-action">Ko'proq bilish <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>` : '';
+
+            list.innerHTML += `
+                <div class="news-card ${isNew ? 'new-item' : ''}" onclick="openNews('${item.id}', ${JSON.stringify(item.link || '').replace(/"/g, '&quot;')})">
+                    <div class="news-card-header">
+                        <span class="news-badge ${badgeClass}">${isNew ? '🔵 ' : ''}${badgeText}</span>
+                        <span class="news-date">${item.date || ''}</span>
+                    </div>
+                    <div class="news-title">${item.title || ''}</div>
+                    <div class="news-body">${(item.body || '').substring(0, 120)}${(item.body || '').length > 120 ? '...' : ''}</div>
+                    ${actionHtml}
+                </div>`;
+        });
+
+        // Hammasini o'qilgan deb belgilash
+        readNewsIds = NEWS_DATA.map(n => String(n.id));
+        localStorage.setItem(READ_NEWS_KEY, JSON.stringify(readNewsIds));
+    }
+
+    function openNews(newsId, link) {
+        if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        if (link && link !== 'false' && link !== '') {
+            tg.openLink(link);
+        }
+        tg.sendData('news_read:' + newsId);
+    }
+
+    // Yangiliklar belgisini (dot) ko'rsatish
+    function checkUnreadNews() {
+        if (!NEWS_DATA || NEWS_DATA.length === 0) return;
+        const hasUnread = NEWS_DATA.some(n => !readNewsIds.includes(String(n.id)));
+        if (hasUnread) document.getElementById('news-dot').style.display = 'block';
+    }
+    checkUnreadNews();
 
     setTimeout(() => {
         const loader = document.getElementById('loader');
