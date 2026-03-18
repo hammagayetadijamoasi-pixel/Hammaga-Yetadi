@@ -498,15 +498,17 @@
 
     // URL'da claimed kelganmi?
     if (claimedDate && claimedDate !== 'None') {
+        // PRO faol — cl = tugash sanasi, pending emas
         proState = 'active';
         proClaimedAt = (claimedAt && claimedAt !== 'None') ? claimedAt : claimedDate;
-        localStorage.removeItem(LS_KEY);
+        localStorage.removeItem(LS_KEY); // pending ni tozala
     } else if (proRetry === 1) {
-        // ✅ Admin PRO qayta olish ruxsati bergan — "none" holat, lekin tugma ko'rinsin
+        // ✅ Admin qayta olish ruxsati bergan — har doim "none" ko'rsin, tugma ko'rinsin
+        // localStorage pending bo'lsa ham uni tozala
         proState = 'none';
         localStorage.removeItem(LS_KEY);
     } else {
-        // localStorage tekshirish
+        // localStorage tekshirish — pending holat
         const ls = localStorage.getItem(LS_KEY);
         if (ls) {
             try {
@@ -515,7 +517,7 @@
                     proState = 'pending';
                     proClaimedAt = saved.claimedAt;
                 }
-            } catch(e) {}
+            } catch(e) { localStorage.removeItem(LS_KEY); }
         }
     }
 
@@ -626,35 +628,35 @@
     function claimPro() {
         if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 
-        // PRO linkni ochish
-        if (proLink && proLink.startsWith('http')) {
+        // PRO linkni ochish (faqat retry bo'lmasa)
+        if (!proRetry && proLink && proLink.startsWith('http')) {
             tg.openLink(decodeURIComponent(proLink));
         }
 
-        // Bot ga so'rov yuborish
+        // Bot ga so'rov yuborish — WebApp yopiladi
         tg.sendData('claim_pro');
 
-        // LocalStorage ga pending yozish
-        const now = new Date();
-        const d = String(now.getDate()).padStart(2,'0');
-        const mo = String(now.getMonth()+1).padStart(2,'0');
-        const y = now.getFullYear();
-        const h = String(now.getHours()).padStart(2,'0');
-        const mi = String(now.getMinutes()).padStart(2,'0');
-        const claimedNow = `${d}.${mo}.${y} ${h}:${mi}`;
+        // ✅ FIX: pro_retry=1 bo'lsa localStorage ga pending YOZMA
+        // Chunki bot show_main_menu qayta yuboradi cl=display_date bilan
+        if (proRetry) {
+            localStorage.removeItem(LS_KEY);
+        } else {
+            // Oddiy pro claim — pending yozamiz (bot javob berguncha)
+            const now = new Date();
+            const d = String(now.getDate()).padStart(2,'0');
+            const mo = String(now.getMonth()+1).padStart(2,'0');
+            const y = now.getFullYear();
+            const h = String(now.getHours()).padStart(2,'0');
+            const mi = String(now.getMinutes()).padStart(2,'0');
+            const claimedNow = `${d}.${mo}.${y} ${h}:${mi}`;
+            localStorage.setItem(LS_KEY, JSON.stringify({
+                state: 'pending',
+                claimedAt: claimedNow,
+                endDate: proExpiresAt
+            }));
+        }
 
-        localStorage.setItem(LS_KEY, JSON.stringify({
-            state: 'pending',
-            claimedAt: claimedNow,
-            endDate: proExpiresAt
-        }));
-
-        // UI ni darhol pending ga o'tkazish
-        proState = 'pending';
-        proClaimedAt = claimedNow;
-        renderProStatus();
-
-        showToast('✅ So\'rov yuborildi!');
+        showToast(proRetry ? '⚡ PRO qayta aktivlanmoqda...' : '✅ So\'rov yuborildi!');
     }
 
     // ─── ADS ───
