@@ -408,6 +408,7 @@
     const claimedAt   = p.get('ca');                    // PRO OLGAN VAQTI — boshlanish sanasi "DD.MM.YYYY"
     const proLink     = p.get('pl') || '';              // PRO havolasi
     const slotsLeft   = parseInt(p.get('ps') || '0');   // Qolgan joylar
+    const retryAllowed = p.get('pr') === '1';           // Admin PRO qayta olishga ruxsat berganmi
     const userId      = p.get('id') || '';              // Foydalanuvchi ID
     const userName    = p.get('n') || '';               // Foydalanuvchi ismi
 
@@ -419,7 +420,7 @@
     // 2. LocalStorage da "just_claimed" => pending (bot tasdiqini kutmoqda)
     // 3. Hech nima yo'q => PRO yo'q
 
-    let proState = 'none'; // 'active' | 'pending' | 'none'
+    let proState = 'none'; // 'active' | 'pending' | 'retry' | 'none'
     let proClaimedAt = null;
     let proExpiresAt = endDate;
 
@@ -450,8 +451,12 @@
         return Math.min(100, Math.max(0, Math.round((1 - elapsed/total) * 100)));
     }
 
-    // URL'da claimed kelganmi?
-    if (claimedDate && claimedDate !== 'None') {
+    // Admin ruxsat bergan bo'lsa, doim qayta olish ekrani ko'rsatiladi
+    if (retryAllowed) {
+        proState = 'retry';
+        proClaimedAt = (claimedAt && claimedAt !== 'None') ? claimedAt : null;
+        localStorage.removeItem(LS_KEY);
+    } else if (claimedDate && claimedDate !== 'None') {
         proState = 'active';
         // ca (claimed_at) — PRO OLGAN VAQT (boshlanish sanasi)
         // cl — tugash sanasi (faolligini bildiradi)
@@ -477,7 +482,35 @@
         const area = document.getElementById('pro-status-area');
         const btnArea = document.getElementById('btn-area');
 
-        if (proState === 'active') {
+        if (proState === 'retry') {
+            area.innerHTML = `
+                <div class="glass-card pro-pending-card">
+                    <div class="pro-status-row">
+                        <div class="pro-icon-circle pending">♻️</div>
+                        <div class="pro-info">
+                            <div class="pro-info-label">PRO STATUS</div>
+                            <div class="pro-info-main" style="color:#FF9F0A;">Qayta olish ruxsati bor</div>
+                            <div class="pro-info-sub">Admin sizga qayta olish uchun ruxsat berdi</div>
+                        </div>
+                    </div>
+                    <div class="pro-divider"></div>
+                    <div style="font-size:13px;color:var(--text-sec);line-height:1.6;">
+                        ♻️ Pastdagi tugmani bosing.<br>
+                        ✅ Slot sarflanmaydi.<br>
+                        📩 Bot tasdiqlagach PRO yana faol bo'ladi.
+                    </div>
+                    <div class="pro-detail-row" style="margin-top:12px;">
+                        <span class="pro-detail-key">📅 Yangi tugash sanasi</span>
+                        <span class="pro-detail-val">${proExpiresAt}</span>
+                    </div>
+                </div>`;
+
+            btnArea.innerHTML = `
+                <button id="btnClaim" class="btn crystal-shine" onclick="claimPro()">
+                    ♻️ PRO QAYTA OLISH
+                </button>`;
+
+        } else if (proState === 'active') {
             // ✅ PRO FAOL
             const daysLeft   = calcDaysLeft(proExpiresAt);
             const progress   = calcProgress(proClaimedAt, proExpiresAt);
