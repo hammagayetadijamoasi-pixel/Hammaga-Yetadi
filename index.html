@@ -628,8 +628,8 @@
     function claimPro() {
         if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 
-        // PRO linkni ochish (faqat retry bo'lmasa)
-        if (!proRetry && proLink && proLink.startsWith('http')) {
+        // PRO linkni ochish — retry bo'lsa ham link ochiladi
+        if (proLink && proLink.startsWith('http')) {
             tg.openLink(decodeURIComponent(proLink));
         }
 
