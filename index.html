@@ -628,20 +628,17 @@
     function claimPro() {
         if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 
-        // PRO linkni ochish — retry bo'lsa ham link ochiladi
-        if (proLink && proLink.startsWith('http')) {
+        // ✅ FIX: avval link ochamiz, keyin sendData (u WebAppni yopadi)
+        // tg.sendData() WebAppni darhol yopgani uchun link ochilmayotgan edi
+        const hasLink = proLink && proLink.startsWith('http');
+
+        if (hasLink) {
             tg.openLink(decodeURIComponent(proLink));
         }
 
-        // Bot ga so'rov yuborish — WebApp yopiladi
-        tg.sendData('claim_pro');
-
-        // ✅ FIX: pro_retry=1 bo'lsa localStorage ga pending YOZMA
-        // Chunki bot show_main_menu qayta yuboradi cl=display_date bilan
         if (proRetry) {
             localStorage.removeItem(LS_KEY);
         } else {
-            // Oddiy pro claim — pending yozamiz (bot javob berguncha)
             const now = new Date();
             const d = String(now.getDate()).padStart(2,'0');
             const mo = String(now.getMonth()+1).padStart(2,'0');
@@ -657,6 +654,11 @@
         }
 
         showToast(proRetry ? '⚡ PRO qayta aktivlanmoqda...' : '✅ So\'rov yuborildi!');
+
+        // ✅ sendData kechiktiriladi — link ochilishga ulgusin
+        setTimeout(() => {
+            tg.sendData('claim_pro');
+        }, hasLink ? 400 : 0);
     }
 
     // ─── ADS ───
